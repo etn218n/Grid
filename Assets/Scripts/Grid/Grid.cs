@@ -182,5 +182,16 @@ namespace GridSystem
                 for (int j = 0; j < horizontalChunks; j++)
                     chunks[i, j].Dispose();
         }
+        
+        public void ForEach(Action<Tile<T>> action)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    action(tiles[i, j]);
+                }
+            }
+        }
     }
 }

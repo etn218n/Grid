@@ -41,6 +41,19 @@ namespace GridSystem
                                         0);
         }
 
+        public bool IsBottomLeftCorner  => (coordinate.x == 0) && (coordinate.y == 0);
+        public bool IsBottomRightCorner => (coordinate.x == ownerGrid.Columns - 1) && (coordinate.y == 0);
+        public bool IsTopLeftCorner     => (coordinate.x == 0) && (coordinate.y == ownerGrid.Rows - 1);
+        public bool IsTopRightCorner    => (coordinate.x == ownerGrid.Columns - 1) && (coordinate.y == ownerGrid.Rows - 1);
+        
+        public bool IsRightEdge  => (coordinate.x == ownerGrid.Columns - 1) && (coordinate.y != 0) && (coordinate.y != ownerGrid.Rows - 1);
+        public bool IsBottomEdge => (coordinate.y == 0) && (coordinate.x != 0) && (coordinate.x != ownerGrid.Columns - 1);
+        public bool IsTopEdge    => (coordinate.y == ownerGrid.Rows - 1) && (coordinate.x != 0) && (coordinate.x != ownerGrid.Columns - 1);
+        public bool IsLeftEdge   => (coordinate.x == 0) && (coordinate.y != 0) && (coordinate.y != ownerGrid.Rows - 1);
+        
+        public bool IsEdge   => IsLeftEdge || IsRightEdge || IsTopEdge || IsBottomEdge;
+        public bool IsCorner => IsBottomLeftCorner || IsBottomRightCorner || IsTopLeftCorner || IsTopRightCorner;
+
         public void SetUVs(ref Vector2[] uvs) => ownerChunk.SetTileUVs(this.localCoordinate, ref uvs);
         
         public void LinkNeighbors()
