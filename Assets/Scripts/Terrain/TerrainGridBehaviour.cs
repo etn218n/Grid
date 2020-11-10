@@ -1,4 +1,4 @@
-﻿public class TerrainGrid : GridBehaviour<TerrainTile>
+﻿public class TerrainGridBehaviour : GridBehaviour<TerrainTile>
 {
     private void Awake()
     {

@@ -24,10 +24,10 @@ public static class Extension
         
         Vector2[] uv = new[]
         {
-            new Vector2(rect.x / sprite.texture.width, rect.y / sprite.texture.height), //top left
-            new Vector2((rect.x + rect.width) / sprite.texture.width, rect.y / sprite.texture.height), //top right
             new Vector2(rect.x / sprite.texture.width, (sprite.rect.y + sprite.rect.height) / sprite.texture.height), //bottom left 
+            new Vector2(rect.x / sprite.texture.width, rect.y / sprite.texture.height), //top left
             new Vector2((rect.x + rect.width) / sprite.texture.width, (sprite.rect.y + sprite.rect.height) / sprite.texture.height), 
+            new Vector2((rect.x + rect.width) / sprite.texture.width, rect.y / sprite.texture.height), //top right
         };
         
         return uv;

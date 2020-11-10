@@ -156,7 +156,7 @@ namespace GridSystem
         
         public Tile<T> TryGetTileAtCoordinate(Vector2Int coordinate)
         {
-            return TryGetTileAtCoordinate(new Vector2Int(coordinate.x, coordinate.y));
+            return TryGetTileAtCoordinate(coordinate.x, coordinate.y);
         }
         
         public Tile<T> TryGetTileAtCoordinate(int coordinateX, int coordinateY)
