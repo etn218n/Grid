@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace GridSystem
 {
-    public class Grid<T> : IDisposable
+    public class Grid : IDisposable
     {
         protected int rows;
         protected int columns;
@@ -19,41 +19,23 @@ namespace GridSystem
         protected float height;
         protected float tileSize;
         protected Vector3 origin;
-        protected Tile<T>[,] tiles;
-        protected Chunk<T>[,] chunks;
-        protected Queue<Chunk<T>> modifiedChunks;
+        protected Chunk[,] chunks;
+        protected Queue<Chunk> modifiedChunks;
         
-        public event Action<Vector3> OriginChanged;
-        public event Action InitializationFinished;
-
         public int Rows => rows;
         public int Columns => columns;
         public int RowsPerChunk => rowsPerChunk;
         public int ColumnsPerChunk => columnsPerChunk;
         public int VerticalChunks => verticalChunks;
         public int HorizontalChunks => horizontalChunks;
-        public float Width  => width;
+        public float Width => width;
         public float Height => height;
         public float TileSize => tileSize;
-        public Vector3 Origin
-        {
-            get => origin;
-            set
-            {
-                origin = value;
-                OnOriginChanged(value);
-            }
-        }
-        public Tile<T>[,] Tiles => tiles;
-        public Chunk<T>[,] Chunks => chunks;
-        public Queue<Chunk<T>> ModifiedChunks => modifiedChunks;
+        public Vector3 Origin => origin;
+        public Chunk[,] Chunks => chunks;
+        public Queue<Chunk> ModifiedChunks => modifiedChunks;
 
-        private void OnOriginChanged(Vector3 newOrigin)
-        {
-            OriginChanged?.Invoke(newOrigin);
-        }
-
-        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Func<Tile<T>, T> instantiationFunc)
+        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize)
         {
             this.origin   = origin;
             this.tileSize = tileSize;
@@ -63,24 +45,19 @@ namespace GridSystem
             this.columnsPerChunk  = columnsPerChunk;
             this.horizontalChunks = horizontalChunks;
             this.verticalChunks   = verticalChunks;
-
             this.width  = columns * tileSize;
             this.height = rows * tileSize;
             
-            modifiedChunks = new Queue<Chunk<T>>();
+            modifiedChunks = new Queue<Chunk>();
             
-            InitializeChunks(instantiationFunc);
-            LinkTileNeighbors();
+            InitializeChunks();
             GenerateChunksMesh();
-            
-            InitializationFinished?.Invoke();
         }
-
-        private void InitializeChunks(Func<Tile<T>, T> instantiationFunc)
+        
+        private void InitializeChunks()
         {
-            chunks = new Chunk<T>[verticalChunks, horizontalChunks];
-            tiles  = new Tile<T>[columns, rows];
-
+            chunks = new Chunk[verticalChunks, horizontalChunks];
+            
             for (int i = 0; i < verticalChunks; i++)
             {
                 for (int j = 0; j < horizontalChunks; j++)
@@ -89,21 +66,7 @@ namespace GridSystem
                                                       origin.y + (j * tileSize * rowsPerChunk), 
                                                       0);
 
-                    chunks[i, j] = new Chunk<T>(this, chunkOrigin, rowsPerChunk, columnsPerChunk, tileSize);
-
-                    for (int c = 0; c < columnsPerChunk; c++)
-                    {
-                        for (int r = 0; r < rowsPerChunk; r++)
-                        {
-                            int columnIndex = c + i * columnsPerChunk;
-                            int rowIndex    = r + j * rowsPerChunk;
-
-                            Vector2Int coordinate      = new Vector2Int(columnIndex, rowIndex);
-                            Vector2Int localCoordinate = new Vector2Int(c, r);
-                            
-                            tiles[columnIndex, rowIndex] = new Tile<T>(chunks[i, j], coordinate, localCoordinate, instantiationFunc);
-                        }
-                    }
+                    chunks[i, j] = new Chunk(this, chunkOrigin, rowsPerChunk, columnsPerChunk, tileSize);
                 }
             }
         }
@@ -113,7 +76,7 @@ namespace GridSystem
             NativeList<JobHandle> handles = new NativeList<JobHandle>(chunks.Length, Allocator.Temp);
 
             for (int i = 0; i < verticalChunks; i++)
-                for (int j = 0; j < horizontalChunks; j++)
+                for (int j = 0; j < horizontalChunks; j++) 
                     handles.Add(chunks[i, j].ChunkMeshJobHandle());
 
             JobHandle.CompleteAll(handles);
@@ -125,25 +88,77 @@ namespace GridSystem
             handles.Dispose();
         }
 
-        private void LinkTileNeighbors()
+        public void Update()
         {
-            for (int i = 0; i < columns; i++) 
-                for (int j = 0; j < rows; j++)
-                    tiles[i, j].LinkNeighbors();
+            while (modifiedChunks.Any())
+                modifiedChunks.Dequeue().UpdateMesh();
         }
-        
-        public Tile<T> TryGetTileAtPosition(Vector3 worldPosition)
+
+        public void Dispose()
+        {
+            for (int i = 0; i < verticalChunks; i++)
+            for (int j = 0; j < horizontalChunks; j++)
+                chunks[i, j].Dispose();
+        }
+    }
+    
+    public class Grid<T> : Grid where T : Tile
+    {
+        protected T[,] tiles;
+        public T[,] Tiles => tiles;
+
+        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Func<Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
+        : base(origin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize)
+        {
+            InitializeTiles(instantiationFunc);
+        }
+
+        private void InitializeTiles(Func<Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
+        {
+            tiles = new T[columns, rows];
+            
+            for (int i = 0; i < verticalChunks; i++)
+            {
+                for (int j = 0; j < horizontalChunks; j++)
+                {
+                    for (int c = 0; c < columnsPerChunk; c++)
+                    {
+                        for (int r = 0; r < rowsPerChunk; r++)
+                        {
+                            int columnIndex = c + i * columnsPerChunk;
+                            int rowIndex    = r + j * rowsPerChunk;
+
+                            Vector2Int coordinate      = new Vector2Int(columnIndex, rowIndex);
+                            Vector2Int localCoordinate = new Vector2Int(c, r);
+
+                            tiles[columnIndex, rowIndex] = instantiationFunc(chunks[i, j], coordinate, localCoordinate);
+                        }
+                    }
+                }
+            }
+        }
+
+        public T WestNeighborOf(T tile)  => TryGetTileAtCoordinate(tile.Coordinate.x - 1, tile.Coordinate.y);
+        public T EastNeighborOf(T tile)  => TryGetTileAtCoordinate(tile.Coordinate.x + 1, tile.Coordinate.y);
+        public T NorthNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x, tile.Coordinate.y + 1);
+        public T SouthNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x, tile.Coordinate.y - 1);
+        public T NorthWestNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x - 1, tile.Coordinate.y + 1);
+        public T NorthEastNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x + 1, tile.Coordinate.y + 1);
+        public T SouthWestNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x - 1, tile.Coordinate.y - 1);
+        public T SouthEastNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x + 1, tile.Coordinate.y - 1);
+
+        public T TryGetTileAtPosition(Vector3 worldPosition)
         {
             return TryGetTileAtPosition(worldPosition.x, worldPosition.y);
         }
         
-        public Tile<T> TryGetTileAtPosition(float worldPositionX, float worldPositionY)
+        public T TryGetTileAtPosition(float worldPositionX, float worldPositionY)
         {
             if (worldPositionX < origin.x || worldPositionX > width)
-                return default(Tile<T>);
+                return default(T);
 
             if (worldPositionY < origin.y || worldPositionY > height)
-                return default(Tile<T>);
+                return default(T);
 
             float fractX = Mathf.Abs(worldPositionX - origin.x) / tileSize;
             float fractY = Mathf.Abs(worldPositionY - origin.y) / tileSize;
@@ -154,44 +169,27 @@ namespace GridSystem
             return tiles[i, j];
         }
         
-        public Tile<T> TryGetTileAtCoordinate(Vector2Int coordinate)
+        public T TryGetTileAtCoordinate(Vector2Int coordinate)
         {
             return TryGetTileAtCoordinate(coordinate.x, coordinate.y);
         }
         
-        public Tile<T> TryGetTileAtCoordinate(int coordinateX, int coordinateY)
+        public T TryGetTileAtCoordinate(int coordinateX, int coordinateY)
         {
             if (coordinateX < 0 || coordinateX >= columns)
-                return default(Tile<T>);
+                return default(T);
             
             if (coordinateY < 0 || coordinateY >= rows)
-                return default(Tile<T>);
+                return default(T);
 
             return tiles[coordinateX, coordinateY];
         }
 
-        public void Update()
+        public void ForEach(Action<T> action)
         {
-            while (modifiedChunks.Any())
-                modifiedChunks.Dequeue().UpdateMesh();
-        }
-
-        public void Dispose()
-        {
-            for (int i = 0; i < verticalChunks; i++)
-                for (int j = 0; j < horizontalChunks; j++)
-                    chunks[i, j].Dispose();
-        }
-        
-        public void ForEach(Action<Tile<T>> action)
-        {
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < columns; j++)
-                {
+            for (int i = 0; i < columns; i++)
+                for (int j = 0; j < rows; j++)
                     action(tiles[i, j]);
-                }
-            }
         }
     }
 }

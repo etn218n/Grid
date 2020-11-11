@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GridSystem
 {
-    public class Chunk<T> : IDisposable
+    public class Chunk : IDisposable
     {
         protected int rows;
         protected int columns;
@@ -18,30 +18,29 @@ namespace GridSystem
         protected NativeArray<Vector2> uvs;
         protected NativeArray<Color> colors;
         protected NativeArray<int> indices;
-        protected readonly Grid<T> ownerGrid;
+        protected Grid ownerGrid;
 
         protected bool uvsModified;
         protected bool verticesModified;
         protected bool colorsModified;
         protected bool indicesModified;
 
-        public int Rows     => rows;
-        public int Columns  => columns;
-        public float Width  => width;
+        public int Rows => rows;
+        public int Columns => columns;
+        public float Width => width;
         public float Height => height;
         public float TileSize => tileSize;
         public Mesh Mesh => mesh;
-        public Grid<T> OwnerGrid => ownerGrid;
+        public Grid OwnerGrid => ownerGrid;
 
-        public Chunk(Grid<T> ownerGrid, Vector3 origin, int rows, int columns, float tileSize)
+        public Chunk(Grid ownerGrid, Vector3 origin, int rows, int columns, float tileSize)
         {
-            this.origin   = origin;
-            this.tileSize = tileSize;
-            this.rows     = rows;
-            this.columns  = columns;
-            this.width    = columns * tileSize;
-            this.height   = rows * tileSize;
-            
+            this.origin    = origin;
+            this.tileSize  = tileSize;
+            this.rows      = rows;
+            this.columns   = columns;
+            this.width     = columns * tileSize;
+            this.height    = rows * tileSize;
             this.ownerGrid = ownerGrid;
             
             mesh = new Mesh();
@@ -49,10 +48,10 @@ namespace GridSystem
 
             int numberOfTiles = rows * columns;
             
-            vertices  = new NativeArray<Vector3>(numberOfTiles * 4, Allocator.Persistent);
-            uvs       = new NativeArray<Vector2>(numberOfTiles * 4, Allocator.Persistent);
-            colors    = new NativeArray<Color>(numberOfTiles * 4, Allocator.Persistent);
-            indices   = new NativeArray<int>(numberOfTiles * 6, Allocator.Persistent);
+            vertices = new NativeArray<Vector3>(numberOfTiles * 4, Allocator.Persistent);
+            uvs      = new NativeArray<Vector2>(numberOfTiles * 4, Allocator.Persistent);
+            colors   = new NativeArray<Color>(numberOfTiles * 4, Allocator.Persistent);
+            indices  = new NativeArray<int>(numberOfTiles * 6, Allocator.Persistent);
         }
 
         public void SetChunkUVs(ref Vector2[] uvs)
@@ -203,6 +202,7 @@ namespace GridSystem
                 CellSize = tileSize,
                 OriginX  = origin.x,
                 OriginY  = origin.y,
+                OriginZ  = origin.z,
                 NumberOfCells = rows * columns
             };
 

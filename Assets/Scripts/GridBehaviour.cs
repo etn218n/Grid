@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GridSystem;
 
-public class GridBehaviour<T> : MonoBehaviour
+public class GridBehaviour<T> : MonoBehaviour where T : Tile
 { 
     protected Grid<T> grid;
     public Grid<T> Grid => grid;
@@ -18,21 +18,20 @@ public class GridBehaviour<T> : MonoBehaviour
 
     [Header("Other Settings")]
     [SerializeField] protected float tileSize = 1;
-    [SerializeField] protected Vector3 origin = Vector3.zero;
 
     [Header("External Components")]
     [SerializeField] protected GameObject gridMeshPrefab = null;
 
-    protected void Create(Func<Tile<T>, T> func)
+    protected void Create(Func<Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
     {
         float startTime = Time.realtimeSinceStartup;
 
-        grid = new Grid<T>(origin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, func);
+        grid = new Grid<T>(this.transform.position, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, instantiationFunc);
         Debug.Log( $"{ToString()} Creation Time: " + (Time.realtimeSinceStartup - startTime).ToString("F5") + "s");
 
         foreach (var chunk in grid.Chunks)
         {
-            GameObject go = Instantiate(gridMeshPrefab, Vector3.zero, Quaternion.identity, this.transform);
+            GameObject go = Instantiate(gridMeshPrefab, this.transform.position, Quaternion.identity, this.transform);
 
             go.GetComponent<MeshFilter>().mesh = chunk.Mesh;
         }

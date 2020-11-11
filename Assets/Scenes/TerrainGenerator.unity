@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a4fa456d350bc44db1cfc28d5534093, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseGridBehaviour: {fileID: 746053345}
-  topGridBehaviour: {fileID: 1025003379}
+  backgroundGridBehaviour: {fileID: 746053345}
+  foregroundGridBehaviour: {fileID: 1025003379}
   ruleTile: {fileID: -6713041319035986886, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
   sand: {fileID: -6978243961601201665, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
   soil: {fileID: 2581983967766482354, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
@@ -208,7 +208,6 @@ MonoBehaviour:
   rowsPerChunk: 100
   columnsPerChunk: 100
   tileSize: 1
-  origin: {x: 0, y: 0, z: 0}
   gridMeshPrefab: {fileID: 4720874442858359696, guid: 3a1ffd611fb5b164aa73ea8bf227d36c, type: 3}
 --- !u!4 &746053346
 Transform:
@@ -258,7 +257,6 @@ MonoBehaviour:
   rowsPerChunk: 100
   columnsPerChunk: 100
   tileSize: 1
-  origin: {x: 0, y: 0, z: 0}
   gridMeshPrefab: {fileID: 4720874442858359696, guid: 3a1ffd611fb5b164aa73ea8bf227d36c, type: 3}
 --- !u!4 &1025003380
 Transform:
@@ -268,7 +266,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1025003378}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 100}
+  m_LocalPosition: {x: 0, y: 0, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

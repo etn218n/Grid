@@ -19,6 +19,7 @@ namespace GridSystem
         public float CellSize;
         public float OriginX;
         public float OriginY;
+        public float OriginZ;
         
         public void Execute()
         {
@@ -38,7 +39,7 @@ namespace GridSystem
 
             Vector3 vertexPosition = new Vector3(OriginX + (columnIndex * CellSize) + (CellSize / 2),
                                                  OriginY + (rowIndex * CellSize) + (CellSize / 2),
-                                                 0);
+                                                 OriginZ);
             
             int verticesIndex = cellIndex * 4;
 
