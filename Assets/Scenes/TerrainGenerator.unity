@@ -154,12 +154,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgroundGridBehaviour: {fileID: 746053345}
   foregroundGridBehaviour: {fileID: 1025003379}
-  ruleTile: {fileID: -6713041319035986886, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  sand: {fileID: -6978243961601201665, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  soil: {fileID: 2581983967766482354, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  grass: {fileID: 7081801170253664999, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  water: {fileID: 608903372470395802, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  empty: {fileID: 7426723869127858019, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+  grass: {fileID: 11400000, guid: ba1941e8a6f67944990006915ba8f08f, type: 2}
+  hill: {fileID: 11400000, guid: 31049f881dfa97d4fae59408f86c3de4, type: 2}
+  sand: {fileID: 11400000, guid: 9b34f5996d102c54cb334eb48487802f, type: 2}
+  water: {fileID: 11400000, guid: 57354a3dbcb5b13448bd98418c3569b5, type: 2}
 --- !u!4 &572434452
 Transform:
   m_ObjectHideFlags: 0
@@ -185,7 +183,7 @@ GameObject:
   - component: {fileID: 746053346}
   - component: {fileID: 746053345}
   m_Layer: 0
-  m_Name: Base Grid
+  m_Name: Background Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -203,8 +201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeebc5cbf59cfa843a76854108517a3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalChunks: 2
-  verticalChunks: 2
+  horizontalChunks: 3
+  verticalChunks: 3
   rowsPerChunk: 100
   columnsPerChunk: 100
   tileSize: 1
@@ -234,7 +232,7 @@ GameObject:
   - component: {fileID: 1025003380}
   - component: {fileID: 1025003379}
   m_Layer: 0
-  m_Name: 'Top Grid '
+  m_Name: 'Foreground  Grid '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -252,8 +250,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeebc5cbf59cfa843a76854108517a3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalChunks: 2
-  verticalChunks: 2
+  horizontalChunks: 3
+  verticalChunks: 3
   rowsPerChunk: 100
   columnsPerChunk: 100
   tileSize: 1
@@ -271,6 +269,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1564046762
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1564046764}
+  - component: {fileID: 1564046763}
+  m_Layer: 0
+  m_Name: Pointer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1564046763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564046762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feec1284afc69714d979d7e151b56aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundGridBehaviour: {fileID: 746053345}
+  foregroundGridBehaviour: {fileID: 1025003379}
+  empty: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
+--- !u!4 &1564046764
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1564046762}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1581897494
 GameObject:
@@ -350,7 +394,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1581897494}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12, y: 7, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

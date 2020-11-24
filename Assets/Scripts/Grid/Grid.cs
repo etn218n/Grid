@@ -97,23 +97,31 @@ namespace GridSystem
         public void Dispose()
         {
             for (int i = 0; i < verticalChunks; i++)
-            for (int j = 0; j < horizontalChunks; j++)
-                chunks[i, j].Dispose();
+                for (int j = 0; j < horizontalChunks; j++)
+                    chunks[i, j].Dispose();
         }
     }
     
-    public class Grid<T> : Grid where T : Tile
+    public class Grid<T> : Grid where T : BaseTile<T>
     {
         protected T[,] tiles;
         public T[,] Tiles => tiles;
 
-        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Func<Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
+        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Func<Grid<T>, Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
         : base(origin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize)
         {
             InitializeTiles(instantiationFunc);
+            UpdateTileNeighbors();
         }
 
-        private void InitializeTiles(Func<Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
+        private void UpdateTileNeighbors()
+        {
+            for (int i = 0; i < columns; i++)
+                for (int j = 0; j < rows; j++)
+                    tiles[i, j].UpdateNeighbors();
+        }
+
+        private void InitializeTiles(Func<Grid<T>, Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
         {
             tiles = new T[columns, rows];
             
@@ -131,21 +139,12 @@ namespace GridSystem
                             Vector2Int coordinate      = new Vector2Int(columnIndex, rowIndex);
                             Vector2Int localCoordinate = new Vector2Int(c, r);
 
-                            tiles[columnIndex, rowIndex] = instantiationFunc(chunks[i, j], coordinate, localCoordinate);
+                            tiles[columnIndex, rowIndex] = instantiationFunc(this, chunks[i, j], coordinate, localCoordinate);
                         }
                     }
                 }
             }
         }
-
-        public T WestNeighborOf(T tile)  => TryGetTileAtCoordinate(tile.Coordinate.x - 1, tile.Coordinate.y);
-        public T EastNeighborOf(T tile)  => TryGetTileAtCoordinate(tile.Coordinate.x + 1, tile.Coordinate.y);
-        public T NorthNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x, tile.Coordinate.y + 1);
-        public T SouthNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x, tile.Coordinate.y - 1);
-        public T NorthWestNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x - 1, tile.Coordinate.y + 1);
-        public T NorthEastNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x + 1, tile.Coordinate.y + 1);
-        public T SouthWestNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x - 1, tile.Coordinate.y - 1);
-        public T SouthEastNeighborOf(T tile) => TryGetTileAtCoordinate(tile.Coordinate.x + 1, tile.Coordinate.y - 1);
 
         public T TryGetTileAtPosition(Vector3 worldPosition)
         {

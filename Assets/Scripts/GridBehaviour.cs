@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using GridSystem;
 
-public class GridBehaviour<T> : MonoBehaviour where T : Tile
+public class GridBehaviour<T> : MonoBehaviour where T : BaseTile<T>
 { 
     protected Grid<T> grid;
     public Grid<T> Grid => grid;
@@ -22,7 +21,7 @@ public class GridBehaviour<T> : MonoBehaviour where T : Tile
     [Header("External Components")]
     [SerializeField] protected GameObject gridMeshPrefab = null;
 
-    protected void Create(Func<Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
+    protected void Create(Func<Grid<T>, Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
     {
         float startTime = Time.realtimeSinceStartup;
 

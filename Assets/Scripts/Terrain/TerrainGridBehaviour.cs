@@ -2,7 +2,7 @@
 {
     private void Awake()
     {
-        Create((chunk, coordinate, localCoordinate) => new TerrainTile(chunk, coordinate, localCoordinate));
+        Create((grid, chunk, coordinate, localCoordinate) => new TerrainTile(grid, chunk, coordinate, localCoordinate));
     }
 
     public override string ToString()

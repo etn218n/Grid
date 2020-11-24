@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using GridSystem;
 using Sirenix.OdinInspector;
-using Random = UnityEngine.Random;
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -16,10 +15,7 @@ public class TerrainGenerator : MonoBehaviour
     private float offsetY = 0;
     private float grassCoverage = 0;
     private float soilCoverage = 0;
-
-    [SerializeField] private Sprite ruleTile = null;
-
-    //[Title("Game of Life")]
+    
     [PropertySpace(4)]
     [PropertyRange(0, 100)]
     public float GrassCoverage
@@ -95,31 +91,16 @@ public class TerrainGenerator : MonoBehaviour
     }
 
     [Header("External Components")] 
-    [SerializeField] private Sprite sand  = null;
-    [SerializeField] private Sprite soil  = null;
-    [SerializeField] private Sprite grass = null;
-    [SerializeField] private Sprite water = null;
-    [SerializeField] private Sprite empty = null;
-
-    private Vector2[] sandUVs;
-    private Vector2[] soilUVs;
-    private Vector2[] grassUVs;
-    private Vector2[] waterUVs;
-    private Vector2[] ruleTileUVs;
-    private Vector2[] emptyUVs;
+    [SerializeField] private Terrain grass;
+    [SerializeField] private Terrain hill;
+    [SerializeField] private Terrain sand;
+    [SerializeField] private Terrain water;
 
     private void Start()
     {
         backgroundGrid = backgroundGridBehaviour.Grid;
         foreGroundGrid = foregroundGridBehaviour.Grid;
-        
-        sandUVs  = Extension.GetUVs(sand);
-        soilUVs  = Extension.GetUVs(soil);
-        grassUVs = Extension.GetUVs(grass);
-        waterUVs = Extension.GetUVs(water);
-        emptyUVs = Extension.GetUVs(empty);
-        ruleTileUVs = Extension.GetUVs(ruleTile);
-        
+
         GenerateMap();
     }
 
@@ -134,59 +115,53 @@ public class TerrainGenerator : MonoBehaviour
 
     private void GenerateMap()
     {
-        backgroundGrid.ForEach(PaintTile);
-        foreGroundGrid.ForEach(PainEmptyTile);
-        foreGroundGrid.ForEach(ApplyTileRule);
+        backgroundGrid.ForEach(tile => PaintTile(tile));
+        foreGroundGrid.ForEach(tile => PaintTile(tile));
+        foreGroundGrid.ForEach(tile => tile.ApplyRule());
+        backgroundGrid.ForEach(tile => BlendTile(tile));
     }
 
-    private void PainEmptyTile(TerrainTile tile)
+    private void BlendTile(TerrainTile tile)
     {
-        tile.SetUVs(ref emptyUVs);
+        if (tile.Terrain == hill)
+        {
+            tile.SetTerrain(grass);
+            tile.Paint();
+        }
     }
-
+    
     private void PaintTile(TerrainTile tile)
     {
         if (tile.IsEdge || tile.IsCorner)
         {
-            tile.SetUVs(ref soilUVs);
-            tile.Type = TerrainType.Soil;
+            tile.SetTerrain(hill);
+            tile.Paint();
         }
         else
         {
-            float perlinValue = Mathf.PerlinNoise((tile.Coordinate.x / backgroundGrid.Width) * scale + offsetX,
+            float perlinValue = Mathf.PerlinNoise((tile.Coordinate.x / backgroundGrid.Width)  * scale + offsetX,
                                                   (tile.Coordinate.y / backgroundGrid.Height) * scale + offsetY);
-
+        
             if (perlinValue > 0.5f)
             {
-                tile.SetUVs(ref soilUVs);
-                tile.Type = TerrainType.Soil;
+                tile.SetTerrain(hill);
+                tile.Paint();
             }
             else if (perlinValue > 0.25f)
             {
-                tile.SetUVs(ref grassUVs);
-                tile.Type = TerrainType.Grass;
+                tile.SetTerrain(grass);
+                tile.Paint();
             }
             else if (perlinValue > 0.22f)
             {
-                tile.SetUVs(ref sandUVs);
-                tile.Type = TerrainType.Sand;
+                tile.SetTerrain(sand);
+                tile.Paint();
             }
             else
             {
-                tile.SetUVs(ref waterUVs);
-                tile.Type = TerrainType.Water;
+                tile.SetTerrain(water);
+                tile.Paint();
             }
-        }
-    }
-
-    private void ApplyTileRule(TerrainTile tile)
-    {
-        var backgroundTile = backgroundGrid.TryGetTileAtCoordinate(tile.Coordinate);
-        
-        if (backgroundTile.Type == TerrainType.Soil && backgroundGrid.EastNeighborOf(backgroundTile) != null && backgroundGrid.EastNeighborOf(backgroundTile).Type == TerrainType.Grass)
-        {
-            tile.SetUVs(ref ruleTileUVs);
-            backgroundTile.SetUVs(ref grassUVs);
         }
     }
 }

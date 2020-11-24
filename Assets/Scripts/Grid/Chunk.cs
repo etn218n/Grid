@@ -90,6 +90,30 @@ namespace GridSystem
             
             OnUVsModified();
         }
+        
+        public void SetTileUVs(Vector2Int localCoordinate, in UVRect uvRect)
+        {
+            if (localCoordinate.x < 0 || localCoordinate.x >= columns)
+            {
+                Debug.Log("Cell Coordinate X can not be greater than Columns");
+                return;
+            }
+
+            if (localCoordinate.y < 0 || localCoordinate.y >= rows)
+            {
+                Debug.Log("Cell Coordinate Y can not be greater than Rows");
+                return;
+            }
+            
+            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
+
+            uvs[index + 0] = uvRect.BottomLeft;
+            uvs[index + 1] = uvRect.TopLeft;
+            uvs[index + 2] = uvRect.BottomRight;
+            uvs[index + 3] = uvRect.TopRight;
+            
+            OnUVsModified();
+        }
 
         private void OnUVsModified()
         {
