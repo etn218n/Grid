@@ -4,9 +4,11 @@ using Sirenix.OdinInspector;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    [SerializeField] private TerrainGridBehaviour basegroundGridBehaviour = null;
     [SerializeField] private TerrainGridBehaviour backgroundGridBehaviour = null;
     [SerializeField] private TerrainGridBehaviour foregroundGridBehaviour = null;
-    
+
+    private Grid<TerrainTile> baseGroundGrid;
     private Grid<TerrainTile> backgroundGrid;
     private Grid<TerrainTile> foreGroundGrid;
     private int iteration = 1;
@@ -91,13 +93,16 @@ public class TerrainGenerator : MonoBehaviour
     }
 
     [Header("External Components")] 
+    [SerializeField] private Terrain empty;
     [SerializeField] private Terrain grass;
     [SerializeField] private Terrain hill;
     [SerializeField] private Terrain sand;
     [SerializeField] private Terrain water;
+    [SerializeField] private Terrain whiteSoil;
 
     private void Start()
     {
+        baseGroundGrid = basegroundGridBehaviour.Grid;
         backgroundGrid = backgroundGridBehaviour.Grid;
         foreGroundGrid = foregroundGridBehaviour.Grid;
 
@@ -115,27 +120,22 @@ public class TerrainGenerator : MonoBehaviour
 
     private void GenerateMap()
     {
-        backgroundGrid.ForEach(tile => PaintTile(tile));
+        baseGroundGrid.ForEach(tile => tile.Paint(grass));
+        
+        backgroundGrid.ForEach(tile => ApplyBackground(tile));
+        backgroundGrid.ForEach(tile => tile.ApplyRule());
+        
         foreGroundGrid.ForEach(tile => PaintTile(tile));
         foreGroundGrid.ForEach(tile => tile.ApplyRule());
-        backgroundGrid.ForEach(tile => BlendTile(tile));
-    }
-
-    private void BlendTile(TerrainTile tile)
-    {
-        if (tile.Terrain == hill)
-        {
-            tile.SetTerrain(grass);
-            tile.Paint();
-        }
     }
     
-    private void PaintTile(TerrainTile tile)
+    
+
+    private void ApplyBackground(TerrainTile tile)
     {
         if (tile.IsEdge || tile.IsCorner)
         {
-            tile.SetTerrain(hill);
-            tile.Paint();
+            tile.Paint(whiteSoil);
         }
         else
         {
@@ -144,23 +144,45 @@ public class TerrainGenerator : MonoBehaviour
         
             if (perlinValue > 0.5f)
             {
-                tile.SetTerrain(hill);
-                tile.Paint();
+                tile.Paint(whiteSoil);
             }
             else if (perlinValue > 0.25f)
             {
-                tile.SetTerrain(grass);
-                tile.Paint();
+                tile.Paint(empty);
+            }
+            else 
+            {
+                tile.Paint(sand);
+            }
+        }
+    }
+    
+    private void PaintTile(TerrainTile tile)
+    {
+        if (tile.IsEdge || tile.IsCorner)
+        {
+            tile.Paint(hill);
+        }
+        else
+        {
+            float perlinValue = Mathf.PerlinNoise((tile.Coordinate.x / backgroundGrid.Width)  * scale + offsetX,
+                                                  (tile.Coordinate.y / backgroundGrid.Height) * scale + offsetY);
+        
+            if (perlinValue > 0.5f)
+            {
+                tile.Paint(hill);
+            }
+            else if (perlinValue > 0.25f)
+            {
+                tile.Paint(grass);
             }
             else if (perlinValue > 0.22f)
             {
-                tile.SetTerrain(sand);
-                tile.Paint();
+                tile.Paint(sand);
             }
             else
             {
-                tile.SetTerrain(water);
-                tile.Paint();
+                tile.Paint(water);
             }
         }
     }

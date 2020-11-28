@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f44251df0ca083d40a0c7f93ed7036dc, type: 3}
+  m_Name: Soil
+  m_EditorClassIdentifier: 
+  mainSprite: {fileID: -1521643498175801862, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+  layer: 1
+  ruleResolver:
+    rules:
+    - outputSprite: {fileID: -7861071963802785696, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 61440
+    - outputSprite: {fileID: 3279852628880539609, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 53280
+    - outputSprite: {fileID: -7809666386716241111, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 20640
+    - outputSprite: {fileID: -94339521178729910, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 28800
+    - outputSprite: {fileID: 5770678041927841966, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 45120
+    - outputSprite: {fileID: 5263767421771262537, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 36962
+    - outputSprite: {fileID: -6583314526548807485, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 4326
+    - outputSprite: {fileID: -8458624521710222868, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 12484
+    - outputSprite: {fileID: 2053279255825853344, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 37472
+    - outputSprite: {fileID: -7737611482650583922, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 13504
+    - outputSprite: {fileID: -6237979462921829212, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 33648
+    - outputSprite: {fileID: 4314751923286089447, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 5792
+    - outputSprite: {fileID: -9091854368473990176, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 41040
+    - outputSprite: {fileID: 455276936558998464, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 32883
+    - outputSprite: {fileID: -1521643498175801862, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 255
+    - outputSprite: {fileID: 1503437068107590963, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 8412
+    - outputSprite: {fileID: 2877167617017080872, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 49456
+    - outputSprite: {fileID: -2526691304847220952, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 26768
+    - outputSprite: {fileID: -1775702364554560051, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 18864
+    - outputSprite: {fileID: 8596433792363330435, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 11344
+    - outputSprite: {fileID: -7372392334403630194, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 57360
+    - outputSprite: {fileID: -369723880475904061, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 49201
+    - outputSprite: {fileID: -5913590377871861775, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 16569
+    - outputSprite: {fileID: -5291207673575606053, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 24728
+    - outputSprite: {fileID: 3736972597406152420, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 33361
+    - outputSprite: {fileID: 7145996822422276213, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 9432
+    - outputSprite: {fileID: 156268323380266738, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 4772
+    - outputSprite: {fileID: -8197218810187492042, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 5346
+    - outputSprite: {fileID: -1948805758345657153, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 765
+    - outputSprite: {fileID: 1332606103989855898, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 1275
+    - outputSprite: {fileID: 7081801170253664999, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 2040
+    - outputSprite: {fileID: -7140864410041170819, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 3825
+    - outputSprite: {fileID: 1795253429272669222, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 33136
+    - outputSprite: {fileID: 7063925848668524637, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 10324
+    - outputSprite: {fileID: 7762945449908527857, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 16808
+    - outputSprite: {fileID: 3060734739810918795, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 18609
+    - outputSprite: {fileID: -8711398711518569469, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 510
+    - outputSprite: {fileID: -3540901431778100674, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 2295
+    - outputSprite: {fileID: 3351529880850111416, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 3060
+    - outputSprite: {fileID: 2820163831575726989, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 3570
+    - outputSprite: {fileID: -2374848957152475008, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 2486
+    - outputSprite: {fileID: 7991853970873550471, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 1785
+    - outputSprite: {fileID: -4749799463912627261, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 1020
+    - outputSprite: {fileID: -4006082487549436323, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 3315
+    - outputSprite: {fileID: 7749323503538818140, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 1530
+    - outputSprite: {fileID: 3515881468524741814, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 2805
+    - outputSprite: {fileID: 471187886116500056, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 4080

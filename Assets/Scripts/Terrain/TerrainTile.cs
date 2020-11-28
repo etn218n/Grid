@@ -17,11 +17,22 @@ public class TerrainTile : BaseTile<TerrainTile>
         
         this.terrain = terrain;
     }
+    
+    public void Paint(Terrain terrain)
+    {
+        if (terrain == null)
+            return;
+
+        SetTerrain(terrain);
+        SetUVs(in terrain.SpriteUVRect);
+    }
 
     public void Paint()
     {
-        if (terrain != null)
-            SetUVs(in terrain.SpriteUVRect);
+        if (terrain == null)
+            return;
+        
+        SetUVs(in terrain.SpriteUVRect);
     }
 
     public void ApplyRule()

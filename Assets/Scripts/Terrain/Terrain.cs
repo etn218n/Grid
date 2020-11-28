@@ -10,6 +10,10 @@ public class Terrain : ScriptableObject
     [SerializeField] [PreviewField(ObjectFieldAlignment.Left)] [LabelWidth(70)]
     private Sprite mainSprite = null;
     public  Sprite MainSprite => mainSprite;
+
+    [SerializeField] 
+    private int layer;
+    public  int Layer => layer;
     
     [SerializeField]
     private TileRuleResolver ruleResolver = new TileRuleResolver();

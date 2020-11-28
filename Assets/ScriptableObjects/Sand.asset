@@ -13,5 +13,100 @@ MonoBehaviour:
   m_Name: Sand
   m_EditorClassIdentifier: 
   mainSprite: {fileID: -5952292434327799596, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+  layer: 2
   ruleResolver:
-    rules: []
+    rules:
+    - outputSprite: {fileID: 507863860715810054, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 61440
+    - outputSprite: {fileID: 4855779697848618057, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 53280
+    - outputSprite: {fileID: -2739724263660509568, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 20640
+    - outputSprite: {fileID: -4194528464282268641, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 28800
+    - outputSprite: {fileID: -2663829784122058057, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 45120
+    - outputSprite: {fileID: -7717119629767956689, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 36962
+    - outputSprite: {fileID: 608903372470395802, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 4326
+    - outputSprite: {fileID: -8553696756593668904, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 12484
+    - outputSprite: {fileID: 9217187120024841324, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 37472
+    - outputSprite: {fileID: -4895340665069155619, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 13504
+    - outputSprite: {fileID: -6884098969223805724, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 33648
+    - outputSprite: {fileID: 7595102478031495445, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 5792
+    - outputSprite: {fileID: -1955413938961307625, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 41040
+    - outputSprite: {fileID: 5014421461068930966, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 32883
+    - outputSprite: {fileID: -5952292434327799596, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 255
+    - outputSprite: {fileID: -4867217351309253602, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 8412
+    - outputSprite: {fileID: -867789187538211231, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 49456
+    - outputSprite: {fileID: 3309926658196447713, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 26768
+    - outputSprite: {fileID: 7886735425113680486, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 18864
+    - outputSprite: {fileID: 1674875503768768628, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 11344
+    - outputSprite: {fileID: -4436380937166143308, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 57360
+    - outputSprite: {fileID: -199419137234501241, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 49201
+    - outputSprite: {fileID: -6406716876097860608, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 16569
+    - outputSprite: {fileID: 4951230903701456350, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 24728
+    - outputSprite: {fileID: -5241189301494554414, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 33361
+    - outputSprite: {fileID: -8159534354019806002, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 9432
+    - outputSprite: {fileID: 5373699414692097475, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 4772
+    - outputSprite: {fileID: -1932493630517820461, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 5346
+    - outputSprite: {fileID: -2229366333992291603, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 765
+    - outputSprite: {fileID: -363513978835446481, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 1275
+    - outputSprite: {fileID: 8507978630394578891, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 2040
+    - outputSprite: {fileID: 5167377169171267353, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 3825
+    - outputSprite: {fileID: 3669005933117779144, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 33136
+    - outputSprite: {fileID: -5654372202474906696, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 10324
+    - outputSprite: {fileID: -8592314941344714730, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 16808
+    - outputSprite: {fileID: -4254490319347590185, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 18609
+    - outputSprite: {fileID: -454271952871355591, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 510
+    - outputSprite: {fileID: 4925534552001357086, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 2295
+    - outputSprite: {fileID: 7204281971776409761, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 3060
+    - outputSprite: {fileID: 7095876621402769609, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 3570
+    - outputSprite: {fileID: -4697172443828705177, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 2486
+    - outputSprite: {fileID: -2334829059722572794, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 1785
+    - outputSprite: {fileID: -2059347021589289434, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 1020
+    - outputSprite: {fileID: 5138814358112198097, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 3315
+    - outputSprite: {fileID: 6049392835164251842, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 1530
+    - outputSprite: {fileID: 2432843582123363385, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 2805
+    - outputSprite: {fileID: -7831561285089058118, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+      ruleMask: 4080
