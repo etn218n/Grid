@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f44251df0ca083d40a0c7f93ed7036dc, type: 3}
   m_Name: Water
   m_EditorClassIdentifier: 
-  mainSprite: {fileID: 608903372470395802, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+  mainSprite: {fileID: 4425827726713007236, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
   ruleResolver:
     rules: []

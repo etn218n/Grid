@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f44251df0ca083d40a0c7f93ed7036dc, type: 3}
   m_Name: Sand
   m_EditorClassIdentifier: 
-  mainSprite: {fileID: -6978243961601201665, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
+  mainSprite: {fileID: -5952292434327799596, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
   ruleResolver:
     rules: []
