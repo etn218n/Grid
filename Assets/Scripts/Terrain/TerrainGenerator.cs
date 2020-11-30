@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    [Header("Grids")] 
     [SerializeField] private TerrainGridBehaviour basegroundGridBehaviour = null;
     [SerializeField] private TerrainGridBehaviour backgroundGridBehaviour = null;
     [SerializeField] private TerrainGridBehaviour foregroundGridBehaviour = null;
@@ -11,47 +12,22 @@ public class TerrainGenerator : MonoBehaviour
     private Grid<TerrainTile> baseGroundGrid;
     private Grid<TerrainTile> backgroundGrid;
     private Grid<TerrainTile> foreGroundGrid;
-    private int iteration = 1;
-    private float scale = 1;
-    private float offsetX = 0;
-    private float offsetY = 0;
-    private float grassCoverage = 0;
-    private float soilCoverage = 0;
     
-    [PropertySpace(4)]
-    [PropertyRange(0, 100)]
-    public float GrassCoverage
-    {
-        get => grassCoverage;
-        set
-        {
-            grassCoverage = value;
-            RecalculateCoverage();
-        }
-    }
+    [Header("Terrains")] 
+    [SerializeField] private Terrain empty;
+    [SerializeField] private Terrain grass;
+    [SerializeField] private Terrain hill;
+    [SerializeField] private Terrain sand;
+    [SerializeField] private Terrain water;
+    [SerializeField] private Terrain whiteSoil;
 
-    [PropertySpace(4)]
-    [PropertyRange(0, 100)]
-    public float SoilCoverage
-    {
-        get => soilCoverage;
-        set
-        {
-            soilCoverage = value;
-            RecalculateCoverage();
-        }
-    }
+    private int octaves = 1;
+    private float scale = 25f;
+    private float lacunarity  = 1;
+    private float persistance = 0.5f;
+    private Vector2 offset;
 
-    [PropertyRange(0, 10)]
-    public int Iteration
-    {
-        get => iteration;
-        set
-        {
-            iteration = value;
-            OnIterationChanceChanged();
-        }
-    }
+    private NoiseMap noiseMap;
 
     [ShowInInspector]
     [PropertySpace(4)]
@@ -65,41 +41,58 @@ public class TerrainGenerator : MonoBehaviour
             GenerateMap();
         }
     }
-
+    
     [ShowInInspector]
     [PropertySpace(4)]
-    [PropertyRange(0, 100)]
-    public float OffsetX
+    [PropertyRange(0, 10)]
+    public int Octaves
     {
-        get => offsetX;
+        get => octaves;
         set
         {
-            offsetX = value;
+            octaves = value;
             GenerateMap();
         }
     }
 
     [ShowInInspector]
     [PropertySpace(4)]
-    [PropertyRange(0, 100)]
-    public float OffsetY
+    [PropertyRange(0, 10)]
+    public float Lacunarity
     {
-        get => offsetY;
+        get => lacunarity;
         set
         {
-            offsetY = value;
+            lacunarity = value;
             GenerateMap();
         }
     }
-
-    [Header("External Components")] 
-    [SerializeField] private Terrain empty;
-    [SerializeField] private Terrain grass;
-    [SerializeField] private Terrain hill;
-    [SerializeField] private Terrain sand;
-    [SerializeField] private Terrain water;
-    [SerializeField] private Terrain whiteSoil;
-
+    
+    [ShowInInspector]
+    [PropertySpace(4)]
+    [PropertyRange(0, 1)]
+    public float Persistance
+    {
+        get => persistance;
+        set
+        {
+            persistance = value;
+            GenerateMap();
+        }
+    }
+    
+    [ShowInInspector]
+    [PropertySpace(4)]
+    public Vector2 Offset
+    {
+        get => offset;
+        set
+        {
+            offset = value;
+            GenerateMap();
+        }
+    }
+    
     private void Start()
     {
         baseGroundGrid = basegroundGridBehaviour.Grid;
@@ -109,81 +102,44 @@ public class TerrainGenerator : MonoBehaviour
         GenerateMap();
     }
 
-    private void RecalculateCoverage()
-    {
-        GenerateMap();
-    }
-
-    private void OnIterationChanceChanged()
-    {
-    }
-
     private void GenerateMap()
     {
+        noiseMap = new NoiseMap(baseGroundGrid.Columns, 
+                                baseGroundGrid.Rows, 
+                                0, scale, octaves, persistance, lacunarity, offset);
+        
         baseGroundGrid.ForEach(tile => tile.Paint(grass));
-        
+
         backgroundGrid.ForEach(tile => ApplyBackground(tile));
-        backgroundGrid.ForEach(tile => tile.ApplyRule());
-        
         foreGroundGrid.ForEach(tile => PaintTile(tile));
+
+        backgroundGrid.ForEach(tile => tile.ApplyRule());
         foreGroundGrid.ForEach(tile => tile.ApplyRule());
     }
     
-    
-
     private void ApplyBackground(TerrainTile tile)
     {
-        if (tile.IsEdge || tile.IsCorner)
-        {
-            tile.Paint(whiteSoil);
-        }
-        else
-        {
-            float perlinValue = Mathf.PerlinNoise((tile.Coordinate.x / backgroundGrid.Width)  * scale + offsetX,
-                                                  (tile.Coordinate.y / backgroundGrid.Height) * scale + offsetY);
+        float perlinValue = noiseMap.Evaluate(tile.Coordinate);
         
-            if (perlinValue > 0.5f)
-            {
-                tile.Paint(whiteSoil);
-            }
-            else if (perlinValue > 0.25f)
-            {
-                tile.Paint(empty);
-            }
-            else 
-            {
-                tile.Paint(sand);
-            }
-        }
+        if (perlinValue.IsBetween(0.7f, 1.0f))
+            tile.Paint(whiteSoil);
+        else if (perlinValue.IsBetween(0.4f, 0.7f))
+            tile.Paint(empty);
+        else
+            tile.Paint(sand);
     }
     
     private void PaintTile(TerrainTile tile)
     {
-        if (tile.IsEdge || tile.IsCorner)
-        {
-            tile.Paint(hill);
-        }
-        else
-        {
-            float perlinValue = Mathf.PerlinNoise((tile.Coordinate.x / backgroundGrid.Width)  * scale + offsetX,
-                                                  (tile.Coordinate.y / backgroundGrid.Height) * scale + offsetY);
+        float perlinValue = noiseMap.Evaluate(tile.Coordinate);
         
-            if (perlinValue > 0.5f)
-            {
-                tile.Paint(hill);
-            }
-            else if (perlinValue > 0.25f)
-            {
-                tile.Paint(grass);
-            }
-            else if (perlinValue > 0.22f)
-            {
-                tile.Paint(sand);
-            }
-            else
-            {
-                tile.Paint(water);
-            }
-        }
+        if (perlinValue.IsBetween(0.7f, 1.0f))
+            tile.Paint(hill);
+        else if (perlinValue.IsBetween(0.4f, 0.7f))
+            tile.Paint(grass);
+        else if (perlinValue.IsBetween(0.35f, 0.4f))
+            tile.Paint(sand);
+        else
+            tile.Paint(water);
     }
 }

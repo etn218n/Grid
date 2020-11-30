@@ -11,10 +11,11 @@ public class Terrain : ScriptableObject
     private Sprite mainSprite = null;
     public  Sprite MainSprite => mainSprite;
 
-    [SerializeField] 
-    private int layer;
-    public  int Layer => layer;
-    
+    [Space(10)]
+    [SerializeField] [LabelWidth(70)]
+    private int elevation;
+    public int Elevation => elevation;
+
     [SerializeField]
     private TileRuleResolver ruleResolver = new TileRuleResolver();
     public  TileRuleResolver RuleResolver => ruleResolver; 
