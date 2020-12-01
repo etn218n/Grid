@@ -88,6 +88,23 @@ namespace GridSystem
             handles.Dispose();
         }
 
+        public void SetUV(in UVRect uvRect)
+        {
+            for (int i = 0; i < verticalChunks; i++) 
+                for (int j = 0; j < horizontalChunks; j++)
+                    chunks[i, j].SetChunkUVs(in uvRect);
+        }
+
+        public void SetUV(in UVRect uvRect, Vector2Int coordinate)
+        {
+            int rowIndex    = coordinate.y / rowsPerChunk;
+            int columnIndex = coordinate.x / columnsPerChunk;
+
+            Vector2Int chunkTileLocalCoordinate = new Vector2Int(coordinate.x % columnsPerChunk, coordinate.y % rowsPerChunk);
+            
+            chunks[columnIndex, rowIndex].SetTileUVs(chunkTileLocalCoordinate, in uvRect);
+        }
+
         public void Update()
         {
             while (modifiedChunks.Any())

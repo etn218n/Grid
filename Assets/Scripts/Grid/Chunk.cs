@@ -67,6 +67,19 @@ namespace GridSystem
             OnUVsModified();
         }
         
+        public void SetChunkUVs(in UVRect uvRect)
+        {
+            for (int i = 0; i < rows * columns * 4; i += 4)
+            {
+                uvs[i + 0] = uvRect.BottomLeft;
+                uvs[i + 1] = uvRect.TopLeft;
+                uvs[i + 2] = uvRect.BottomRight;
+                uvs[i + 3] = uvRect.TopRight;
+            }
+            
+            OnUVsModified();
+        }
+        
         public void SetTileUVs(Vector2Int localCoordinate, ref Vector2[] uv)
         {
             if (localCoordinate.x < 0 || localCoordinate.x >= columns)
