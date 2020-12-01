@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using GridSystem;
+﻿using GridSystem;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : SerializedMonoBehaviour

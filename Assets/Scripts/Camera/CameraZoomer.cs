@@ -9,9 +9,13 @@ public class CameraZoomer : ICameraAction
 
     public void PerformOnCamera(Camera camera)
     {
+        float cameraOrthographicSize = camera.orthographicSize;
+        
         if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-            camera.orthographicSize -= zoomScale;
+            cameraOrthographicSize -= zoomScale;
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
-            camera.orthographicSize += zoomScale;
+            cameraOrthographicSize += zoomScale;
+
+        camera.orthographicSize = Mathf.Clamp(cameraOrthographicSize, 1, 100);
     }
 }
