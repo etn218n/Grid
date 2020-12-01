@@ -382,6 +382,7 @@ GameObject:
   - component: {fileID: 1581897496}
   - component: {fileID: 1581897495}
   - component: {fileID: 1581897498}
+  - component: {fileID: 1581897499}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -485,6 +486,62 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &1581897499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581897494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6899088bddade141b4514e46f4f2721, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: cameraActionsOnUpdate
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[GridSystem.ICameraAction, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 1|CameraPanner, Assembly-CSharp
+    - Name: grabPoint
+      Entry: 7
+      Data: 2|CameraPanner+GrabPoint, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|CameraZoomer, Assembly-CSharp
+    - Name: zoomScale
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  mainCamera: {fileID: 1581897496}
 --- !u!1 &1724866572
 GameObject:
   m_ObjectHideFlags: 0

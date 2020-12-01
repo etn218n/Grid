@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace GridSystem
@@ -45,6 +46,16 @@ namespace GridSystem
             Vector2 bottomRight = new Vector2((rect.x + rect.width) / sprite.texture.width, rect.y / sprite.texture.height);
             
             return new UVRect(bottomLeft, topLeft, bottomRight, topRight);
+        }
+        
+        public static void LogVector(Vector3 v)
+        {
+            Debug.Log(String.Format("({0:F5}, {1:F5}, {2:F5})", v.x, v.y, v.z));
+        }
+        
+        public static void LogVector(Vector2 v)
+        {
+            Debug.Log(String.Format("({0:F5}, {1:F5})", v.x, v.y));
         }
     }
 }
