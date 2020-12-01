@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac6663dd7258346498c10a89c0ee0f14, type: 3}
+  m_Name: Foreground Map
+  m_EditorClassIdentifier: 
+  settings:
+  - TargetTerrain: {fileID: 11400000, guid: a322d975b266de543b80ac590e3e65ec, type: 2}
+    Height: 0.45
+  - TargetTerrain: {fileID: 11400000, guid: 1a2c94f24bfb28149a6463233a02b1c8, type: 2}
+    Height: 0.5
+  - TargetTerrain: {fileID: 11400000, guid: ba1941e8a6f67944990006915ba8f08f, type: 2}
+    Height: 0.7
+  - TargetTerrain: {fileID: 11400000, guid: 41bcc2b2999e3da47baa43306276a907, type: 2}
+    Height: 1

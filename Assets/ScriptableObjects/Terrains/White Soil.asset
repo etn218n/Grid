@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: White Soil
   m_EditorClassIdentifier: 
   mainSprite: {fileID: -1203757210001281043, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  layer: 1
+  elevation: 0
   ruleResolver:
     rules:
     - outputSprite: {fileID: 2872679490051735645, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}

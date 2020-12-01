@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hill
   m_EditorClassIdentifier: 
   mainSprite: {fileID: -5939263942576820194, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  layer: 3
+  elevation: 0
   ruleResolver:
     rules:
     - outputSprite: {fileID: -4936794284117596199, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}

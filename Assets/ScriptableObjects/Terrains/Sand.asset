@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sand
   m_EditorClassIdentifier: 
   mainSprite: {fileID: -5952292434327799596, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  layer: 2
+  elevation: 0
   ruleResolver:
     rules:
     - outputSprite: {fileID: 507863860715810054, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}

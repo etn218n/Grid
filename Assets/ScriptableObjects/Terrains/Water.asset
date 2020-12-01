@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Water
   m_EditorClassIdentifier: 
   mainSprite: {fileID: 4425827726713007236, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  layer: 1
+  elevation: 0
   ruleResolver:
     rules:
     - outputSprite: {fileID: 6480870589890721988, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}

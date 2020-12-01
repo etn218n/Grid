@@ -204,6 +204,8 @@ MonoBehaviour:
   basegroundGridBehaviour: {fileID: 350596970}
   backgroundGridBehaviour: {fileID: 746053345}
   foregroundGridBehaviour: {fileID: 1025003379}
+  backgroundMap: {fileID: 11400000, guid: cb14ee3316792624694b83c1a17bd79f, type: 2}
+  foregroundMap: {fileID: 11400000, guid: ac7c92ae436e64d4c9f75ff78280d350, type: 2}
   empty: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
   grass: {fileID: 11400000, guid: ba1941e8a6f67944990006915ba8f08f, type: 2}
   hill: {fileID: 11400000, guid: 31049f881dfa97d4fae59408f86c3de4, type: 2}
