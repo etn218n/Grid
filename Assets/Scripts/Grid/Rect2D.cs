@@ -2,7 +2,7 @@
 
 namespace GridSystem
 {
-    public readonly struct UVRect
+    public readonly struct Rect2D
     {
         private readonly Vector2 bottomLeft;
         private readonly Vector2 bottomRight;
@@ -14,14 +14,14 @@ namespace GridSystem
         public Vector2 TopLeft  => topLeft;
         public Vector2 TopRight => topRight;
         
-        public static readonly UVRect Empty = new UVRect(); 
+        public static readonly Rect2D Empty = new Rect2D(); 
 
-        public UVRect(Vector2 bottomLeft, Vector2 topLeft, Vector2 bottomRight, Vector2 topRight)
+        public Rect2D(Vector2 bottomLeft, Vector2 topLeft, Vector2 bottomRight, Vector2 topRight)
         {
             this.bottomLeft  = bottomLeft;
             this.bottomRight = bottomRight;
-            this.topLeft  = topLeft;
-            this.topRight = topRight;
+            this.topLeft     = topLeft;
+            this.topRight    = topRight;
         }
     }
 }

@@ -75,7 +75,7 @@ namespace GridSystem
         public bool IsEdge   => IsLeftEdge || IsRightEdge || IsTopEdge || IsBottomEdge;
         public bool IsCorner => IsBottomLeftCorner || IsBottomRightCorner || IsTopLeftCorner || IsTopRightCorner;
 
-        public void SetUVs(in UVRect uvRect) => ownerChunk.SetTileUVs(this.localCoordinate, in uvRect);
+        public void SetUVs(in Rect2D rect2D) => ownerChunk.SetTileUVs(this.localCoordinate, in rect2D);
 
         public void ForEachNeighbor(Action<T> action)
         {

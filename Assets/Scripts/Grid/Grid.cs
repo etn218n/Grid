@@ -88,14 +88,14 @@ namespace GridSystem
             handles.Dispose();
         }
 
-        public void SetUV(in UVRect uvRect)
+        public void SetUV(in Rect2D uvRect)
         {
             for (int i = 0; i < verticalChunks; i++) 
                 for (int j = 0; j < horizontalChunks; j++)
                     chunks[i, j].SetChunkUVs(in uvRect);
         }
 
-        public void SetUV(in UVRect uvRect, Vector2Int coordinate)
+        public void SetTileUV(in Rect2D uvRect, Vector2Int coordinate)
         {
             int rowIndex    = coordinate.y / rowsPerChunk;
             int columnIndex = coordinate.x / columnsPerChunk;
@@ -103,6 +103,16 @@ namespace GridSystem
             Vector2Int chunkTileLocalCoordinate = new Vector2Int(coordinate.x % columnsPerChunk, coordinate.y % rowsPerChunk);
             
             chunks[columnIndex, rowIndex].SetTileUVs(chunkTileLocalCoordinate, in uvRect);
+        }
+
+        public void SetTileVertices(in Rect3D rect, Vector2Int coordinate)
+        {
+            int rowIndex    = coordinate.y / rowsPerChunk;
+            int columnIndex = coordinate.x / columnsPerChunk;
+
+            Vector2Int chunkTileLocalCoordinate = new Vector2Int(coordinate.x % columnsPerChunk, coordinate.y % rowsPerChunk);
+            
+            chunks[columnIndex, rowIndex].SetTileVertices(chunkTileLocalCoordinate, in rect);
         }
 
         public void Update()
@@ -116,6 +126,13 @@ namespace GridSystem
             for (int i = 0; i < verticalChunks; i++)
                 for (int j = 0; j < horizontalChunks; j++)
                     chunks[i, j].Dispose();
+        }
+        
+        public void ForEachCoordinate(Action<Vector2Int> action)
+        {
+            for (int j = 0; j < rows; j++)
+                for (int i = 0; i < columns; i++)
+                    action(new Vector2Int(i, j));
         }
     }
     
@@ -133,8 +150,8 @@ namespace GridSystem
 
         private void UpdateTileNeighbors()
         {
-            for (int i = 0; i < columns; i++)
-                for (int j = 0; j < rows; j++)
+            for (int j = 0; j < rows; j++)
+                for (int i = 0; i < columns; i++)
                     tiles[i, j].UpdateNeighbors();
         }
 
@@ -203,8 +220,8 @@ namespace GridSystem
 
         public void ForEach(Action<T> action)
         {
-            for (int i = 0; i < columns; i++)
-                for (int j = 0; j < rows; j++)
+            for (int j = 0; j < rows; j++) 
+                for (int i = 0; i < columns; i++) 
                     action(tiles[i, j]);
         }
     }

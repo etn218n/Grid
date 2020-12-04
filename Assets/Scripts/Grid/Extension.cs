@@ -36,7 +36,7 @@ namespace GridSystem
             return uv;
         }
     
-        public static UVRect GetUVRect(Sprite sprite)
+        public static Rect2D GetUVRect(Sprite sprite)
         {
             var rect = sprite.rect;
 
@@ -45,7 +45,7 @@ namespace GridSystem
             Vector2 topRight    = new Vector2((rect.x + rect.width) / sprite.texture.width, (sprite.rect.y + sprite.rect.height) / sprite.texture.height);
             Vector2 bottomRight = new Vector2((rect.x + rect.width) / sprite.texture.width, rect.y / sprite.texture.height);
             
-            return new UVRect(bottomLeft, topLeft, bottomRight, topRight);
+            return new Rect2D(bottomLeft, topLeft, bottomRight, topRight);
         }
         
         public static void LogVector(Vector3 v)

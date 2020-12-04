@@ -54,20 +54,7 @@ namespace GridSystem
             indices  = new NativeArray<int>(numberOfTiles * 6, Allocator.Persistent);
         }
 
-        public void SetChunkUVs(ref Vector2[] uvs)
-        {
-            for (int i = 0; i < rows * columns * 4; i += 4)
-            {
-                this.uvs[i + 0] = uvs[0];
-                this.uvs[i + 1] = uvs[1];
-                this.uvs[i + 2] = uvs[2];
-                this.uvs[i + 3] = uvs[3];
-            }
-            
-            OnUVsModified();
-        }
-        
-        public void SetChunkUVs(in UVRect uvRect)
+        public void SetChunkUVs(in Rect2D uvRect)
         {
             for (int i = 0; i < rows * columns * 4; i += 4)
             {
@@ -76,35 +63,11 @@ namespace GridSystem
                 uvs[i + 2] = uvRect.BottomRight;
                 uvs[i + 3] = uvRect.TopRight;
             }
-            
+
             OnUVsModified();
         }
-        
-        public void SetTileUVs(Vector2Int localCoordinate, ref Vector2[] uv)
-        {
-            if (localCoordinate.x < 0 || localCoordinate.x >= columns)
-            {
-                Debug.Log("Cell Coordinate X can not be greater than Columns");
-                return;
-            }
 
-            if (localCoordinate.y < 0 || localCoordinate.y >= rows)
-            {
-                Debug.Log("Cell Coordinate Y can not be greater than Rows");
-                return;
-            }
-            
-            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
-
-            uvs[index + 0] = uv[0];
-            uvs[index + 1] = uv[1];
-            uvs[index + 2] = uv[2];
-            uvs[index + 3] = uv[3];
-            
-            OnUVsModified();
-        }
-        
-        public void SetTileUVs(Vector2Int localCoordinate, in UVRect uvRect)
+        public void SetTileUVs(Vector2Int localCoordinate, in Rect2D uvRect)
         {
             if (localCoordinate.x < 0 || localCoordinate.x >= columns)
             {
@@ -128,6 +91,18 @@ namespace GridSystem
             OnUVsModified();
         }
 
+        public void SetTileVertices(Vector2Int localCoordinate, in Rect3D rect)
+        {
+            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
+            
+            vertices[index + 0] = rect.BottomLeft;
+            vertices[index + 1] = rect.TopLeft;
+            vertices[index + 2] = rect.BottomRight;
+            vertices[index + 3] = rect.TopRight;
+            
+            OnVerticesModified();
+        }
+        
         private void OnUVsModified()
         {
             uvsModified = true;
