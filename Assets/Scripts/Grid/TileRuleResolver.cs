@@ -76,7 +76,7 @@ namespace GridSystem
             return ruleMask;
         }
 
-        public ref readonly UVRect Output<T>(T tile) where T : BaseTile<T>
+        public ref readonly Rect2D Output<T>(T tile) where T : BaseTile<T>
         {
             var mask = TileNeighborsToMask(tile);
             
@@ -88,7 +88,7 @@ namespace GridSystem
                 }
             }
             
-            return ref UVRect.Empty;
+            return ref Rect2D.Empty;
         }
     }
 }

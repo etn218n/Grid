@@ -14,14 +14,14 @@ public class NoiseMap
     {
         noiseData = new float[mapWidth, mapHeight];
         
-        Random prng = new Random (seed);
+        Random prng = new Random(seed);
         Vector2[] octaveOffsets = new Vector2[octaves];
         for (int i = 0; i < octaves; i++) 
         {
             float offsetX = prng.Next(-100000, 100000) + offset.x;
             float offsetY = prng.Next(-100000, 100000) + offset.y;
             
-            octaveOffsets [i] = new Vector2(offsetX, offsetY);
+            octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
 
         if (scale <= 0)
@@ -30,7 +30,7 @@ public class NoiseMap
         float maxNoiseHeight = float.MinValue;
         float minNoiseHeight = float.MaxValue;
 
-        float halfWidth = mapWidth / 2f;
+        float halfWidth  = mapWidth / 2f;
         float halfHeight = mapHeight / 2f;
         
         for (int y = 0; y < mapHeight; y++) 
@@ -64,7 +64,7 @@ public class NoiseMap
 
         for (int y = 0; y < mapHeight; y++)
             for (int x = 0; x < mapWidth; x++)
-                noiseData[x, y] = Mathf.InverseLerp (minNoiseHeight, maxNoiseHeight, noiseData[x, y]);
+                noiseData[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseData[x, y]);
     }
 
     public float Evaluate(Vector2Int coordinate)

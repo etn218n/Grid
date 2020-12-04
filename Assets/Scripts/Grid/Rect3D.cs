@@ -16,17 +16,12 @@ namespace GridSystem
         
         public static readonly Rect3D Empty = new Rect3D(); 
 
-        public Rect3D(Vector2 bottomLeft, Vector2 topLeft, Vector2 bottomRight, Vector2 topRight, float zValue)
+        public Rect3D(Vector3 bottomLeft, Vector3 topLeft, Vector3 bottomRight, Vector3 topRight)
         {
             this.bottomLeft  = bottomLeft;
             this.bottomRight = bottomRight;
             this.topLeft     = topLeft;
             this.topRight    = topRight;
-
-            this.bottomLeft.z  = zValue;
-            this.bottomRight.z = zValue;;
-            this.topLeft.z     = zValue;;
-            this.topRight.z    = zValue;;
         }
     }
 }

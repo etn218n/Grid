@@ -8,10 +8,14 @@ public class Terrain : ScriptableObject
 {
     [Space(10)]
     [SerializeField] [PreviewField(ObjectFieldAlignment.Left)] [LabelWidth(70)]
-    private Sprite mainSprite = null;
+    private Sprite mainSprite;
     public  Sprite MainSprite => mainSprite;
 
     [Space(10)]
+    [SerializeField] [LabelWidth(70)] [Range(0, 10)]
+    private float fertility;
+    public  float Fertility => fertility;
+    
     [SerializeField] [LabelWidth(70)]
     private int elevation;
     public int Elevation => elevation;
@@ -23,19 +27,19 @@ public class Terrain : ScriptableObject
     [NonSerialized]
     private bool uvCalculated = false;
 
-    private UVRect spriteUVRect;
+    private Rect2D spriteRect2D;
 
-    public ref readonly UVRect SpriteUVRect
+    public ref readonly Rect2D SpriteRect2D
     {
         get
         {
             if (!uvCalculated)
             {
-                spriteUVRect = Extension.GetUVRect(mainSprite);
+                spriteRect2D = Extension.GetUVRect(mainSprite);
                 uvCalculated = true;
             }
 
-            return ref spriteUVRect;
+            return ref spriteRect2D;
         }
     }
 }

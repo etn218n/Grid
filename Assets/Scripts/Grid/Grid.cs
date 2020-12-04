@@ -115,6 +115,16 @@ namespace GridSystem
             chunks[columnIndex, rowIndex].SetTileVertices(chunkTileLocalCoordinate, in rect);
         }
 
+        public Rect3D GetTileVertices(Vector2Int coordinate)
+        {
+            int rowIndex    = coordinate.y / rowsPerChunk;
+            int columnIndex = coordinate.x / columnsPerChunk;
+
+            Vector2Int chunkTileLocalCoordinate = new Vector2Int(coordinate.x % columnsPerChunk, coordinate.y % rowsPerChunk);
+
+            return chunks[columnIndex, rowIndex].GetTileVertices(chunkTileLocalCoordinate);
+        }
+
         public void Update()
         {
             while (modifiedChunks.Any())

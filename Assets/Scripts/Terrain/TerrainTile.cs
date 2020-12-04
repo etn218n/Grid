@@ -24,7 +24,7 @@ public class TerrainTile : BaseTile<TerrainTile>
             return;
 
         SetTerrain(terrain);
-        SetUVs(in terrain.SpriteUVRect);
+        SetUVs(in terrain.SpriteRect2D);
     }
 
     public void Paint()
@@ -32,7 +32,7 @@ public class TerrainTile : BaseTile<TerrainTile>
         if (terrain == null)
             return;
         
-        SetUVs(in terrain.SpriteUVRect);
+        SetUVs(in terrain.SpriteRect2D);
     }
 
     public void ApplyRule()
@@ -42,7 +42,7 @@ public class TerrainTile : BaseTile<TerrainTile>
 
         ref readonly var uvRect = ref terrain.RuleResolver.Output(this);
         
-        if (!uvRect.Equals(UVRect.Empty))
+        if (!uvRect.Equals(Rect2D.Empty))
             SetUVs(in uvRect);
     }
 }

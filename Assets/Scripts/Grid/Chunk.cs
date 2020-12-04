@@ -103,6 +103,13 @@ namespace GridSystem
             OnVerticesModified();
         }
         
+        public Rect3D GetTileVertices(Vector2Int localCoordinate)
+        {
+            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
+
+            return new Rect3D(vertices[index + 0], vertices[index + 1], vertices[index + 2], vertices[index + 3]);
+        }
+        
         private void OnUVsModified()
         {
             uvsModified = true;

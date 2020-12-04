@@ -41,7 +41,7 @@ namespace GridSystem
         [SerializeField] private Sprite outputSprite;
         [SerializeField] private RuleEnum ruleMask;
 
-        [NonSerialized] private UVRect outputUVRect;
+        [NonSerialized] private Rect2D outputUVRect;
         [NonSerialized] private bool uvCalculated;
 
         public Sprite OutputSprite
@@ -63,7 +63,7 @@ namespace GridSystem
             }
         }
         
-        public ref readonly UVRect OutputUVRect
+        public ref readonly Rect2D OutputUVRect
         {
             get
             {
@@ -99,10 +99,10 @@ namespace GridSystem
             return false;
         }
 
-        public ref readonly UVRect Output(RuleEnum ruleMask)
+        public ref readonly Rect2D Output(RuleEnum ruleMask)
         {
             if ((this.ruleMask & ruleMask) != this.ruleMask)
-                return ref UVRect.Empty;
+                return ref Rect2D.Empty;
 
             return ref outputUVRect;
         }
@@ -126,21 +126,6 @@ namespace GridSystem
                 attributes.Add(new HideLabelAttribute());
                 attributes.Add(new HorizontalGroupAttribute("Row 1"));
             }
-            // else if (member.Name == "SetNorthFlag")
-            // {
-            //     attributes.Add(new EnableIfAttribute("@this.ruleMask.HasFlag(RuleEnum.HasNorthNeighbor)"));
-            //     attributes.Add(new ButtonAttribute(" "));
-            //     attributes.Add(new HorizontalGroupAttribute("Row 0", 25));
-            //     attributes.Add(new GUIColorAttribute(0, 1, 0));
-            //     
-            // }
-            // else if (member.Name == "SetNotNorthFlag")
-            // {
-            //     attributes.Add(new EnableIfAttribute("@!this.ruleMask.HasFlag(RuleEnum.HasNorthNeighbor)"));
-            //     attributes.Add(new ButtonAttribute(" "));
-            //     attributes.Add(new HorizontalGroupAttribute("Row 0", 25));
-            //     attributes.Add(new GUIColorAttribute(1, 0, 0));
-            // }
         }
     }
 #endif
