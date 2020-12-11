@@ -16,6 +16,10 @@ public class Terrain : ScriptableObject
     private float fertility;
     public  float Fertility => fertility;
     
+    [SerializeField] [LabelWidth(70)] [Range(0, 1)]
+    private float growChance;
+    public  float GrowChance => growChance;
+    
     [SerializeField] [LabelWidth(70)]
     private int elevation;
     public int Elevation => elevation;

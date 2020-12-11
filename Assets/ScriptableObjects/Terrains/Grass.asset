@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainSprite: {fileID: 2813219153870623741, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
   fertility: 1
+  growChance: 0.2
   elevation: 0
   ruleResolver:
     rules: []
