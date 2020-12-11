@@ -6,9 +6,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MapSetting.asset")]
 public class MapSetting : ScriptableObject
 {
+    [SerializeField] 
+    private Terrain defaultTerrain;
+    
     [SerializeField] [ListDrawerSettings(DraggableItems = false)]
     private List<TerrainSetting> settings;
 
+    public Terrain DefaultTerrain => defaultTerrain;
+    
     [Button]
     public void Sort()
     {
@@ -31,7 +36,7 @@ public class MapSetting : ScriptableObject
                 return setting.TargetTerrain;
         }
 
-        return null;
+        return defaultTerrain;
     }
 }
 

@@ -14,7 +14,7 @@ namespace GridSystem
         public Vector2 TopLeft  => topLeft;
         public Vector2 TopRight => topRight;
         
-        public static readonly Rect2D Empty = new Rect2D(); 
+        public static readonly Rect2D Zero = new Rect2D(); 
 
         public Rect2D(Vector2 bottomLeft, Vector2 topLeft, Vector2 bottomRight, Vector2 topRight)
         {

@@ -14,7 +14,7 @@ namespace GridSystem
         public Vector3 TopLeft  => topLeft;
         public Vector3 TopRight => topRight;
         
-        public static readonly Rect3D Empty = new Rect3D(); 
+        public static readonly Rect3D Zero = new Rect3D(); 
 
         public Rect3D(Vector3 bottomLeft, Vector3 topLeft, Vector3 bottomRight, Vector3 topRight)
         {

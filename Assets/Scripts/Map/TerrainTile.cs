@@ -42,7 +42,7 @@ public class TerrainTile : BaseTile<TerrainTile>
 
         ref readonly var uvRect = ref terrain.RuleResolver.Output(this);
         
-        if (!uvRect.Equals(Rect2D.Empty))
+        if (!uvRect.Equals(Rect2D.Zero))
             SetUVs(in uvRect);
     }
 }

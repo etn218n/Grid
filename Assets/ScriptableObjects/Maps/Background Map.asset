@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac6663dd7258346498c10a89c0ee0f14, type: 3}
   m_Name: Background Map
   m_EditorClassIdentifier: 
+  defaultTerrain: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
   settings:
   - TargetTerrain: {fileID: 11400000, guid: 1a2c94f24bfb28149a6463233a02b1c8, type: 2}
     Height: 0.5

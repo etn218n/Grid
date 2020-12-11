@@ -102,7 +102,7 @@ namespace GridSystem
         public ref readonly Rect2D Output(RuleEnum ruleMask)
         {
             if ((this.ruleMask & ruleMask) != this.ruleMask)
-                return ref Rect2D.Empty;
+                return ref Rect2D.Zero;
 
             return ref outputUVRect;
         }

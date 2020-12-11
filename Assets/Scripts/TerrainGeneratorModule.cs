@@ -1,36 +1,16 @@
-﻿using UnityEngine;
-using GridSystem;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
+using Grid = GridSystem.Grid;
 
-public class TerrainGenerator : MonoBehaviour
+public class TerrainGeneratorModule : GridEngineModule
 {
-    [Header("Grids")] 
-    [SerializeField] private TerrainGridBehaviour basegroundGridBehaviour;
-    [SerializeField] private TerrainGridBehaviour backgroundGridBehaviour;
-    [SerializeField] private TerrainGridBehaviour foregroundGridBehaviour;
-
-    private Grid<TerrainTile> baseGroundGrid;
-    private Grid<TerrainTile> backgroundGrid;
-    private Grid<TerrainTile> foreGroundGrid;
-
-    [Header("Terrains")] 
+    [Header("Terrain Setting")] 
+    [SerializeField] private MapSetting basegroundMap;
     [SerializeField] private MapSetting backgroundMap;
     [SerializeField] private MapSetting foregroundMap;
+
+    private GridEngine engine;
     
-    [Header("Terrains")] 
-    [SerializeField] private Terrain empty;
-    [SerializeField] private Terrain grass;
-    [SerializeField] private Terrain hill;
-    [SerializeField] private Terrain sand;
-    [SerializeField] private Terrain water;
-    [SerializeField] private Terrain whiteSoil;
-
-    private int octaves = 4;
-    private float scale = 25f;
-    private float lacunarity  = 2;
-    private float persistance = 0.5f;
-    private Vector2 offset;
-
     [ShowInInspector]
     [PropertySpace(4)]
     [PropertyRange(0, 100)]
@@ -95,29 +75,39 @@ public class TerrainGenerator : MonoBehaviour
         }
     }
     
-    private void Start()
-    {
-        baseGroundGrid = basegroundGridBehaviour.Grid;
-        backgroundGrid = backgroundGridBehaviour.Grid;
-        foreGroundGrid = foregroundGridBehaviour.Grid;
+    private int octaves = 4;
+    private float scale = 25f;
+    private float lacunarity  = 2;
+    private float persistance = 0.5f;
+    private Vector2 offset;
 
+    public override void OnStart(GridEngine engine)
+    {
+        this.engine = engine;
+        
         GenerateMap();
     }
-    
-    [Button]
+
     private void GenerateMap()
     {
-        NoiseMap noiseMap = new NoiseMap(baseGroundGrid.Columns, 
-                                         baseGroundGrid.Rows, 
+        if (engine == null)
+            return;
+        
+        var basegroundGrid = engine.BasegroundGrid;
+        var backgroundGrid = engine.BackgroundGrid;
+        var foregroundGrid = engine.ForegroundGrid;
+        
+        NoiseMap noiseMap = new NoiseMap(basegroundGrid.Columns, 
+                                         basegroundGrid.Rows, 
                                          0, scale, octaves, persistance, lacunarity, offset);
         
-        baseGroundGrid.ForEach(tile => tile.Paint(grass));
+        basegroundGrid.ForEach(tile => PaintTile(tile, noiseMap, basegroundMap));
 
         backgroundGrid.ForEach(tile => PaintTile(tile, noiseMap, backgroundMap));
-        foreGroundGrid.ForEach(tile => PaintTile(tile, noiseMap, foregroundMap));
+        foregroundGrid.ForEach(tile => PaintTile(tile, noiseMap, foregroundMap));
 
         backgroundGrid.ForEach(tile => tile.ApplyRule());
-        foreGroundGrid.ForEach(tile => tile.ApplyRule());
+        foregroundGrid.ForEach(tile => tile.ApplyRule());
     }
 
     private void PaintTile(TerrainTile tile, NoiseMap noiseMap, MapSetting setting)

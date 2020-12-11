@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine;
@@ -131,11 +131,26 @@ namespace GridSystem
                 modifiedChunks.Dequeue().UpdateMesh();
         }
 
+        public void Draw(Material material)
+        {
+            ForEachChunk(chunk =>
+            {
+                Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0);
+            });
+        }
+
         public void Dispose()
         {
             for (int i = 0; i < verticalChunks; i++)
                 for (int j = 0; j < horizontalChunks; j++)
                     chunks[i, j].Dispose();
+        }
+
+        public void ForEachChunk(Action<Chunk> action)
+        {
+            for (int j = 0; j < horizontalChunks; j++)
+                for (int i = 0; i < verticalChunks; i++)
+                    action(chunks[i, j]);
         }
         
         public void ForEachCoordinate(Action<Vector2Int> action)

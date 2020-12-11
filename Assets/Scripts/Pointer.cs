@@ -1,21 +1,10 @@
 ﻿using UnityEngine;
-using GridSystem;
 
 public class Pointer : MonoBehaviour
 {
-    [SerializeField] private TerrainGridBehaviour backgroundGridBehaviour;
-    [SerializeField] private TerrainGridBehaviour foregroundGridBehaviour;
+    [SerializeField] private GridEngine engine;
 
     [SerializeField] private Terrain empty;
-    
-    private Grid<TerrainTile> backgroundGrid;
-    private Grid<TerrainTile> foregroundGrid;
-
-    private void Start()
-    {
-        backgroundGrid = backgroundGridBehaviour.Grid;
-        foregroundGrid = foregroundGridBehaviour.Grid;
-    }
 
     private void Update()
     {
@@ -25,7 +14,7 @@ public class Pointer : MonoBehaviour
             mousePos.z = 10;
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePos);
 
-            var tile = foregroundGrid.TryGetTileAtPosition(worldPosition);
+            var tile = engine.ForegroundGrid.TryGetTileAtPosition(worldPosition);
 
             if (tile != null)
             {

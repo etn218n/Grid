@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac6663dd7258346498c10a89c0ee0f14, type: 3}
   m_Name: Foreground Map
   m_EditorClassIdentifier: 
+  defaultTerrain: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
   settings:
   - TargetTerrain: {fileID: 11400000, guid: a322d975b266de543b80ac590e3e65ec, type: 2}
     Height: 0.45

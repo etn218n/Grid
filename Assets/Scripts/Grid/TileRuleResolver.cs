@@ -88,7 +88,7 @@ namespace GridSystem
                 }
             }
             
-            return ref Rect2D.Empty;
+            return ref Rect2D.Zero;
         }
     }
 }
