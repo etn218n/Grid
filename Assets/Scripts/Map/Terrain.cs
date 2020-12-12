@@ -3,7 +3,7 @@ using GridSystem;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-[CreateAssetMenu(fileName = "Terrain.asset")]
+[CreateAssetMenu(fileName = "Terrain.asset", menuName = "Map/Terrain")]
 public class Terrain : ScriptableObject
 {
     [Space(10)]
@@ -15,11 +15,7 @@ public class Terrain : ScriptableObject
     [SerializeField] [LabelWidth(70)] [Range(0, 10)]
     private float fertility;
     public  float Fertility => fertility;
-    
-    [SerializeField] [LabelWidth(70)] [Range(0, 1)]
-    private float growChance;
-    public  float GrowChance => growChance;
-    
+
     [SerializeField] [LabelWidth(70)]
     private int elevation;
     public int Elevation => elevation;

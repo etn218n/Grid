@@ -1,20 +1,20 @@
 ﻿using GridSystem;
 using UnityEngine;
+using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
 public class FoliageGeneratorModule : GridEngineModule
 {
     private GridEngine engine;
     
-    [SerializeField] private Sprite tree;
     [SerializeField] private Terrain empty;
+    [SerializeField] private float growChance;
     
-    private Rect2D treeRect2D;
+    [SerializeField] private List<Foliage> foliages = new List<Foliage>();
 
     public override void OnStart(GridEngine engine)
     {
         this.engine = engine;
-        this.treeRect2D = Extension.GetUVRect(tree);
 
         engine.FoliageGrid.ForEachCoordinate(coordinate => AdjustTileVerticesAt(coordinate));
         
@@ -67,13 +67,14 @@ public class FoliageGeneratorModule : GridEngineModule
     {
         var terrain = RaycastTerrain(coordinate);
 
-        if (terrain != null && terrain.GrowChance != 0)
+        if (terrain.Fertility != 0)
         {
             float growValue = Random.Range(0.0f, 1.0f);
 
-            if (growValue <= terrain.GrowChance)
+            if (growValue <= growChance)
             {
-                engine.FoliageGrid.SetTileUV(in treeRect2D, coordinate);
+                int randomIndex = Random.Range(0, foliages.Count);
+                engine.FoliageGrid.SetTileUV(in foliages[randomIndex].SpriteRect2D, coordinate);
             }
         }
     }
