@@ -16,12 +16,12 @@ public class FoliageGeneratorModule : GridEngineModule
     {
         this.engine = engine;
 
-        engine.FoliageGrid.ForEachCoordinate(coordinate => AdjustTileVerticesAt(coordinate));
+        engine.FoliageGrid.ForEachCoordinate(coordinate => AdjustTileDepthAt(coordinate));
         
         GenerateFoliage();
     }
 
-    private void AdjustTileVerticesAt(Vector2Int coordinate)
+    private void AdjustTileDepthAt(Vector2Int coordinate)
     {
         var foliageGrid = engine.FoliageGrid;
         
@@ -31,19 +31,39 @@ public class FoliageGeneratorModule : GridEngineModule
         Vector3 topLeft     = verticesRect.TopLeft;
         Vector3 bottomRight = verticesRect.BottomRight;
         Vector3 topRight    = verticesRect.TopRight;
-            
-        topLeft.y  += foliageGrid.TileSize;
-        topRight.y += foliageGrid.TileSize;
 
-        float zValue = (bottomLeft.y) * 0.0001f;
-        bottomLeft.z  = zValue;
+        float zValue  = (bottomLeft.y) * 0.0001f;
         topLeft.z     = zValue;
-        bottomRight.z = zValue;
         topRight.z    = zValue;
- 
+        bottomLeft.z  = zValue;
+        bottomRight.z = zValue;
+
         foliageGrid.SetTileVertices(new Rect3D(bottomLeft, topLeft, bottomRight, topRight), coordinate);
     }
-    
+
+    private void AdjustTileDimensionAt(Vector2Int coordinate, int width, int height)
+    {
+        var foliageGrid = engine.FoliageGrid;
+        
+        Rect3D verticesRect = foliageGrid.GetTileVertices(coordinate);
+
+        Vector3 bottomLeft  = verticesRect.BottomLeft;
+        Vector3 topLeft     = verticesRect.TopLeft;
+        Vector3 bottomRight = verticesRect.BottomRight;
+        Vector3 topRight    = verticesRect.TopRight;
+
+        float tileWidth  = (width  * foliageGrid.TileSize) - foliageGrid.TileSize;
+        float tileHeight = (height * foliageGrid.TileSize) - foliageGrid.TileSize;
+
+        topRight.x    += tileWidth;
+        bottomRight.x += tileWidth;
+
+        topLeft.y  += tileHeight;
+        topRight.y += tileHeight;
+
+        foliageGrid.SetTileVertices(new Rect3D(bottomLeft, topLeft, bottomRight, topRight), coordinate);
+    }
+
     public void GenerateFoliage()
     {
         engine.FoliageGrid.SetUV(Rect2D.Zero);
@@ -71,10 +91,15 @@ public class FoliageGeneratorModule : GridEngineModule
         {
             float growValue = Random.Range(0.0f, 1.0f);
 
-            if (growValue <= growChance)
+            if (growValue <= Mathf.Clamp01(growChance))
             {
                 int randomIndex = Random.Range(0, foliages.Count);
-                engine.FoliageGrid.SetTileUV(in foliages[randomIndex].SpriteRect2D, coordinate);
+
+                Foliage choosenFoliage = foliages[randomIndex];
+                
+                AdjustTileDimensionAt(coordinate, choosenFoliage.Width, choosenFoliage.Height);
+
+                engine.FoliageGrid.SetTileUV(in choosenFoliage.SpriteRect2D, coordinate);
             }
         }
     }

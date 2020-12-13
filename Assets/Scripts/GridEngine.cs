@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 using GridSystem;
-using UnityEngine;
-using Sirenix.OdinInspector;
 using Grid = GridSystem.Grid;
 
 public class GridEngine : MonoBehaviour
@@ -49,6 +48,8 @@ public class GridEngine : MonoBehaviour
 
     private void InstantiateGrids()
     {
+        foliageGrid = new Grid(foliageOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize);
+        
         basegroundGrid = new Grid<TerrainTile>(basegroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
                                                (grid, chunk, coordinate, localCoordinate) => new TerrainTile(grid, chunk, coordinate, localCoordinate));
         
@@ -57,28 +58,26 @@ public class GridEngine : MonoBehaviour
         
         foregroundGrid = new Grid<TerrainTile>(foregroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
                                                (grid, chunk, coordinate, localCoordinate) => new TerrainTile(grid, chunk, coordinate, localCoordinate));
-        
-        foliageGrid = new Grid(foliageOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize);
     }
 
     private void Update()
     {
+        foliageGrid.Update();
         basegroundGrid.Update();
         backgroundGrid.Update();
         foregroundGrid.Update();
-        foliageGrid.Update();
-        
+
+        foliageGrid.Draw(foliageMaterial);
         basegroundGrid.Draw(basegroundMaterial);
         backgroundGrid.Draw(backgroundMaterial);
         foregroundGrid.Draw(foregroundMaterial);
-        foliageGrid.Draw(foliageMaterial);
     }
 
     private void OnDestroy()
     {
+        foliageGrid.Dispose();
         basegroundGrid.Dispose();
         backgroundGrid.Dispose();
         foregroundGrid.Dispose();
-        foliageGrid.Dispose();
     }
 }

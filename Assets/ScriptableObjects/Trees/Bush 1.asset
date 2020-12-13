@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 90017cc1dc832604cb6274992982994b, type: 3}
-  m_Name: Tree 2
+  m_Name: Bush 1
   m_EditorClassIdentifier: 
-  mainSprite: {fileID: 2454918138326063247, guid: 23c9c0d08ba4b2e4b99e7fbf14fe734d, type: 3}
+  mainSprite: {fileID: -4324799369507234631, guid: 23c9c0d08ba4b2e4b99e7fbf14fe734d, type: 3}
   width: 1
-  height: 2
+  height: 1

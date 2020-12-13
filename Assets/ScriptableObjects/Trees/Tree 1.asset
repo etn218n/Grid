@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Tree 1
   m_EditorClassIdentifier: 
   mainSprite: {fileID: -1962202154345704850, guid: 23c9c0d08ba4b2e4b99e7fbf14fe734d, type: 3}
+  width: 1
+  height: 2
