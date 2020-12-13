@@ -102,6 +102,18 @@ namespace GridSystem
             
             OnVerticesModified();
         }
+
+        public void SetTileColor(Vector2Int localCoordinate, Color color)
+        {
+            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
+            
+            colors[index + 0] = color;
+            colors[index + 1] = color;
+            colors[index + 2] = color;
+            colors[index + 3] = color;
+            
+            OnColorModified();
+        }
         
         public Rect3D GetTileVertices(Vector2Int localCoordinate)
         {

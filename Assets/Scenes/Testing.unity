@@ -180,6 +180,7 @@ GameObject:
   - component: {fileID: 596911676}
   - component: {fileID: 596911677}
   - component: {fileID: 596911678}
+  - component: {fileID: 596911679}
   m_Layer: 0
   m_Name: Engine
   m_TagString: Untagged
@@ -221,14 +222,17 @@ MonoBehaviour:
   basegroundOrigin: {x: 0, y: 0, z: 3}
   backgroundOrigin: {x: 0, y: 0, z: 2}
   foregroundOrigin: {x: 0, y: 0, z: 1}
+  movementOrigin: {x: 0, y: 0, z: -11}
   foliageOrigin: {x: 0, y: 0, z: -10}
   basegroundMaterial: {fileID: 2100000, guid: e94ab445e8748414a8929a951dbfac75, type: 2}
   backgroundMaterial: {fileID: 2100000, guid: e94ab445e8748414a8929a951dbfac75, type: 2}
   foregroundMaterial: {fileID: 2100000, guid: e94ab445e8748414a8929a951dbfac75, type: 2}
+  movementMaterial: {fileID: 2100000, guid: 10b22edb956d371428c6849af8eedab3, type: 2}
   foliageMaterial: {fileID: 2100000, guid: b4a41daf6c6ae8d4e94f20c3bba9fd14, type: 2}
   modules:
   - {fileID: 596911677}
   - {fileID: 596911678}
+  - {fileID: 596911679}
 --- !u!114 &596911677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,6 +269,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 746962951d502564aa8af332736082c8, type: 2}
   - {fileID: 11400000, guid: 00d852f721c8bcc498c38b6f544cca7c, type: 2}
   - {fileID: 11400000, guid: a5a211609d322d04bbe830e1e063cba7, type: 2}
+--- !u!114 &596911679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596911674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a0f0c8b883d8a40868e1f0bdf4f71a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1581897494
 GameObject:
   m_ObjectHideFlags: 0

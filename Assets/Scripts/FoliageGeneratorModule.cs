@@ -9,7 +9,6 @@ public class FoliageGeneratorModule : GridEngineModule
     
     [SerializeField] private Terrain empty;
     [SerializeField] private float growChance;
-    
     [SerializeField] private List<Foliage> foliages = new List<Foliage>();
 
     public override void OnStart(GridEngine engine)

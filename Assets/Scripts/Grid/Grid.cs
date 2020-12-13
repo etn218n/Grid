@@ -125,7 +125,7 @@ namespace GridSystem
             return chunks[columnIndex, rowIndex].GetTileVertices(chunkTileLocalCoordinate);
         }
 
-        public void Update()
+        public void UpdateMesh()
         {
             while (modifiedChunks.Any())
                 modifiedChunks.Dequeue().UpdateMesh();
@@ -133,10 +133,7 @@ namespace GridSystem
 
         public void Draw(Material material)
         {
-            ForEachChunk(chunk =>
-            {
-                Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0);
-            });
+            ForEachChunk(chunk => Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0));
         }
 
         public void Dispose()
