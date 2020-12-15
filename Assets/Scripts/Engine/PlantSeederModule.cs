@@ -1,5 +1,4 @@
-﻿using GridSystem;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
@@ -20,7 +19,6 @@ public class PlantSeederModule : GridEngineModule
 
     public void SeedPlants()
     {
-        engine.PlantGrid.SetUV(Rect2D.Zero);
         engine.PlantGrid.ForEachTile(tile => TryGrowTreeAt(tile));
     }
     

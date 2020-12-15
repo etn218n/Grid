@@ -232,7 +232,6 @@ MonoBehaviour:
   modules:
   - {fileID: 596911677}
   - {fileID: 596911678}
-  - {fileID: 596911679}
 --- !u!114 &596911677
 MonoBehaviour:
   m_ObjectHideFlags: 0

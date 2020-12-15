@@ -8,7 +8,7 @@ public class Pointer : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             Vector3 mousePos = Input.mousePosition;
             mousePos.z = 10;
@@ -17,12 +17,7 @@ public class Pointer : MonoBehaviour
             var tile = engine.PlantGrid.TryGetTileAtPosition(worldPosition);
 
             if (tile != null)
-            {
-                tile.ShowPlantInfo();
-                // tile.SetTerrain(empty);
-                // tile.Paint();
-                // tile.ForEachNeighbor(n => n.ApplyRule());
-            }
+                tile.RemovePlant();
         }
     }
 }

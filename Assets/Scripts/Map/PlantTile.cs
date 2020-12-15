@@ -5,6 +5,7 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
 {
     private Plant plant;
     private float fertility;
+    private float growSpeed;
     
     public PlantTile(Grid<PlantTile> ownerGrid, Chunk ownerChunk, Vector2Int coordinate, Vector2Int localCoordinate) : base(ownerGrid, ownerChunk, coordinate, localCoordinate)
     {
@@ -13,6 +14,8 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
     public void Seed(Plant plant)
     {
         this.plant = plant;
+
+        growSpeed = fertility * Random.Range(0.0001f, 0.001f);
 
         OnPlantSeeded();
     }
@@ -39,7 +42,8 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
 
     public void Tick(long ticks)
     {
-        plant.Grow(0.0001f * fertility);
+        plant.Grow(growSpeed);
+        //AdjustPlantSize();
     }
 
     public void RemovePlant()
@@ -53,7 +57,24 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
     {
         ownerChunk.ActiveTickables.Remove(this);
         AdjustTileDimension(1, 1);
-        //SetUVs(plant.SpriteRectUV);
+        SetUVs(Rect2D.Zero);
+    }
+
+    private void AdjustPlantSize()
+    {
+        Rect3D vertexRect = GetVertexRect();
+
+        Vector3 bottomLeft  = vertexRect.BottomLeft;
+        Vector3 topLeft     = vertexRect.TopLeft;
+        Vector3 bottomRight = vertexRect.BottomRight;
+        Vector3 topRight    = vertexRect.TopRight;
+        
+        float tileHeight = (plant.Height * ownerGrid.TileSize) * plant.Maturity;
+        
+        topLeft.y  = bottomLeft.y + tileHeight;
+        topRight.y = bottomLeft.y + tileHeight;
+
+        SetVertices(new Rect3D(bottomLeft, topLeft, bottomRight, topRight));
     }
 
     private void AdjustTileDimension(int width, int height)

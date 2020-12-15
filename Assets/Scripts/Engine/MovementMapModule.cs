@@ -11,10 +11,10 @@ public class MovementMapModule : GridEngineModule
     {
         this.engine = engine;
 
-        engine.MovementGrid.ForEachCoordinate(Foo);
+        engine.MovementGrid.ForEachCoordinate(coordinate => PaintTileBasedOnMovementCost(coordinate));
     }
 
-    private void Foo(Vector2Int coordinate)
+    private void PaintTileBasedOnMovementCost(Vector2Int coordinate)
     {
         float gradient = MovementCostToColorGradient(coordinate);
         

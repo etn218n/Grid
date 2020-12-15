@@ -24,17 +24,12 @@ public class TerrainTile : BaseTile<TerrainTile>
     public void Paint(Terrain terrain)
     {
         if (terrain == null)
+        {
+            SetUVs(in Rect2D.Zero);
             return;
+        }
 
         SetTerrain(terrain);
-        SetUVs(in terrain.SpriteRect2D);
-    }
-
-    public void Paint()
-    {
-        if (terrain == null)
-            return;
-        
         SetUVs(in terrain.SpriteRect2D);
     }
 

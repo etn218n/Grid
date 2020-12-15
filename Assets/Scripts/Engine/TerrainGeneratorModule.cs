@@ -1,6 +1,5 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
-using Grid = GridSystem.Grid;
+﻿using UnityEngine;
+using Sirenix.OdinInspector;
 
 public class TerrainGeneratorModule : GridEngineModule
 {
