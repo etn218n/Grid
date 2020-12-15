@@ -55,10 +55,10 @@ namespace GridSystem
         {
             int uvsIndex = cellIndex * 4;
             
-            UVs[uvsIndex + 0] = new Vector2(0, 0);
-            UVs[uvsIndex + 1] = new Vector2(0, 1);
-            UVs[uvsIndex + 2] = new Vector2(1, 0);
-            UVs[uvsIndex + 3] = new Vector2(1, 1);
+            UVs[uvsIndex + 0] = Vector2.zero;
+            UVs[uvsIndex + 1] = Vector2.zero;
+            UVs[uvsIndex + 2] = Vector2.zero;
+            UVs[uvsIndex + 3] = Vector2.zero;
         }
         
         private void GenerateTriangles(int cellIndex)

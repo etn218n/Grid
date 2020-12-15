@@ -5,7 +5,6 @@ namespace GridSystem
 {
     public class BaseTile<T> where T : BaseTile<T>
     {
-        protected int id;
         protected T[] neighbors = new T[8];
         
         protected readonly Chunk ownerChunk;
@@ -13,8 +12,7 @@ namespace GridSystem
         protected readonly Vector3 position;
         protected readonly Vector2Int coordinate;
         protected readonly Vector2Int localCoordinate;
-        
-        public int ID => id;
+
         public T EastNeighbor  => neighbors[0];
         public T WestNeighbor  => neighbors[1];
         public T SouthNeighbor => neighbors[2];
@@ -30,7 +28,6 @@ namespace GridSystem
 
         public BaseTile(Grid<T> ownerGrid, Chunk ownerChunk, Vector2Int coordinate, Vector2Int localCoordinate)
         {
-            this.id = 0;
             this.ownerChunk = ownerChunk;
             this.coordinate = coordinate;
             this.ownerGrid  = ownerGrid;
@@ -90,6 +87,6 @@ namespace GridSystem
             }
         }
         
-        public virtual bool ShareAttributeWith(T otherTile) => this.id == otherTile.id;
+        public virtual bool SameTileCategory(T otherTile) => false;
     }
 }

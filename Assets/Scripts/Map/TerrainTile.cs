@@ -13,11 +13,14 @@ public class TerrainTile : BaseTile<TerrainTile>
 
     public void SetTerrain(Terrain terrain)
     {
-        id = terrain == null ? 0 : terrain.GetHashCode();
-        
         this.terrain = terrain;
     }
-    
+
+    public override bool SameTileCategory(TerrainTile otherTile)
+    {
+        return terrain == otherTile.Terrain;
+    }
+
     public void Paint(Terrain terrain)
     {
         if (terrain == null)

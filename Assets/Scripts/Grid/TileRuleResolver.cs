@@ -25,49 +25,49 @@ namespace GridSystem
         {
             RuleEnum ruleMask = 0;
 
-            if (tile.IsRightEdge || (tile.HasEastNeighbor && tile.ShareAttributeWith(tile.EastNeighbor)))
+            if (tile.IsRightEdge || (tile.HasEastNeighbor && tile.SameTileCategory(tile.EastNeighbor)))
                 ruleMask |= RuleEnum.HasEastNeighbor;
             else
                 ruleMask |= RuleEnum.NotHasEastNeighbor;
             
             
-            if (tile.IsLeftEdge || (tile.HasWestNeighbor && tile.ShareAttributeWith(tile.WestNeighbor)))
+            if (tile.IsLeftEdge || (tile.HasWestNeighbor && tile.SameTileCategory(tile.WestNeighbor)))
                 ruleMask |= RuleEnum.HasWestNeighbor;
             else
                 ruleMask |= RuleEnum.NotHasWestNeighbor;
             
             
-            if (tile.IsBottomEdge || (tile.HasSouthNeighbor && tile.ShareAttributeWith(tile.SouthNeighbor)))
+            if (tile.IsBottomEdge || (tile.HasSouthNeighbor && tile.SameTileCategory(tile.SouthNeighbor)))
                 ruleMask |= RuleEnum.HasSouthNeighbor;
             else
                 ruleMask |= RuleEnum.NotHasSouthNeighbor;
             
             
-            if (tile.IsTopEdge || (tile.HasNorthNeighbor && tile.ShareAttributeWith(tile.NorthNeighbor)))
+            if (tile.IsTopEdge || (tile.HasNorthNeighbor && tile.SameTileCategory(tile.NorthNeighbor)))
                 ruleMask |= RuleEnum.HasNorthNeighbor;
             else
                 ruleMask |= RuleEnum.NotHasNorthNeighbor;
             
             
-            if (tile.IsBottomEdge || tile.IsRightEdge || (tile.HasSouthEastNeighbor && tile.ShareAttributeWith(tile.SouthEastNeighbor)))
+            if (tile.IsBottomEdge || tile.IsRightEdge || (tile.HasSouthEastNeighbor && tile.SameTileCategory(tile.SouthEastNeighbor)))
                 ruleMask |= RuleEnum.HasSouthEastNeighbor;
             else
                 ruleMask |= RuleEnum.NotHasSouthEastNeighbor;
             
             
-            if (tile.IsBottomEdge || tile.IsLeftEdge || (tile.HasSouthWestNeighbor && tile.ShareAttributeWith(tile.SouthWestNeighbor)))
+            if (tile.IsBottomEdge || tile.IsLeftEdge || (tile.HasSouthWestNeighbor && tile.SameTileCategory(tile.SouthWestNeighbor)))
                 ruleMask |= RuleEnum.HasSouthWestNeighbor;
             else
                 ruleMask |= RuleEnum.NotHasSouthWestNeighbor;
             
             
-            if (tile.IsTopEdge || tile.IsRightEdge || (tile.HasNorthEastNeighbor && tile.ShareAttributeWith(tile.NorthEastNeighbor)))
+            if (tile.IsTopEdge || tile.IsRightEdge || (tile.HasNorthEastNeighbor && tile.SameTileCategory(tile.NorthEastNeighbor)))
                 ruleMask |= RuleEnum.HasNorthEastNeighbor;
             else
                 ruleMask |= RuleEnum.NotHasNorthEastNeighbor;
             
             
-            if (tile.IsTopEdge || tile.IsLeftEdge || (tile.HasNorthWestNeighbor && tile.ShareAttributeWith(tile.NorthWestNeighbor)))
+            if (tile.IsTopEdge || tile.IsLeftEdge || (tile.HasNorthWestNeighbor && tile.SameTileCategory(tile.NorthWestNeighbor)))
                 ruleMask |= RuleEnum.HasNorthWestNeighbor;
             else
                 ruleMask |= RuleEnum.NotHasNorthWestNeighbor;

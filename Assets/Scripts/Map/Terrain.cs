@@ -32,7 +32,7 @@ public class Terrain : ScriptableObject, IHaveMovementCost
     [NonSerialized]
     private bool uvCalculated = false;
 
-    private Rect2D spriteRect2D;
+    private Rect2D spriteRect2D = Rect2D.Zero;
 
     public ref readonly Rect2D SpriteRect2D
     {
