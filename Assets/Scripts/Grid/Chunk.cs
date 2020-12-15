@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine;
@@ -18,7 +19,9 @@ namespace GridSystem
         protected NativeArray<Vector2> uvs;
         protected NativeArray<Color> colors;
         protected NativeArray<int> indices;
-        protected Grid ownerGrid;
+        
+        protected readonly Grid ownerGrid;
+        protected readonly List<ITickable> activeTickables;
 
         protected bool uvsModified;
         protected bool verticesModified;
@@ -32,6 +35,7 @@ namespace GridSystem
         public float TileSize => tileSize;
         public Mesh Mesh => mesh;
         public Grid OwnerGrid => ownerGrid;
+        public List<ITickable> ActiveTickables => activeTickables;
 
         public Chunk(Grid ownerGrid, Vector3 origin, int rows, int columns, float tileSize)
         {
@@ -43,17 +47,42 @@ namespace GridSystem
             this.height    = rows * tileSize;
             this.ownerGrid = ownerGrid;
             
+            activeTickables = new List<ITickable>();
+            MarkActive();
+            
             mesh = new Mesh();
             mesh.MarkDynamic();
 
             int numberOfTiles = rows * columns;
-            
             vertices = new NativeArray<Vector3>(numberOfTiles * 4, Allocator.Persistent);
             uvs      = new NativeArray<Vector2>(numberOfTiles * 4, Allocator.Persistent);
             colors   = new NativeArray<Color>(numberOfTiles * 4, Allocator.Persistent);
             indices  = new NativeArray<int>(numberOfTiles * 6, Allocator.Persistent);
         }
 
+        public void Tick(long ticks)
+        {
+            activeTickables.ForEach(t => t.Tick(ticks));
+        }
+
+        public void MarkActive()
+        {
+            ownerGrid.ActiveChunks.Add(this);
+        }
+
+        public void UnmarkActive()
+        {
+            ownerGrid.ActiveChunks.Remove(this);
+        }
+
+        public void ToggleActive()
+        {
+            if (ownerGrid.ActiveChunks.Contains(this))
+                UnmarkActive();
+            else
+                MarkActive();
+        }
+        
         public void SetChunkUVs(in Rect2D uvRect)
         {
             for (int i = 0; i < rows * columns * 4; i += 4)
@@ -115,7 +144,7 @@ namespace GridSystem
             OnColorModified();
         }
         
-        public Rect3D GetTileVertices(Vector2Int localCoordinate)
+        public Rect3D GetTileRect(Vector2Int localCoordinate)
         {
             int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
 

@@ -101,13 +101,13 @@ public class TerrainGeneratorModule : GridEngineModule
                                          basegroundGrid.Rows, 
                                          0, scale, octaves, persistance, lacunarity, offset);
         
-        basegroundGrid.ForEach(tile => PaintTile(tile, noiseMap, basegroundMap));
+        basegroundGrid.ForEachTile(tile => PaintTile(tile, noiseMap, basegroundMap));
 
-        backgroundGrid.ForEach(tile => PaintTile(tile, noiseMap, backgroundMap));
-        foregroundGrid.ForEach(tile => PaintTile(tile, noiseMap, foregroundMap));
+        backgroundGrid.ForEachTile(tile => PaintTile(tile, noiseMap, backgroundMap));
+        foregroundGrid.ForEachTile(tile => PaintTile(tile, noiseMap, foregroundMap));
 
-        backgroundGrid.ForEach(tile => tile.ApplyRule());
-        foregroundGrid.ForEach(tile => tile.ApplyRule());
+        backgroundGrid.ForEachTile(tile => tile.ApplyRule());
+        foregroundGrid.ForEachTile(tile => tile.ApplyRule());
     }
 
     private void PaintTile(TerrainTile tile, NoiseMap noiseMap, MapSetting setting)

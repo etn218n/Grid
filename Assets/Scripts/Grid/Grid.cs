@@ -20,8 +20,9 @@ namespace GridSystem
         protected float tileSize;
         protected Vector3 origin;
         protected Chunk[,] chunks;
+        protected List<Chunk> activeChunks;
         protected Queue<Chunk> modifiedChunks;
-        
+
         public int Rows => rows;
         public int Columns => columns;
         public int RowsPerChunk => rowsPerChunk;
@@ -33,6 +34,7 @@ namespace GridSystem
         public float TileSize => tileSize;
         public Vector3 Origin => origin;
         public Chunk[,] Chunks => chunks;
+        public List<Chunk> ActiveChunks => activeChunks;
         public Queue<Chunk> ModifiedChunks => modifiedChunks;
 
         public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize)
@@ -47,9 +49,10 @@ namespace GridSystem
             this.verticalChunks   = verticalChunks;
             this.width  = columns * tileSize;
             this.height = rows * tileSize;
-            
+
+            activeChunks   = new List<Chunk>();
             modifiedChunks = new Queue<Chunk>();
-            
+
             InitializeChunks();
             GenerateChunksMesh();
         }
@@ -115,14 +118,14 @@ namespace GridSystem
             chunks[columnIndex, rowIndex].SetTileVertices(chunkTileLocalCoordinate, in rect);
         }
 
-        public Rect3D GetTileVertices(Vector2Int coordinate)
+        public Rect3D GetTileRect(Vector2Int coordinate)
         {
             int rowIndex    = coordinate.y / rowsPerChunk;
             int columnIndex = coordinate.x / columnsPerChunk;
 
             Vector2Int chunkTileLocalCoordinate = new Vector2Int(coordinate.x % columnsPerChunk, coordinate.y % rowsPerChunk);
 
-            return chunks[columnIndex, rowIndex].GetTileVertices(chunkTileLocalCoordinate);
+            return chunks[columnIndex, rowIndex].GetTileRect(chunkTileLocalCoordinate);
         }
 
         public void UpdateMesh()
@@ -133,7 +136,15 @@ namespace GridSystem
 
         public void Draw(Material material)
         {
+            if (material == null)
+                return;
+            
             ForEachChunk(chunk => Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0));
+        }
+
+        public void Tick(long ticks)
+        {
+            activeChunks.ForEach(chunk => chunk.Tick(ticks));
         }
 
         public void Dispose()
@@ -240,7 +251,7 @@ namespace GridSystem
             return tiles[coordinateX, coordinateY];
         }
 
-        public void ForEach(Action<T> action)
+        public void ForEachTile(Action<T> action)
         {
             for (int j = 0; j < rows; j++) 
                 for (int i = 0; i < columns; i++) 

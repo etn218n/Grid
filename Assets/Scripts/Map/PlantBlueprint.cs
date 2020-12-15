@@ -3,8 +3,8 @@ using GridSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Foliage.asset", menuName = "Map/Foliage")]
-public class Foliage : ScriptableObject
+[CreateAssetMenu(fileName = "Plant.asset", menuName = "Map/Plant")]
+public class PlantBlueprint : ScriptableObject
 {
     [Space(10)]
     [SerializeField] [PreviewField(ObjectFieldAlignment.Left)] [LabelWidth(70)]
@@ -21,19 +21,24 @@ public class Foliage : ScriptableObject
     [NonSerialized] 
     private bool uvCalculated = false;
 
-    private Rect2D spriteRect2D;
+    private Rect2D spriteRectUV;
 
-    public ref readonly Rect2D SpriteRect2D
+    public ref readonly Rect2D SpriteRectUV
     {
         get
         {
             if (!uvCalculated)
             {
-                spriteRect2D = Extension.GetUVRect(mainSprite);
+                spriteRectUV = Extension.GetUVRect(mainSprite);
                 uvCalculated = true;
             }
 
-            return ref spriteRect2D;
+            return ref spriteRectUV;
         }
+    }
+
+    public Plant CreatePlant()
+    {
+        return new Plant(width, height, SpriteRectUV);
     }
 }

@@ -19,14 +19,14 @@ public class GridEngine : MonoBehaviour
     [SerializeField] private Vector3 backgroundOrigin;
     [SerializeField] private Vector3 foregroundOrigin;
     [SerializeField] private Vector3 movementOrigin;
-    [SerializeField] private Vector3 foliageOrigin;
+    [SerializeField] private Vector3 plantOrigin;
 
     [Header("Draw Settings")]
     [SerializeField] private Material basegroundMaterial;
     [SerializeField] private Material backgroundMaterial;
     [SerializeField] private Material foregroundMaterial;
     [SerializeField] private Material movementMaterial;
-    [SerializeField] private Material foliageMaterial;
+    [SerializeField] private Material plantMaterial;
 
     [Header("Modules")] 
     [SerializeField] private List<GridEngineModule> modules = new List<GridEngineModule>();
@@ -35,14 +35,15 @@ public class GridEngine : MonoBehaviour
     private Grid<TerrainTile> backgroundGrid;
     private Grid<TerrainTile> foregroundGrid;
     private Grid<MovementTile> movementGrid;
-    private Grid foliageGrid;
+    private Grid<PlantTile> plantGrid;
+
+    private long tickCount = 0;
     
     public Grid<TerrainTile> BasegroundGrid => basegroundGrid;
     public Grid<TerrainTile> BackgroundGrid => backgroundGrid;
     public Grid<TerrainTile> ForegroundGrid => foregroundGrid;
     public Grid<MovementTile> MovementGrid => movementGrid;
-
-    public Grid FoliageGrid => foliageGrid;
+    public Grid<PlantTile> PlantGrid => plantGrid;
 
     private void Awake()
     {
@@ -53,7 +54,8 @@ public class GridEngine : MonoBehaviour
 
     private void InstantiateGrids()
     {
-        foliageGrid = new Grid(foliageOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize);
+        plantGrid = new Grid<PlantTile>(plantOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize,
+                                        (grid, chunk, coordinate, localCoordinate) => new PlantTile(grid, chunk, coordinate, localCoordinate));
         
         basegroundGrid = new Grid<TerrainTile>(basegroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
                                                (grid, chunk, coordinate, localCoordinate) => new TerrainTile(grid, chunk, coordinate, localCoordinate));
@@ -70,22 +72,30 @@ public class GridEngine : MonoBehaviour
 
     private void Update()
     {
-        foliageGrid.UpdateMesh();
+        plantGrid.Tick(tickCount);
+        movementGrid.Tick(tickCount);
+        basegroundGrid.Tick(tickCount);
+        backgroundGrid.Tick(tickCount);
+        foregroundGrid.Tick(tickCount);
+        
+        plantGrid.UpdateMesh();
         movementGrid.UpdateMesh();
         basegroundGrid.UpdateMesh();
         backgroundGrid.UpdateMesh();
         foregroundGrid.UpdateMesh();
 
-        foliageGrid.Draw(foliageMaterial);
+        plantGrid.Draw(plantMaterial);
         movementGrid.Draw(movementMaterial);
         basegroundGrid.Draw(basegroundMaterial);
         backgroundGrid.Draw(backgroundMaterial);
         foregroundGrid.Draw(foregroundMaterial);
+
+        tickCount++;
     }
 
     private void OnDestroy()
     {
-        foliageGrid.Dispose();
+        plantGrid.Dispose();
         movementGrid.Dispose();
         basegroundGrid.Dispose();
         backgroundGrid.Dispose();

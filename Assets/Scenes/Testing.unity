@@ -162,7 +162,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 186940606}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 167.51877, y: 107.00673, z: -42.21372}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -223,12 +223,12 @@ MonoBehaviour:
   backgroundOrigin: {x: 0, y: 0, z: 2}
   foregroundOrigin: {x: 0, y: 0, z: 1}
   movementOrigin: {x: 0, y: 0, z: -11}
-  foliageOrigin: {x: 0, y: 0, z: -10}
+  plantOrigin: {x: 0, y: 0, z: 0}
   basegroundMaterial: {fileID: 2100000, guid: e94ab445e8748414a8929a951dbfac75, type: 2}
   backgroundMaterial: {fileID: 2100000, guid: e94ab445e8748414a8929a951dbfac75, type: 2}
   foregroundMaterial: {fileID: 2100000, guid: e94ab445e8748414a8929a951dbfac75, type: 2}
   movementMaterial: {fileID: 2100000, guid: 10b22edb956d371428c6849af8eedab3, type: 2}
-  foliageMaterial: {fileID: 2100000, guid: b4a41daf6c6ae8d4e94f20c3bba9fd14, type: 2}
+  plantMaterial: {fileID: 2100000, guid: b4a41daf6c6ae8d4e94f20c3bba9fd14, type: 2}
   modules:
   - {fileID: 596911677}
   - {fileID: 596911678}
@@ -262,7 +262,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   empty: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
   growChance: 0.2
-  foliages:
+  plantBlueprints:
   - {fileID: 11400000, guid: 3cf3d67f0af227f4681f109201725fca, type: 2}
   - {fileID: 11400000, guid: 18f9a80aefcc5cb42aee5d6c485d2c02, type: 2}
   - {fileID: 11400000, guid: d0103973fc0783b4dae49046b695f33a, type: 2}
@@ -281,6 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a0f0c8b883d8a40868e1f0bdf4f71a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  empty: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
 --- !u!1 &1581897494
 GameObject:
   m_ObjectHideFlags: 0
