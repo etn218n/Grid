@@ -20,8 +20,9 @@ namespace GridSystem
         protected float tileSize;
         protected Vector3 origin;
         protected Chunk[,] chunks;
-        protected List<Chunk> activeChunks;
-        protected Queue<Chunk> modifiedChunks;
+        
+        protected readonly List<Chunk> activeChunks = new List<Chunk>();
+        protected readonly Queue<Chunk> modifiedChunks = new Queue<Chunk>();
 
         public int Rows => rows;
         public int Columns => columns;
@@ -50,11 +51,9 @@ namespace GridSystem
             this.width  = columns * tileSize;
             this.height = rows * tileSize;
 
-            activeChunks   = new List<Chunk>();
-            modifiedChunks = new Queue<Chunk>();
-
             InitializeChunks();
             GenerateChunksMesh();
+            MarkAllChunksActive();
         }
         
         private void InitializeChunks()
@@ -91,41 +90,46 @@ namespace GridSystem
             handles.Dispose();
         }
 
-        public void SetUV(in Rect2D uvRect)
+        public void MarkAllChunksActive()
+        {
+            ForEachChunk(chunk => chunk.MarkActive());
+        }
+        
+        public void SetUVs(in Rect2D uvRect)
         {
             for (int i = 0; i < verticalChunks; i++) 
                 for (int j = 0; j < horizontalChunks; j++)
-                    chunks[i, j].SetChunkUVs(in uvRect);
+                    chunks[i, j].SetUVs(in uvRect);
         }
 
-        public void SetTileUV(in Rect2D uvRect, Vector2Int coordinate)
+        public void SetTileUVsAt(Vector2Int tileCoordinate, in Rect2D uvRect)
         {
-            int rowIndex    = coordinate.y / rowsPerChunk;
-            int columnIndex = coordinate.x / columnsPerChunk;
+            int rowIndex    = tileCoordinate.y / rowsPerChunk;
+            int columnIndex = tileCoordinate.x / columnsPerChunk;
 
-            Vector2Int chunkTileLocalCoordinate = new Vector2Int(coordinate.x % columnsPerChunk, coordinate.y % rowsPerChunk);
+            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, tileCoordinate.y % rowsPerChunk);
             
-            chunks[columnIndex, rowIndex].SetTileUVs(chunkTileLocalCoordinate, in uvRect);
+            chunks[columnIndex, rowIndex].SetTileUVsAt(tileLocalCoordinate, in uvRect);
         }
 
-        public void SetTileVertices(in Rect3D rect, Vector2Int coordinate)
+        public void SetTileVerticesAt(Vector2Int tileCoordinate, in Rect3D vertexRect)
         {
-            int rowIndex    = coordinate.y / rowsPerChunk;
-            int columnIndex = coordinate.x / columnsPerChunk;
+            int rowIndex    = tileCoordinate.y / rowsPerChunk;
+            int columnIndex = tileCoordinate.x / columnsPerChunk;
 
-            Vector2Int chunkTileLocalCoordinate = new Vector2Int(coordinate.x % columnsPerChunk, coordinate.y % rowsPerChunk);
+            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, tileCoordinate.y % rowsPerChunk);
             
-            chunks[columnIndex, rowIndex].SetTileVertices(chunkTileLocalCoordinate, in rect);
+            chunks[columnIndex, rowIndex].SetTileVerticesAt(tileLocalCoordinate, in vertexRect);
         }
 
-        public Rect3D GetTileRect(Vector2Int coordinate)
+        public Rect3D GetTileVertexRectAt(Vector2Int tileCoordinate)
         {
-            int rowIndex    = coordinate.y / rowsPerChunk;
-            int columnIndex = coordinate.x / columnsPerChunk;
+            int rowIndex    = tileCoordinate.y / rowsPerChunk;
+            int columnIndex = tileCoordinate.x / columnsPerChunk;
 
-            Vector2Int chunkTileLocalCoordinate = new Vector2Int(coordinate.x % columnsPerChunk, coordinate.y % rowsPerChunk);
+            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, tileCoordinate.y % rowsPerChunk);
 
-            return chunks[columnIndex, rowIndex].GetTileRect(chunkTileLocalCoordinate);
+            return chunks[columnIndex, rowIndex].GetTileVertexRectAt(tileLocalCoordinate);
         }
 
         public void UpdateMesh()
@@ -149,9 +153,7 @@ namespace GridSystem
 
         public void Dispose()
         {
-            for (int i = 0; i < verticalChunks; i++)
-                for (int j = 0; j < horizontalChunks; j++)
-                    chunks[i, j].Dispose();
+            ForEachChunk(chunk => chunk.Dispose());
         }
 
         public void ForEachChunk(Action<Chunk> action)
@@ -213,12 +215,12 @@ namespace GridSystem
             }
         }
 
-        public T TryGetTileAtPosition(Vector3 worldPosition)
+        public T TryGetTileAt(Vector3 worldPosition)
         {
-            return TryGetTileAtPosition(worldPosition.x, worldPosition.y);
+            return TryGetTileAt(worldPosition.x, worldPosition.y);
         }
         
-        public T TryGetTileAtPosition(float worldPositionX, float worldPositionY)
+        public T TryGetTileAt(float worldPositionX, float worldPositionY)
         {
             if (worldPositionX < origin.x || worldPositionX > width)
                 return default(T);
@@ -235,12 +237,12 @@ namespace GridSystem
             return tiles[i, j];
         }
         
-        public T TryGetTileAtCoordinate(Vector2Int coordinate)
+        public T TryGetTileAt(Vector2Int coordinate)
         {
-            return TryGetTileAtCoordinate(coordinate.x, coordinate.y);
+            return TryGetTileAt(coordinate.x, coordinate.y);
         }
         
-        public T TryGetTileAtCoordinate(int coordinateX, int coordinateY)
+        public T TryGetTileAt(int coordinateX, int coordinateY)
         {
             if (coordinateX < 0 || coordinateX >= columns)
                 return default(T);

@@ -40,14 +40,14 @@ namespace GridSystem
 
         public void UpdateNeighbors()
         {
-            neighbors[0] = ownerGrid.TryGetTileAtCoordinate(coordinate.x + 1, coordinate.y);
-            neighbors[1] = ownerGrid.TryGetTileAtCoordinate(coordinate.x - 1, coordinate.y);
-            neighbors[2] = ownerGrid.TryGetTileAtCoordinate(coordinate.x, coordinate.y - 1);
-            neighbors[3] = ownerGrid.TryGetTileAtCoordinate(coordinate.x, coordinate.y + 1);
-            neighbors[4] = ownerGrid.TryGetTileAtCoordinate(coordinate.x + 1, coordinate.y - 1);
-            neighbors[5] = ownerGrid.TryGetTileAtCoordinate(coordinate.x - 1, coordinate.y - 1);
-            neighbors[6] = ownerGrid.TryGetTileAtCoordinate(coordinate.x + 1, coordinate.y + 1);
-            neighbors[7] = ownerGrid.TryGetTileAtCoordinate(coordinate.x - 1, coordinate.y + 1);
+            neighbors[0] = ownerGrid.TryGetTileAt(coordinate.x + 1, coordinate.y);
+            neighbors[1] = ownerGrid.TryGetTileAt(coordinate.x - 1, coordinate.y);
+            neighbors[2] = ownerGrid.TryGetTileAt(coordinate.x, coordinate.y - 1);
+            neighbors[3] = ownerGrid.TryGetTileAt(coordinate.x, coordinate.y + 1);
+            neighbors[4] = ownerGrid.TryGetTileAt(coordinate.x + 1, coordinate.y - 1);
+            neighbors[5] = ownerGrid.TryGetTileAt(coordinate.x - 1, coordinate.y - 1);
+            neighbors[6] = ownerGrid.TryGetTileAt(coordinate.x + 1, coordinate.y + 1);
+            neighbors[7] = ownerGrid.TryGetTileAt(coordinate.x - 1, coordinate.y + 1);
         }
 
         public bool HasEastNeighbor  => neighbors[0] != null;
@@ -72,11 +72,11 @@ namespace GridSystem
         public bool IsEdge   => IsLeftEdge || IsRightEdge || IsTopEdge || IsBottomEdge;
         public bool IsCorner => IsBottomLeftCorner || IsBottomRightCorner || IsTopLeftCorner || IsTopRightCorner;
 
-        public Rect3D GetVertexRect() => ownerChunk.GetTileRect(localCoordinate);
+        public Rect3D GetVertexRect() => ownerChunk.GetTileVertexRectAt(localCoordinate);
         
-        public void SetUVs(in Rect2D rect2D) => ownerChunk.SetTileUVs(localCoordinate, in rect2D);
-        public void SetVertices(in Rect3D rect3D) => ownerChunk.SetTileVertices(localCoordinate, in rect3D);
-        public void SetColor(Color color) => ownerChunk.SetTileColor(localCoordinate, color);
+        public void SetUVs(in Rect2D uvRect) => ownerChunk.SetTileUVsAt(localCoordinate, in uvRect);
+        public void SetVertices(in Rect3D rect3D) => ownerChunk.SetTileVerticesAt(localCoordinate, in rect3D);
+        public void SetColor(Color color) => ownerChunk.SetTileColorAt(localCoordinate, color);
 
         public void ForEachNeighbor(Action<T> action)
         {

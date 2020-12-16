@@ -23,7 +23,7 @@ public class MovementMapModule : GridEngineModule
                                 new Vector2(gradient, 0), 
                                 new Vector2(gradient, 0));
         
-        engine.MovementGrid.SetTileUV(uvRect, coordinate);
+        engine.MovementGrid.SetTileUVsAt(coordinate, uvRect);
     }
 
     private float MovementCostToColorGradient(Vector2Int coordinate)
@@ -31,12 +31,12 @@ public class MovementMapModule : GridEngineModule
         var backgroundGrid = engine.BackgroundGrid;
         var foregroundGrid = engine.ForegroundGrid;
         
-        var tile = foregroundGrid.TryGetTileAtCoordinate(coordinate);
+        var tile = foregroundGrid.TryGetTileAt(coordinate);
 
         if (tile.Terrain != empty)
             return 1 - tile.Terrain.MovementCost / short.MaxValue;
         
-        tile = backgroundGrid.TryGetTileAtCoordinate(coordinate);
+        tile = backgroundGrid.TryGetTileAt(coordinate);
         
         return 1 - tile.Terrain.MovementCost / short.MaxValue;
     }

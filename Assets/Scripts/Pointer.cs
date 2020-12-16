@@ -4,17 +4,16 @@ public class Pointer : MonoBehaviour
 {
     [SerializeField] private GridEngine engine;
 
-    [SerializeField] private Terrain empty;
-
     private void Update()
     {
         if (Input.GetMouseButton(0))
         {
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.z = 10;
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePos);
+            Vector3 mouseScreenPosition = Input.mousePosition;
+            mouseScreenPosition.z = 10;
+            
+            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
 
-            var tile = engine.PlantGrid.TryGetTileAtPosition(worldPosition);
+            var tile = engine.PlantGrid.TryGetTileAt(mouseWorldPosition);
 
             if (tile != null)
                 tile.RemovePlant();

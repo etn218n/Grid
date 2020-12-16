@@ -21,7 +21,7 @@ namespace GridSystem
         protected NativeArray<int> indices;
         
         protected readonly Grid ownerGrid;
-        protected readonly List<ITickable> activeTickables;
+        protected readonly List<ITickable> activeTickables = new List<ITickable>();
 
         protected bool uvsModified;
         protected bool verticesModified;
@@ -46,9 +46,6 @@ namespace GridSystem
             this.width     = columns * tileSize;
             this.height    = rows * tileSize;
             this.ownerGrid = ownerGrid;
-            
-            activeTickables = new List<ITickable>();
-            MarkActive();
             
             mesh = new Mesh();
             mesh.MarkDynamic();
@@ -83,7 +80,7 @@ namespace GridSystem
                 MarkActive();
         }
         
-        public void SetChunkUVs(in Rect2D uvRect)
+        public void SetUVs(in Rect2D uvRect)
         {
             for (int i = 0; i < rows * columns * 4; i += 4)
             {
@@ -96,21 +93,21 @@ namespace GridSystem
             OnUVsModified();
         }
 
-        public void SetTileUVs(Vector2Int localCoordinate, in Rect2D uvRect)
+        public void SetTileUVsAt(Vector2Int tileLocalCoordinate, in Rect2D uvRect)
         {
-            if (localCoordinate.x < 0 || localCoordinate.x >= columns)
+            if (tileLocalCoordinate.x < 0 || tileLocalCoordinate.x >= columns)
             {
                 Debug.Log("Cell Coordinate X can not be greater than Columns");
                 return;
             }
 
-            if (localCoordinate.y < 0 || localCoordinate.y >= rows)
+            if (tileLocalCoordinate.y < 0 || tileLocalCoordinate.y >= rows)
             {
                 Debug.Log("Cell Coordinate Y can not be greater than Rows");
                 return;
             }
             
-            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
+            int index = (tileLocalCoordinate.y * columns * 4) + (tileLocalCoordinate.x * 4);
 
             uvs[index + 0] = uvRect.BottomLeft;
             uvs[index + 1] = uvRect.TopLeft;
@@ -120,21 +117,29 @@ namespace GridSystem
             OnUVsModified();
         }
 
-        public void SetTileVertices(Vector2Int localCoordinate, in Rect3D rect)
+        public void SetTileVerticesAt(Vector2Int tileLocalCoordinate, in Rect3D vertexRect)
         {
-            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
+            int index = (tileLocalCoordinate.y * columns * 4) + (tileLocalCoordinate.x * 4);
             
-            vertices[index + 0] = rect.BottomLeft;
-            vertices[index + 1] = rect.TopLeft;
-            vertices[index + 2] = rect.BottomRight;
-            vertices[index + 3] = rect.TopRight;
+            vertices[index + 0] = vertexRect.BottomLeft;
+            vertices[index + 1] = vertexRect.TopLeft;
+            vertices[index + 2] = vertexRect.BottomRight;
+            vertices[index + 3] = vertexRect.TopRight;
             
             OnVerticesModified();
         }
-
-        public void SetTileColor(Vector2Int localCoordinate, Color color)
+        
+        public void SetColor(Color color)
         {
-            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
+            for (int i = 0; i < rows * columns * 4; i++)
+                colors[i] = color;
+
+            OnColorModified();
+        }
+
+        public void SetTileColorAt(Vector2Int tileLocalCoordinate, Color color)
+        {
+            int index = (tileLocalCoordinate.y * columns * 4) + (tileLocalCoordinate.x * 4);
             
             colors[index + 0] = color;
             colors[index + 1] = color;
@@ -144,43 +149,43 @@ namespace GridSystem
             OnColorModified();
         }
         
-        public Rect3D GetTileRect(Vector2Int localCoordinate)
+        public Rect3D GetTileVertexRectAt(Vector2Int tileLocalCoordinate)
         {
-            int index = (localCoordinate.y * columns * 4) + (localCoordinate.x * 4);
+            int index = (tileLocalCoordinate.y * columns * 4) + (tileLocalCoordinate.x * 4);
 
             return new Rect3D(vertices[index + 0], vertices[index + 1], vertices[index + 2], vertices[index + 3]);
         }
         
         private void OnUVsModified()
         {
-            uvsModified = true;
-            
-            if (!ownerGrid.ModifiedChunks.Contains(this))
+            if (uvsModified == false)
                 ownerGrid.ModifiedChunks.Enqueue(this);
+            
+            uvsModified = true;
         }
 
         private void OnVerticesModified()
         {
-            verticesModified = true;
-
-            if (!ownerGrid.ModifiedChunks.Contains(this))
+            if (verticesModified == false)
                 ownerGrid.ModifiedChunks.Enqueue(this);
+            
+            verticesModified = true;
         }
 
         private void OnIndicesModified()
         {
-            indicesModified = true;
-
-            if (!ownerGrid.ModifiedChunks.Contains(this))
+            if (indicesModified == false)
                 ownerGrid.ModifiedChunks.Enqueue(this);
+            
+            indicesModified = true;
         }
         
         private void OnColorModified()
         {
-            colorsModified = true;
-
-            if (!ownerGrid.ModifiedChunks.Contains(this))
+            if (colorsModified == false)
                 ownerGrid.ModifiedChunks.Enqueue(this);
+            
+            colorsModified = true;
         }
         
         public void UpdateMesh()
@@ -227,16 +232,6 @@ namespace GridSystem
             }
         }
 
-        public void SetChunkColor(Color color)
-        {
-            for (int i = 0; i < rows * columns * 4; i++)
-            {
-                colors[i] = color;
-            }
-            
-            OnColorModified();
-        }
-        
         public JobHandle SetColorJobHandle(Color color)
         {
             SetChunkMeshColorJob job = new SetChunkMeshColorJob()

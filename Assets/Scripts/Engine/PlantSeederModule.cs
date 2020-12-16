@@ -27,12 +27,12 @@ public class PlantSeederModule : GridEngineModule
         var backgroundGrid = engine.BackgroundGrid;
         var foregroundGrid = engine.ForegroundGrid;
         
-        var tile = foregroundGrid.TryGetTileAtCoordinate(coordinate);
+        var tile = foregroundGrid.TryGetTileAt(coordinate);
             
         if (tile.Terrain != empty)
             return tile.Terrain;
 
-        return backgroundGrid.TryGetTileAtCoordinate(coordinate).Terrain;
+        return backgroundGrid.TryGetTileAt(coordinate).Terrain;
     }
     
     private void TryGrowTreeAt(PlantTile tile)

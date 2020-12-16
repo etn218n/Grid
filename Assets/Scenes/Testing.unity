@@ -153,7 +153,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   engine: {fileID: 596911676}
-  empty: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
 --- !u!4 &186940608
 Transform:
   m_ObjectHideFlags: 0
@@ -232,6 +231,7 @@ MonoBehaviour:
   modules:
   - {fileID: 596911677}
   - {fileID: 596911678}
+  - {fileID: 596911679}
 --- !u!114 &596911677
 MonoBehaviour:
   m_ObjectHideFlags: 0

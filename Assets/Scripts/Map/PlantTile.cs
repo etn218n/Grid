@@ -43,7 +43,7 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
     public void Tick(long ticks)
     {
         plant.Grow(growSpeed);
-        //AdjustPlantSize();
+        AdjustPlantSize();
     }
 
     public void RemovePlant()
