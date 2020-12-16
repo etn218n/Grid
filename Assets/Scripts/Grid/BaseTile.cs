@@ -26,12 +26,18 @@ namespace GridSystem
         public Vector2Int Coordinate => coordinate;
         public Vector2Int LocalCoordinate => localCoordinate;
 
-        public BaseTile(Grid<T> ownerGrid, Chunk ownerChunk, Vector2Int coordinate, Vector2Int localCoordinate)
+        public BaseTile(Grid<T> ownerGrid, Vector2Int coordinate)
         {
-            this.ownerChunk = ownerChunk;
-            this.coordinate = coordinate;
             this.ownerGrid  = ownerGrid;
-            this.localCoordinate = localCoordinate;
+            this.coordinate = coordinate;
+
+            int rowIndex    = coordinate.y / ownerGrid.RowsPerChunk;
+            int columnIndex = coordinate.x / ownerGrid.ColumnsPerChunk;
+
+            this.ownerChunk = ownerGrid.Chunks[columnIndex, rowIndex];
+
+            this.localCoordinate = new Vector2Int(coordinate.x % ownerGrid.ColumnsPerChunk, 
+                                                  coordinate.y % ownerGrid.RowsPerChunk);
             
             this.position = new Vector3(ownerGrid.Origin.x + (coordinate.x * ownerGrid.TileSize) + (ownerGrid.TileSize / 2), 
                                         ownerGrid.Origin.y + (coordinate.y * ownerGrid.TileSize) + (ownerGrid.TileSize / 2),

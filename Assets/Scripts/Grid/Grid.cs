@@ -107,7 +107,8 @@ namespace GridSystem
             int rowIndex    = tileCoordinate.y / rowsPerChunk;
             int columnIndex = tileCoordinate.x / columnsPerChunk;
 
-            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, tileCoordinate.y % rowsPerChunk);
+            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, 
+                                                            tileCoordinate.y % rowsPerChunk);
             
             chunks[columnIndex, rowIndex].SetTileUVsAt(tileLocalCoordinate, in uvRect);
         }
@@ -117,7 +118,8 @@ namespace GridSystem
             int rowIndex    = tileCoordinate.y / rowsPerChunk;
             int columnIndex = tileCoordinate.x / columnsPerChunk;
 
-            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, tileCoordinate.y % rowsPerChunk);
+            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, 
+                                                            tileCoordinate.y % rowsPerChunk);
             
             chunks[columnIndex, rowIndex].SetTileVerticesAt(tileLocalCoordinate, in vertexRect);
         }
@@ -127,7 +129,8 @@ namespace GridSystem
             int rowIndex    = tileCoordinate.y / rowsPerChunk;
             int columnIndex = tileCoordinate.x / columnsPerChunk;
 
-            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, tileCoordinate.y % rowsPerChunk);
+            Vector2Int tileLocalCoordinate = new Vector2Int(tileCoordinate.x % columnsPerChunk, 
+                                                            tileCoordinate.y % rowsPerChunk);
 
             return chunks[columnIndex, rowIndex].GetTileVertexRectAt(tileLocalCoordinate);
         }
@@ -176,7 +179,7 @@ namespace GridSystem
         protected T[,] tiles;
         public T[,] Tiles => tiles;
 
-        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Func<Grid<T>, Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
+        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Func<Grid<T>, Vector2Int, T> instantiationFunc)
         : base(origin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize)
         {
             InitializeTiles(instantiationFunc);
@@ -190,7 +193,7 @@ namespace GridSystem
                     tiles[i, j].UpdateNeighbors();
         }
 
-        private void InitializeTiles(Func<Grid<T>, Chunk, Vector2Int, Vector2Int, T> instantiationFunc)
+        private void InitializeTiles(Func<Grid<T>, Vector2Int, T> instantiationFunc)
         {
             tiles = new T[columns, rows];
             
@@ -205,10 +208,9 @@ namespace GridSystem
                             int columnIndex = c + i * columnsPerChunk;
                             int rowIndex    = r + j * rowsPerChunk;
 
-                            Vector2Int coordinate      = new Vector2Int(columnIndex, rowIndex);
-                            Vector2Int localCoordinate = new Vector2Int(c, r);
+                            Vector2Int tileCoordinate = new Vector2Int(columnIndex, rowIndex);
 
-                            tiles[columnIndex, rowIndex] = instantiationFunc(this, chunks[i, j], coordinate, localCoordinate);
+                            tiles[columnIndex, rowIndex] = instantiationFunc(this, tileCoordinate);
                         }
                     }
                 }

@@ -55,22 +55,29 @@ public class GridEngine : MonoBehaviour
     private void InstantiateGrids()
     {
         plantGrid = new Grid<PlantTile>(plantOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize,
-                                        (grid, chunk, coordinate, localCoordinate) => new PlantTile(grid, chunk, coordinate, localCoordinate));
+                                        (ownerGrid, coordinate) => new PlantTile(ownerGrid, coordinate));
+
+        movementGrid = new Grid<MovementTile>(movementOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
+                                              (ownerGrid, coordinate) => new MovementTile(ownerGrid, coordinate));
         
         basegroundGrid = new Grid<TerrainTile>(basegroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
-                                               (grid, chunk, coordinate, localCoordinate) => new TerrainTile(grid, chunk, coordinate, localCoordinate));
-        
+                                               (ownerGrid, coordinate) => new TerrainTile(ownerGrid, coordinate));
+
         backgroundGrid = new Grid<TerrainTile>(backgroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
-                                               (grid, chunk, coordinate, localCoordinate) => new TerrainTile(grid, chunk, coordinate, localCoordinate));
-        
+                                               (ownerGrid, coordinate) => new TerrainTile(ownerGrid, coordinate));
+
         foregroundGrid = new Grid<TerrainTile>(foregroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
-                                               (grid, chunk, coordinate, localCoordinate) => new TerrainTile(grid, chunk, coordinate, localCoordinate));
-        
-        movementGrid = new Grid<MovementTile>(movementOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
-                                               (grid, chunk, coordinate, localCoordinate) => new MovementTile(grid, chunk, coordinate, localCoordinate));
+                                               (ownerGrid, coordinate) => new TerrainTile(ownerGrid, coordinate));
     }
 
     private void Update()
+    {
+        Tick();
+        UpdateGridsMesh();
+        DrawGrids();
+    }
+
+    private void Tick()
     {
         plantGrid.Tick(tickCount);
         movementGrid.Tick(tickCount);
@@ -78,19 +85,25 @@ public class GridEngine : MonoBehaviour
         backgroundGrid.Tick(tickCount);
         foregroundGrid.Tick(tickCount);
         
+        tickCount++;
+    }
+
+    private void UpdateGridsMesh()
+    {
         plantGrid.UpdateMesh();
         movementGrid.UpdateMesh();
         basegroundGrid.UpdateMesh();
         backgroundGrid.UpdateMesh();
         foregroundGrid.UpdateMesh();
-
+    }
+    
+    private void DrawGrids()
+    {
         plantGrid.Draw(plantMaterial);
         movementGrid.Draw(movementMaterial);
         basegroundGrid.Draw(basegroundMaterial);
         backgroundGrid.Draw(backgroundMaterial);
         foregroundGrid.Draw(foregroundMaterial);
-
-        tickCount++;
     }
 
     private void OnDestroy()
@@ -100,5 +113,7 @@ public class GridEngine : MonoBehaviour
         basegroundGrid.Dispose();
         backgroundGrid.Dispose();
         foregroundGrid.Dispose();
+        
+        modules.ForEach(module => module.OnEnd(this));
     }
 }

@@ -6,8 +6,7 @@ public class TerrainTile : BaseTile<TerrainTile>
     private Terrain terrain;
     public Terrain Terrain => terrain;
 
-    public TerrainTile(Grid<TerrainTile> ownerGrid, Chunk ownerChunk, Vector2Int coordinate, Vector2Int localCoordinate) : 
-        base(ownerGrid, ownerChunk, coordinate, localCoordinate)
+    public TerrainTile(Grid<TerrainTile> ownerGrid, Vector2Int coordinate) : base(ownerGrid, coordinate)
     {
     }
 

@@ -7,7 +7,7 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
     private float fertility;
     private float growSpeed;
     
-    public PlantTile(Grid<PlantTile> ownerGrid, Chunk ownerChunk, Vector2Int coordinate, Vector2Int localCoordinate) : base(ownerGrid, ownerChunk, coordinate, localCoordinate)
+    public PlantTile(Grid<PlantTile> ownerGrid, Vector2Int coordinate) : base(ownerGrid, coordinate)
     {
     }
 
