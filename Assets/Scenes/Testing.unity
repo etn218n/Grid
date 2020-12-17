@@ -213,6 +213,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98c8146ee85bcf040bb92b11f9f8101c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSpeed: 1
+  ticksPerSecond: 60
   horizontalChunks: 3
   verticalChunks: 3
   tileSize: 1
@@ -231,7 +233,6 @@ MonoBehaviour:
   modules:
   - {fileID: 596911677}
   - {fileID: 596911678}
-  - {fileID: 596911679}
 --- !u!114 &596911677
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -42,6 +42,9 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
 
     public void Tick(long ticks)
     {
+        if (plant.IsFullyGrown)
+            return;
+        
         plant.Grow(growSpeed);
         AdjustPlantSize();
     }

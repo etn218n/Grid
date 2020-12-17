@@ -12,6 +12,7 @@ public class Plant
     public int Height => height;
     public float Maturity => maturity;
     public Rect2D SpriteRectUV => spriteRectUV;
+    public bool IsFullyGrown => maturity >= 1;
 
     public Plant(int width, int height, Rect2D spriteRectUV)
     {

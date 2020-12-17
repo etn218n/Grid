@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using GridSystem;
-using Grid = GridSystem.Grid;
 
 public class GridEngine : MonoBehaviour
 {
+    [Header("Update Setting")] 
+    [Range(1, 3)]
+    [SerializeField] private int gameSpeed = 1;
+    [SerializeField] private int ticksPerSecond = 60;
+    
     [Header("Grid Dimension")]
     [SerializeField] private int horizontalChunks;
     [SerializeField] private int verticalChunks;
@@ -37,7 +41,10 @@ public class GridEngine : MonoBehaviour
     private Grid<MovementTile> movementGrid;
     private Grid<PlantTile> plantGrid;
 
-    private long tickCount = 0;
+    private float frameTime = 0;
+    private float elapsedTime = 0;
+    private long ticksSinceStartUp = 0;
+    private bool alreadyTickedThisFrameTime;
     
     public Grid<TerrainTile> BasegroundGrid => basegroundGrid;
     public Grid<TerrainTile> BackgroundGrid => backgroundGrid;
@@ -72,20 +79,41 @@ public class GridEngine : MonoBehaviour
 
     private void Update()
     {
-        Tick();
-        UpdateGridsMesh();
+        elapsedTime += Time.unscaledDeltaTime;
+        
+        frameTime = 1.0f / ticksPerSecond;
+
+        if (elapsedTime < frameTime)
+        {
+            if (!alreadyTickedThisFrameTime)
+            {
+                for (int i = 0; i < gameSpeed; i++)
+                {
+                    Tick();
+                    UpdateGridsMesh();
+                }
+            
+                alreadyTickedThisFrameTime = true;
+            }
+        }
+        else
+        {
+            alreadyTickedThisFrameTime = false;
+            elapsedTime -= frameTime;
+        }
+        
         DrawGrids();
     }
 
     private void Tick()
     {
-        plantGrid.Tick(tickCount);
-        movementGrid.Tick(tickCount);
-        basegroundGrid.Tick(tickCount);
-        backgroundGrid.Tick(tickCount);
-        foregroundGrid.Tick(tickCount);
-        
-        tickCount++;
+        plantGrid.Tick(ticksSinceStartUp);
+        movementGrid.Tick(ticksSinceStartUp);
+        basegroundGrid.Tick(ticksSinceStartUp);
+        backgroundGrid.Tick(ticksSinceStartUp);
+        foregroundGrid.Tick(ticksSinceStartUp);
+
+        ticksSinceStartUp++;
     }
 
     private void UpdateGridsMesh()
