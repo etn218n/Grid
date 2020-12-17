@@ -29,7 +29,7 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
     {
         ownerChunk.ActiveTickables.Add(this);
         AdjustTileDimension(plant.Width, plant.Height);
-        SetUVs(plant.SpriteRectUV);
+        SetUVs(plant.SpriteUVRect);
     }
 
     public void ShowPlantInfo()

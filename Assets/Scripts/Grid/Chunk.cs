@@ -33,6 +33,7 @@ namespace GridSystem
         public float Width => width;
         public float Height => height;
         public float TileSize => tileSize;
+        public Vector3 Origin => origin;
         public Mesh Mesh => mesh;
         public Grid OwnerGrid => ownerGrid;
         public List<ITickable> ActiveTickables => activeTickables;
@@ -67,17 +68,35 @@ namespace GridSystem
             ownerGrid.ActiveChunks.Add(this);
         }
 
-        public void UnmarkActive()
+        public void MarkInactive()
         {
             ownerGrid.ActiveChunks.Remove(this);
+        }
+
+        public void MarkVisible()
+        {
+            ownerGrid.VisibleChunks.Add(this);
+        }
+        
+        public void MarkInvisible()
+        {
+            ownerGrid.VisibleChunks.Remove(this);
         }
 
         public void ToggleActive()
         {
             if (ownerGrid.ActiveChunks.Contains(this))
-                UnmarkActive();
+                MarkInactive();
             else
                 MarkActive();
+        }
+        
+        public void ToggleVisible()
+        {
+            if (ownerGrid.VisibleChunks.Contains(this))
+                MarkInvisible();
+            else
+                MarkVisible();
         }
         
         public void SetUVs(in Rect2D uvRect)

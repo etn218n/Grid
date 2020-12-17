@@ -91,9 +91,11 @@ public class GridEngine : MonoBehaviour
                 {
                     Tick();
                     UpdateGridsMesh();
+                    DrawGrids();
                 }
             
                 alreadyTickedThisFrameTime = true;
+                return;
             }
         }
         else

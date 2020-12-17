@@ -21,7 +21,8 @@ namespace GridSystem
         protected Vector3 origin;
         protected Chunk[,] chunks;
         
-        protected readonly List<Chunk> activeChunks = new List<Chunk>();
+        protected readonly List<Chunk> activeChunks  = new List<Chunk>();
+        protected readonly List<Chunk> visibleChunks = new List<Chunk>();
         protected readonly Queue<Chunk> modifiedChunks = new Queue<Chunk>();
 
         public int Rows => rows;
@@ -36,6 +37,7 @@ namespace GridSystem
         public Vector3 Origin => origin;
         public Chunk[,] Chunks => chunks;
         public List<Chunk> ActiveChunks => activeChunks;
+        public List<Chunk> VisibleChunks => visibleChunks;
         public Queue<Chunk> ModifiedChunks => modifiedChunks;
 
         public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize)
@@ -54,6 +56,7 @@ namespace GridSystem
             InitializeChunks();
             GenerateChunksMesh();
             MarkAllChunksActive();
+            MarkAllChunksVisible();
         }
         
         private void InitializeChunks()
@@ -93,6 +96,11 @@ namespace GridSystem
         public void MarkAllChunksActive()
         {
             ForEachChunk(chunk => chunk.MarkActive());
+        }
+        
+        public void MarkAllChunksVisible()
+        {
+            ForEachChunk(chunk => chunk.MarkVisible());
         }
         
         public void SetUVs(in Rect2D uvRect)
@@ -135,6 +143,28 @@ namespace GridSystem
             return chunks[columnIndex, rowIndex].GetTileVertexRectAt(tileLocalCoordinate);
         }
 
+        public Chunk TryGetChunkAt(Vector3 worldPosition)
+        {
+            return TryGetChunkAt(worldPosition.x, worldPosition.y);
+        }
+        
+        public Chunk TryGetChunkAt(float worldPositionX, float worldPositionY)
+        {
+            if (worldPositionX < origin.x || worldPositionX > width)
+                return null;
+
+            if (worldPositionY < origin.y || worldPositionY > height)
+                return null;
+
+            float fractX = Mathf.Abs(worldPositionX - origin.x) / tileSize;
+            float fractY = Mathf.Abs(worldPositionY - origin.y) / tileSize;
+
+            int i = fractX == 0 ? 0 : Mathf.CeilToInt(fractX) - 1;
+            int j = fractY == 0 ? 0 : Mathf.CeilToInt(fractY) - 1;
+
+            return chunks[i / columnsPerChunk, j / rowsPerChunk];
+        }
+
         public void UpdateMesh()
         {
             while (modifiedChunks.Any())
@@ -146,7 +176,7 @@ namespace GridSystem
             if (material == null)
                 return;
             
-            ForEachChunk(chunk => Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0));
+            visibleChunks.ForEach(chunk => Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0));
         }
 
         public void Tick(long ticks)

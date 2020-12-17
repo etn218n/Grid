@@ -6,17 +6,24 @@ public class Pointer : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
             Vector3 mouseScreenPosition = Input.mousePosition;
             mouseScreenPosition.z = 10;
             
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
 
-            var tile = engine.PlantGrid.TryGetTileAt(mouseWorldPosition);
+            var chunkA = engine.PlantGrid.TryGetChunkAt(mouseWorldPosition);
+            var chunkB = engine.ForegroundGrid.TryGetChunkAt(mouseWorldPosition);
 
-            if (tile != null)
-                tile.RemovePlant();
+            if (chunkA != null)
+            {
+                chunkA.ToggleActive();
+                chunkA.ToggleVisible();
+                
+                chunkB.ToggleActive();
+                chunkB.ToggleVisible();
+            }
         }
     }
 }
