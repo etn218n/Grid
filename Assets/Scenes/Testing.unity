@@ -215,11 +215,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameSpeed: 1
   ticksPerSecond: 60
-  horizontalChunks: 3
-  verticalChunks: 3
+  horizontalChunks: 6
+  verticalChunks: 6
   tileSize: 1
-  rowsPerChunk: 100
-  columnsPerChunk: 100
+  rowsPerChunk: 50
+  columnsPerChunk: 50
   basegroundOrigin: {x: 0, y: 0, z: 3}
   backgroundOrigin: {x: 0, y: 0, z: 2}
   foregroundOrigin: {x: 0, y: 0, z: 1}
@@ -233,6 +233,7 @@ MonoBehaviour:
   modules:
   - {fileID: 596911677}
   - {fileID: 596911678}
+  - {fileID: 596911679}
 --- !u!114 &596911677
 MonoBehaviour:
   m_ObjectHideFlags: 0

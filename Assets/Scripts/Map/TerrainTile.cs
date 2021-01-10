@@ -20,6 +20,9 @@ public class TerrainTile : BaseTile<TerrainTile>
         return terrain == otherTile.Terrain;
     }
 
+    public override bool IsOccupied { get; }
+    public override bool IsCollidable { get; }
+
     public void Paint(Terrain terrain)
     {
         if (terrain == null)

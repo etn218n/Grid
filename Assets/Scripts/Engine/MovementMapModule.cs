@@ -11,7 +11,8 @@ public class MovementMapModule : GridEngineModule
     {
         this.engine = engine;
 
-        engine.MovementGrid.ForEachCoordinate(coordinate => PaintTileBasedOnMovementCost(coordinate));
+        SetupMovementGrid(engine);
+        //engine.MovementGrid.ForEachCoordinate(coordinate => PaintTileBasedOnMovementCost(coordinate));
     }
 
     private void PaintTileBasedOnMovementCost(Vector2Int coordinate)
@@ -24,6 +25,11 @@ public class MovementMapModule : GridEngineModule
                                 new Vector2(gradient, 0));
         
         engine.MovementGrid.SetTileUVsAt(coordinate, uvRect);
+    }
+
+    public void SetupMovementGrid(GridEngine engine)
+    {
+        
     }
 
     private float MovementCostToColorGradient(Vector2Int coordinate)

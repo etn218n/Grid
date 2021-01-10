@@ -1,7 +1,7 @@
 ﻿using GridSystem;
 using UnityEngine;
 
-public class PlantTile : BaseTile<PlantTile>, ITickable
+public class PlantTile : BaseTile<PlantTile>
 {
     private Plant plant;
     private float fertility;
@@ -27,7 +27,7 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
 
     private void OnPlantSeeded()
     {
-        ownerChunk.ActiveTickables.Add(this);
+        MarkActive();
         AdjustTileDimension(plant.Width, plant.Height);
         SetUVs(plant.SpriteUVRect);
     }
@@ -40,7 +40,7 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
         Debug.Log(plant.Maturity);
     }
 
-    public void Tick(long ticks)
+    public override void Tick(long ticks)
     {
         if (plant.IsFullyGrown)
             return;
@@ -48,6 +48,9 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
         plant.Grow(growSpeed);
         AdjustPlantSize();
     }
+
+    public override bool IsOccupied => plant == null;
+    public override bool IsCollidable => plant == null;
 
     public void RemovePlant()
     {
@@ -58,7 +61,7 @@ public class PlantTile : BaseTile<PlantTile>, ITickable
 
     private void OnPlantRemoved()
     {
-        ownerChunk.ActiveTickables.Remove(this);
+        MarkInactive();
         AdjustTileDimension(1, 1);
         SetUVs(Rect2D.Zero);
     }

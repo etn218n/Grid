@@ -3,15 +3,17 @@ using UnityEngine;
 
 namespace GridSystem
 {
-    public class BaseTile<T> where T : BaseTile<T>
+    public abstract class BaseTile<T> : ITickable where T : BaseTile<T>
     {
         protected T[] neighbors = new T[8];
-        
+
         protected readonly Chunk ownerChunk;
         protected readonly Grid<T> ownerGrid;
         protected readonly Vector3 position;
         protected readonly Vector2Int coordinate;
         protected readonly Vector2Int localCoordinate;
+        
+        private bool isActiveTickable; // cached state for optimization
 
         public T EastNeighbor  => neighbors[0];
         public T WestNeighbor  => neighbors[1];
@@ -25,8 +27,9 @@ namespace GridSystem
         public Vector3 Position => position;
         public Vector2Int Coordinate => coordinate;
         public Vector2Int LocalCoordinate => localCoordinate;
+        public bool IsActiveTickable => isActiveTickable;
 
-        public BaseTile(Grid<T> ownerGrid, Vector2Int coordinate)
+        protected BaseTile(Grid<T> ownerGrid, Vector2Int coordinate)
         {
             this.ownerGrid  = ownerGrid;
             this.coordinate = coordinate;
@@ -81,9 +84,25 @@ namespace GridSystem
         public Rect3D GetVertexRect() => ownerChunk.GetTileVertexRectAt(localCoordinate);
         
         public void SetUVs(in Rect2D uvRect) => ownerChunk.SetTileUVsAt(localCoordinate, in uvRect);
-        public void SetVertices(in Rect3D rect3D) => ownerChunk.SetTileVerticesAt(localCoordinate, in rect3D);
         public void SetColor(Color color) => ownerChunk.SetTileColorAt(localCoordinate, color);
+        public void SetVertices(in Rect3D rect3D) => ownerChunk.SetTileVerticesAt(localCoordinate, in rect3D);
 
+        public void MarkActive()
+        {
+            if (isActiveTickable)
+                return;
+            
+            ownerChunk.ActiveTickables.Add(this);
+        }
+        
+        public void MarkInactive()
+        {
+            if (!isActiveTickable)
+                return;
+            
+            ownerChunk.ActiveTickables.Remove(this);
+        }
+        
         public void ForEachNeighbor(Action<T> action)
         {
             foreach (var neighbor in neighbors)
@@ -94,5 +113,9 @@ namespace GridSystem
         }
         
         public virtual bool SameTileCategory(T otherTile) => false;
+        public virtual void Tick(long ticks) { }
+
+        public abstract bool IsOccupied { get; }
+        public abstract bool IsCollidable { get; }
     }
 }

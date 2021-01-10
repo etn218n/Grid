@@ -41,9 +41,9 @@ public class GridEngine : MonoBehaviour
     private Grid<MovementTile> movementGrid;
     private Grid<PlantTile> plantGrid;
 
-    private float frameTime = 0;
-    private float elapsedTime = 0;
-    private long ticksSinceStartUp = 0;
+    private float frameTime;
+    private float elapsedTime;
+    private long ticksSinceStartUp;
     private bool alreadyTickedThisFrameTime;
     
     public Grid<TerrainTile> BasegroundGrid => basegroundGrid;
@@ -88,14 +88,9 @@ public class GridEngine : MonoBehaviour
             if (!alreadyTickedThisFrameTime)
             {
                 for (int i = 0; i < gameSpeed; i++)
-                {
                     Tick();
-                    UpdateGridsMesh();
-                    DrawGrids();
-                }
-            
+
                 alreadyTickedThisFrameTime = true;
-                return;
             }
         }
         else
@@ -104,6 +99,7 @@ public class GridEngine : MonoBehaviour
             elapsedTime -= frameTime;
         }
         
+        UpdateGridsMesh();
         DrawGrids();
     }
 

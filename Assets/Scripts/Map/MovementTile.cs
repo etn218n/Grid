@@ -11,4 +11,6 @@ public class MovementTile : BaseTile<MovementTile>, IHaveMovementCost
     }
 
     public void UpdateCost(short newCost) => movementCost = newCost;
+    public override bool IsOccupied => false;
+    public override bool IsCollidable => false;
 }
