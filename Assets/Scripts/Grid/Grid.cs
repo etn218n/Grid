@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine;
+using Optional;
 
 namespace GridSystem
 {
@@ -132,7 +133,7 @@ namespace GridSystem
             chunks[columnIndex, rowIndex].SetTileVerticesAt(tileLocalCoordinate, in vertexRect);
         }
 
-        public Rect3D GetTileVertexRectAt(Vector2Int tileCoordinate)
+        public Option<Rect3D> GetTileVertexRectAt(Vector2Int tileCoordinate)
         {
             int rowIndex    = tileCoordinate.y / rowsPerChunk;
             int columnIndex = tileCoordinate.x / columnsPerChunk;
@@ -143,18 +144,18 @@ namespace GridSystem
             return chunks[columnIndex, rowIndex].GetTileVertexRectAt(tileLocalCoordinate);
         }
 
-        public Chunk TryGetChunkAt(Vector3 worldPosition)
+        public Option<Chunk> GetChunkAt(Vector3 worldPosition)
         {
-            return TryGetChunkAt(worldPosition.x, worldPosition.y);
+            return GetChunkAt(worldPosition.x, worldPosition.y);
         }
         
-        public Chunk TryGetChunkAt(float worldPositionX, float worldPositionY)
+        public Option<Chunk> GetChunkAt(float worldPositionX, float worldPositionY)
         {
             if (worldPositionX < origin.x || worldPositionX > width)
-                return null;
+                return Option.None<Chunk>();
 
             if (worldPositionY < origin.y || worldPositionY > height)
-                return null;
+                return Option.None<Chunk>();
 
             float fractX = Mathf.Abs(worldPositionX - origin.x) / tileSize;
             float fractY = Mathf.Abs(worldPositionY - origin.y) / tileSize;
@@ -162,7 +163,7 @@ namespace GridSystem
             int i = fractX == 0 ? 0 : Mathf.CeilToInt(fractX) - 1;
             int j = fractY == 0 ? 0 : Mathf.CeilToInt(fractY) - 1;
 
-            return chunks[i / columnsPerChunk, j / rowsPerChunk];
+            return Option.Some(chunks[i / columnsPerChunk, j / rowsPerChunk]);
         }
 
         public void UpdateMesh()
@@ -173,9 +174,6 @@ namespace GridSystem
 
         public void Draw(Material material)
         {
-            if (material == null)
-                return;
-            
             visibleChunks.ForEach(chunk => Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0));
         }
 
@@ -210,7 +208,7 @@ namespace GridSystem
         public T[,] Tiles => tiles;
 
         public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Func<Grid<T>, Vector2Int, T> instantiationFunc)
-        : base(origin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize)
+                    : base(origin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize)
         {
             InitializeTiles(instantiationFunc);
             UpdateTileNeighbors();
@@ -247,18 +245,18 @@ namespace GridSystem
             }
         }
 
-        public T TryGetTileAt(Vector3 worldPosition)
+        public Option<T> GetTileAt(Vector3 worldPosition)
         {
-            return TryGetTileAt(worldPosition.x, worldPosition.y);
+            return GetTileAt(worldPosition.x, worldPosition.y);
         }
         
-        public T TryGetTileAt(float worldPositionX, float worldPositionY)
+        public Option<T> GetTileAt(float worldPositionX, float worldPositionY)
         {
             if (worldPositionX < origin.x || worldPositionX > width)
-                return default(T);
+                return Option.None<T>();
 
             if (worldPositionY < origin.y || worldPositionY > height)
-                return default(T);
+                return Option.None<T>();
 
             float fractX = Mathf.Abs(worldPositionX - origin.x) / tileSize;
             float fractY = Mathf.Abs(worldPositionY - origin.y) / tileSize;
@@ -266,23 +264,23 @@ namespace GridSystem
             int i = fractX == 0 ? 0 : Mathf.CeilToInt(fractX) - 1;
             int j = fractY == 0 ? 0 : Mathf.CeilToInt(fractY) - 1;
 
-            return tiles[i, j];
+            return Option.Some(tiles[i, j]);
         }
         
-        public T TryGetTileAt(Vector2Int coordinate)
+        public Option<T> GetTileAt(Vector2Int coordinate)
         {
-            return TryGetTileAt(coordinate.x, coordinate.y);
+            return GetTileAt(coordinate.x, coordinate.y);
         }
         
-        public T TryGetTileAt(int coordinateX, int coordinateY)
+        public Option<T> GetTileAt(int coordinateX, int coordinateY)
         {
             if (coordinateX < 0 || coordinateX >= columns)
-                return default(T);
+                return Option.None<T>();
             
             if (coordinateY < 0 || coordinateY >= rows)
-                return default(T);
+                return Option.None<T>();
 
-            return tiles[coordinateX, coordinateY];
+            return Option.Some(tiles[coordinateX, coordinateY]);
         }
 
         public void ForEachTile(Action<T> action)

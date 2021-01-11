@@ -13,17 +13,21 @@ public class Pointer : MonoBehaviour
             
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
 
-            var chunkA = engine.PlantGrid.TryGetChunkAt(mouseWorldPosition);
-            var chunkB = engine.ForegroundGrid.TryGetChunkAt(mouseWorldPosition);
-
-            if (chunkA != null)
+            var optionalChunkA = engine.PlantGrid.GetChunkAt(mouseWorldPosition);
+            
+            optionalChunkA.MatchSome(chunk =>
             {
-                chunkA.ToggleActive();
-                chunkA.ToggleVisible();
-                
-                chunkB.ToggleActive();
-                chunkB.ToggleVisible();
-            }
+                chunk.ToggleActive();
+                chunk.ToggleVisible();
+            });
+            
+            var optionalChunkB = engine.ForegroundGrid.GetChunkAt(mouseWorldPosition);
+            
+            optionalChunkB.MatchSome(chunk =>
+            {
+                chunk.ToggleActive();
+                chunk.ToggleVisible();
+            });
         }
     }
 }

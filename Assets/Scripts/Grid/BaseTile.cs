@@ -1,11 +1,12 @@
 ﻿using System;
+using Optional;
 using UnityEngine;
 
 namespace GridSystem
 {
     public abstract class BaseTile<T> : ITickable where T : BaseTile<T>
     {
-        protected T[] neighbors = new T[8];
+        protected Option<T>[] neighbors = new Option<T>[8];
 
         protected readonly Chunk ownerChunk;
         protected readonly Grid<T> ownerGrid;
@@ -15,14 +16,14 @@ namespace GridSystem
         
         private bool isActiveTickable; // cached state for optimization
 
-        public T EastNeighbor  => neighbors[0];
-        public T WestNeighbor  => neighbors[1];
-        public T SouthNeighbor => neighbors[2];
-        public T NorthNeighbor => neighbors[3];
-        public T SouthEastNeighbor => neighbors[4];
-        public T SouthWestNeighbor => neighbors[5];
-        public T NorthEastNeighbor => neighbors[6];
-        public T NorthWestNeighbor => neighbors[7];
+        public Option<T> EastNeighbor  => neighbors[0];
+        public Option<T> WestNeighbor  => neighbors[1];
+        public Option<T> SouthNeighbor => neighbors[2];
+        public Option<T> NorthNeighbor => neighbors[3];
+        public Option<T> SouthEastNeighbor => neighbors[4];
+        public Option<T> SouthWestNeighbor => neighbors[5];
+        public Option<T> NorthEastNeighbor => neighbors[6];
+        public Option<T> NorthWestNeighbor => neighbors[7];
 
         public Vector3 Position => position;
         public Vector2Int Coordinate => coordinate;
@@ -49,24 +50,24 @@ namespace GridSystem
 
         public void UpdateNeighbors()
         {
-            neighbors[0] = ownerGrid.TryGetTileAt(coordinate.x + 1, coordinate.y);
-            neighbors[1] = ownerGrid.TryGetTileAt(coordinate.x - 1, coordinate.y);
-            neighbors[2] = ownerGrid.TryGetTileAt(coordinate.x, coordinate.y - 1);
-            neighbors[3] = ownerGrid.TryGetTileAt(coordinate.x, coordinate.y + 1);
-            neighbors[4] = ownerGrid.TryGetTileAt(coordinate.x + 1, coordinate.y - 1);
-            neighbors[5] = ownerGrid.TryGetTileAt(coordinate.x - 1, coordinate.y - 1);
-            neighbors[6] = ownerGrid.TryGetTileAt(coordinate.x + 1, coordinate.y + 1);
-            neighbors[7] = ownerGrid.TryGetTileAt(coordinate.x - 1, coordinate.y + 1);
+            neighbors[0] = ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y);
+            neighbors[1] = ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y);
+            neighbors[2] = ownerGrid.GetTileAt(coordinate.x, coordinate.y - 1);
+            neighbors[3] = ownerGrid.GetTileAt(coordinate.x, coordinate.y + 1);
+            neighbors[4] = ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y - 1);
+            neighbors[5] = ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y - 1);
+            neighbors[6] = ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y + 1);
+            neighbors[7] = ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y + 1);
         }
 
-        public bool HasEastNeighbor  => neighbors[0] != null;
-        public bool HasWestNeighbor  => neighbors[1] != null;
-        public bool HasSouthNeighbor => neighbors[2] != null;
-        public bool HasNorthNeighbor => neighbors[3] != null;
-        public bool HasSouthEastNeighbor => neighbors[4] != null;
-        public bool HasSouthWestNeighbor => neighbors[5] != null;
-        public bool HasNorthEastNeighbor => neighbors[6] != null;
-        public bool HasNorthWestNeighbor => neighbors[7] != null;
+        public bool HasEastNeighbor  => neighbors[0].HasValue;
+        public bool HasWestNeighbor  => neighbors[1].HasValue;
+        public bool HasSouthNeighbor => neighbors[2].HasValue;
+        public bool HasNorthNeighbor => neighbors[3].HasValue;
+        public bool HasSouthEastNeighbor => neighbors[4].HasValue;
+        public bool HasSouthWestNeighbor => neighbors[5].HasValue;
+        public bool HasNorthEastNeighbor => neighbors[6].HasValue;
+        public bool HasNorthWestNeighbor => neighbors[7].HasValue;
         
         public bool IsBottomLeftCorner  => (coordinate.x == 0) && (coordinate.y == 0);
         public bool IsTopLeftCorner     => (coordinate.x == 0) && (coordinate.y == ownerGrid.Rows - 1);
@@ -81,7 +82,7 @@ namespace GridSystem
         public bool IsEdge   => IsLeftEdge || IsRightEdge || IsTopEdge || IsBottomEdge;
         public bool IsCorner => IsBottomLeftCorner || IsBottomRightCorner || IsTopLeftCorner || IsTopRightCorner;
 
-        public Rect3D GetVertexRect() => ownerChunk.GetTileVertexRectAt(localCoordinate);
+        public Option<Rect3D> GetVertexRect() => ownerChunk.GetTileVertexRectAt(localCoordinate);
         
         public void SetUVs(in Rect2D uvRect) => ownerChunk.SetTileUVsAt(localCoordinate, in uvRect);
         public void SetColor(Color color) => ownerChunk.SetTileColorAt(localCoordinate, color);
@@ -103,13 +104,10 @@ namespace GridSystem
             ownerChunk.ActiveTickables.Remove(this);
         }
         
-        public void ForEachNeighbor(Action<T> action)
+        public void ForEachNeighbor(Action<Option<T>> action)
         {
             foreach (var neighbor in neighbors)
-            {
-                if (neighbor != null)
-                    action(neighbor);
-            }
+                action(neighbor);
         }
         
         public virtual bool SameTileCategory(T otherTile) => false;

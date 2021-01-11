@@ -5,6 +5,9 @@ public class TerrainTile : BaseTile<TerrainTile>
 {
     private Terrain terrain;
     public Terrain Terrain => terrain;
+    
+    public override bool IsOccupied   { get; }
+    public override bool IsCollidable { get; }
 
     public TerrainTile(Grid<TerrainTile> ownerGrid, Vector2Int coordinate) : base(ownerGrid, coordinate)
     {
@@ -19,9 +22,6 @@ public class TerrainTile : BaseTile<TerrainTile>
     {
         return terrain == otherTile.Terrain;
     }
-
-    public override bool IsOccupied { get; }
-    public override bool IsCollidable { get; }
 
     public void Paint(Terrain terrain)
     {
@@ -40,9 +40,6 @@ public class TerrainTile : BaseTile<TerrainTile>
         if (terrain == null)
             return;
 
-        ref readonly var uvRect = ref terrain.RuleResolver.Output(this);
-        
-        if (!uvRect.Equals(Rect2D.Zero))
-            SetUVs(in uvRect);
+        terrain.RuleResolver.MatchedRule(this).MatchSome(rule => SetUVs(in rule.OutputUVRect));
     }
 }

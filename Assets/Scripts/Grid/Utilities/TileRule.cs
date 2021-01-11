@@ -91,7 +91,7 @@ namespace GridSystem
             this.uvCalculated = true;
         }
 
-        public bool Check(RuleEnum ruleMask)
+        public bool Match(RuleEnum ruleMask)
         {
             if ((this.ruleMask & ruleMask) == this.ruleMask)
                 return true;

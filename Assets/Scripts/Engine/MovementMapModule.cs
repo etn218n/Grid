@@ -1,4 +1,5 @@
 ﻿using GridSystem;
+using Optional;
 using UnityEngine;
 
 public class MovementMapModule : GridEngineModule
@@ -10,40 +11,28 @@ public class MovementMapModule : GridEngineModule
     public override void OnStart(GridEngine engine)
     {
         this.engine = engine;
-
-        SetupMovementGrid(engine);
-        //engine.MovementGrid.ForEachCoordinate(coordinate => PaintTileBasedOnMovementCost(coordinate));
+        engine.MovementGrid.ForEachCoordinate(PaintTileBasedOnMovementCost);
     }
 
     private void PaintTileBasedOnMovementCost(Vector2Int coordinate)
     {
-        float gradient = MovementCostToColorGradient(coordinate);
+        var gradient = GradientFromMovementCost(engine.BackgroundGrid, coordinate)
+                        .Else(GradientFromMovementCost(engine.ForegroundGrid, coordinate));
         
-        var uvRect = new Rect2D(new Vector2(gradient, 0), 
-                                new Vector2(gradient, 0), 
-                                new Vector2(gradient, 0), 
-                                new Vector2(gradient, 0));
+        gradient.MatchSome(value =>
+        {
+            var uvRect = new Rect2D(new Vector2(value, 0), 
+                                    new Vector2(value, 0), 
+                                    new Vector2(value, 0), 
+                                    new Vector2(value, 0));
         
-        engine.MovementGrid.SetTileUVsAt(coordinate, uvRect);
+            engine.MovementGrid.SetTileUVsAt(coordinate, uvRect);
+        });
     }
 
-    public void SetupMovementGrid(GridEngine engine)
+    private Option<float> GradientFromMovementCost(Grid<TerrainTile> terrainGrid, Vector2Int coordinate)
     {
-        
-    }
-
-    private float MovementCostToColorGradient(Vector2Int coordinate)
-    {
-        var backgroundGrid = engine.BackgroundGrid;
-        var foregroundGrid = engine.ForegroundGrid;
-        
-        var tile = foregroundGrid.TryGetTileAt(coordinate);
-
-        if (tile.Terrain != empty)
-            return 1 - tile.Terrain.MovementCost / short.MaxValue;
-        
-        tile = backgroundGrid.TryGetTileAt(coordinate);
-        
-        return 1 - tile.Terrain.MovementCost / short.MaxValue;
+        return terrainGrid.GetTileAt(coordinate).Filter(tile => tile.Terrain != empty)
+                                                .Map(tile => 1.0f - (float)tile.Terrain.MovementCost / short.MaxValue);
     }
 }

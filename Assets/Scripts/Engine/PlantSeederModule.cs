@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Optional;
+using UnityEngine;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
@@ -13,44 +14,37 @@ public class PlantSeederModule : GridEngineModule
     public override void OnStart(GridEngine engine)
     {
         this.engine = engine;
-
-        SeedPlants();
-    }
-
-    public void SeedPlants()
-    {
-        engine.PlantGrid.ForEachTile(tile => TryGrowTreeAt(tile));
-    }
-    
-    private Terrain RaycastTerrain(Vector2Int coordinate)
-    {
-        var backgroundGrid = engine.BackgroundGrid;
-        var foregroundGrid = engine.ForegroundGrid;
         
-        var tile = foregroundGrid.TryGetTileAt(coordinate);
-            
-        if (tile.Terrain != empty)
-            return tile.Terrain;
-
-        return backgroundGrid.TryGetTileAt(coordinate).Terrain;
+        engine.PlantGrid.ForEachTile(TryGrowTree);
     }
     
-    private void TryGrowTreeAt(PlantTile tile)
+    private Option<Terrain> RaycastTerrain(Vector2Int coordinate)
     {
-        var terrain = RaycastTerrain(tile.Coordinate);
+        return engine.ForegroundGrid.GetTileAt(coordinate)
+                                    .Filter(tile => tile.Terrain != empty)
+                                    .Map(tile => tile.Terrain)
+                                    .Else(() => engine.BackgroundGrid.GetTileAt(coordinate)
+                                                                     .Filter(tile => tile.Terrain != empty)
+                                                                     .Map(tile => tile.Terrain));
+    }
+    
+    private void TryGrowTree(PlantTile tile)
+    {
+        RaycastTerrain(tile.Coordinate).Filter(terrain => terrain.Fertility != 0)
+                                       .MatchSome(terrain => SeedPlant(tile, terrain.Fertility));
+    }
+    
+    public void SeedPlant(PlantTile tile, float fertility)
+    {
+        float growValue = Random.Range(0.0f, 1.0f);
 
-        if (terrain.Fertility != 0)
+        if (growValue <= Mathf.Clamp01(growChance))
         {
-            float growValue = Random.Range(0.0f, 1.0f);
+            var randomIndex = Random.Range(0, plantBlueprints.Count);
+            var choosenPlantBlueprint = plantBlueprints[randomIndex];
 
-            if (growValue <= Mathf.Clamp01(growChance))
-            {
-                var randomIndex = Random.Range(0, plantBlueprints.Count);
-                var choosenPlantBlueprint = plantBlueprints[randomIndex];
-
-                tile.Fertilize(terrain.Fertility);
-                tile.Seed(choosenPlantBlueprint.CreatePlant());
-            }
+            tile.Fertilize(fertility);
+            tile.Seed(choosenPlantBlueprint.CreatePlant());
         }
     }
 }
