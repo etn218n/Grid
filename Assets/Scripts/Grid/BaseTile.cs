@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Optional;
 using UnityEngine;
 
@@ -6,7 +8,7 @@ namespace GridSystem
 {
     public abstract class BaseTile<T> : ITickable where T : BaseTile<T>
     {
-        protected Option<T>[] neighbors = new Option<T>[8];
+        protected List<Option<T>> neighbors = new List<Option<T>>(8);
 
         protected readonly Chunk ownerChunk;
         protected readonly Grid<T> ownerGrid;
@@ -50,14 +52,14 @@ namespace GridSystem
 
         public void UpdateNeighbors()
         {
-            neighbors[0] = ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y);
-            neighbors[1] = ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y);
-            neighbors[2] = ownerGrid.GetTileAt(coordinate.x, coordinate.y - 1);
-            neighbors[3] = ownerGrid.GetTileAt(coordinate.x, coordinate.y + 1);
-            neighbors[4] = ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y - 1);
-            neighbors[5] = ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y - 1);
-            neighbors[6] = ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y + 1);
-            neighbors[7] = ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y + 1);
+            neighbors.Add(ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y));
+            neighbors.Add(ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y));
+            neighbors.Add(ownerGrid.GetTileAt(coordinate.x, coordinate.y - 1));
+            neighbors.Add(ownerGrid.GetTileAt(coordinate.x, coordinate.y + 1));
+            neighbors.Add(ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y - 1));
+            neighbors.Add(ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y - 1));
+            neighbors.Add(ownerGrid.GetTileAt(coordinate.x + 1, coordinate.y + 1));
+            neighbors.Add(ownerGrid.GetTileAt(coordinate.x - 1, coordinate.y + 1));
         }
 
         public bool HasEastNeighbor  => neighbors[0].HasValue;
@@ -104,10 +106,15 @@ namespace GridSystem
             ownerChunk.ActiveTickables.Remove(this);
         }
         
-        public void ForEachNeighbor(Action<Option<T>> action)
+        public void ForEachNeighbor(Action<T> action)
         {
             foreach (var neighbor in neighbors)
-                action(neighbor);
+                neighbor.MatchSome(n => action(n));
+        }
+        
+        public bool AnyNeighbor(Predicate<T> predicate)
+        {
+            return neighbors.FirstOrDefault(optional => optional.Filter(neighbor => predicate(neighbor)).HasValue) != null;
         }
         
         public virtual bool SameTileCategory(T otherTile) => false;

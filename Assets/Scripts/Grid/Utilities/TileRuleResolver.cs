@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Optional;
+using Optional.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -66,7 +67,7 @@ namespace GridSystem
         {
             var ruleMask = TileNeighborsToMask(tile);
             
-            return rules.FirstOrDefault(rule => rule.Match(ruleMask)).SomeNotNull();
+            return rules.FirstOrNone(rule => rule.Match(ruleMask));
         }
     }
 }

@@ -31,10 +31,10 @@ public class PlantSeederModule : GridEngineModule
     private void TryGrowTree(PlantTile tile)
     {
         RaycastTerrain(tile.Coordinate).Filter(terrain => terrain.Fertility != 0)
-                                       .MatchSome(terrain => SeedPlant(tile, terrain.Fertility));
+                                       .MatchSome(terrain => Seed(tile, terrain.Fertility));
     }
     
-    public void SeedPlant(PlantTile tile, float fertility)
+    public void Seed(PlantTile tile, float fertility)
     {
         float growValue = Random.Range(0.0f, 1.0f);
 
