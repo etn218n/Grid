@@ -1,24 +1,23 @@
-﻿using GridSystem;
-using Optional;
+﻿using Optional;
+using GridSystem;
 using UnityEngine;
 
 public class MovementMapModule : GridEngineModule
 {
     private GridEngine engine;
-    
-    [SerializeField] private Terrain empty;
 
     public override void OnStart(GridEngine engine)
     {
         this.engine = engine;
-        engine.MovementGrid.ForEachCoordinate(PaintTileBasedOnMovementCost);
+
+        engine.MovementGrid.ForEachTile(tile => PaintTileBasedOnMovementCost(engine.PlantGrid, tile));
+        engine.MovementGrid.ForEachTile(tile => PaintTileBasedOnMovementCost(engine.ForegroundGrid, tile));
     }
 
-    private void PaintTileBasedOnMovementCost(Vector2Int coordinate)
+    private void PaintTileBasedOnMovementCost<T>(Grid<T> grid, MovementTile movementTile) where T : BaseTile<T>
     {
-        var gradient = GradientFromMovementCost(engine.BackgroundGrid, coordinate)
-                        .Else(GradientFromMovementCost(engine.ForegroundGrid, coordinate));
-        
+        var gradient = GradientFromMovementCost(grid, movementTile.Coordinate);
+
         gradient.MatchSome(value =>
         {
             var uvRect = new Rect2D(new Vector2(value, 0), 
@@ -26,13 +25,12 @@ public class MovementMapModule : GridEngineModule
                                     new Vector2(value, 0), 
                                     new Vector2(value, 0));
         
-            engine.MovementGrid.SetTileUVsAt(coordinate, uvRect);
+            movementTile.SetUVs(uvRect);
         });
     }
 
-    private Option<float> GradientFromMovementCost(Grid<TerrainTile> terrainGrid, Vector2Int coordinate)
+    private Option<float> GradientFromMovementCost<T>(Grid<T> grid, Vector2Int coordinate) where T : BaseTile<T>
     {
-        return terrainGrid.GetTileAt(coordinate).Filter(tile => tile.Terrain != empty)
-                                                .Map(tile => 1.0f - (float)tile.Terrain.MovementCost / short.MaxValue);
+        return grid.GetTileAt(coordinate).Filter(tile => tile.IsCollidable).Map(tile => 1.0f);
     }
 }

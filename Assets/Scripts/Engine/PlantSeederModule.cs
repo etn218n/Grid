@@ -7,7 +7,6 @@ public class PlantSeederModule : GridEngineModule
 {
     private GridEngine engine;
     
-    [SerializeField] private Terrain empty;
     [SerializeField] private float growChance;
     [SerializeField] private List<PlantBlueprint> plantBlueprints = new List<PlantBlueprint>();
 
@@ -20,12 +19,7 @@ public class PlantSeederModule : GridEngineModule
     
     private Option<Terrain> RaycastTerrain(Vector2Int coordinate)
     {
-        return engine.ForegroundGrid.GetTileAt(coordinate)
-                                    .Filter(tile => tile.Terrain != empty)
-                                    .Map(tile => tile.Terrain)
-                                    .Else(() => engine.BackgroundGrid.GetTileAt(coordinate)
-                                                                     .Filter(tile => tile.Terrain != empty)
-                                                                     .Map(tile => tile.Terrain));
+        return engine.ForegroundGrid.GetTileAt(coordinate).Map(tile => tile.Terrain);
     }
     
     private void TryGrowTree(PlantTile tile)
@@ -36,7 +30,7 @@ public class PlantSeederModule : GridEngineModule
     
     public void Seed(PlantTile tile, float fertility)
     {
-        float growValue = Random.Range(0.0f, 1.0f);
+        var growValue = Random.Range(0.0f, 1.0f);
 
         if (growValue <= Mathf.Clamp01(growChance))
         {

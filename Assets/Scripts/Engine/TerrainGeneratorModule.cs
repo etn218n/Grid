@@ -109,10 +109,11 @@ public class TerrainGeneratorModule : GridEngineModule
         foregroundGrid.ForEachTile(tile => tile.ApplyRule());
     }
 
-    private void PaintTile(TerrainTile tile, NoiseMap noiseMap, MapSetting setting)
+    private void PaintTile(TerrainTile tile, NoiseMap noiseMap, MapSetting map)
     {
-        float perlinValue = noiseMap.Evaluate(tile.Coordinate);
+        var perlinValue = noiseMap.Evaluate(tile.Coordinate);
+        var matchedTerrain = map.Evaluate(perlinValue);
         
-        tile.Paint(setting.Evaluate(perlinValue));
+        tile.Paint(matchedTerrain);
     }
 }

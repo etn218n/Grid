@@ -20,5 +20,5 @@ MonoBehaviour:
     Height: 0.5
   - TargetTerrain: {fileID: 11400000, guid: ba1941e8a6f67944990006915ba8f08f, type: 2}
     Height: 0.7
-  - TargetTerrain: {fileID: 11400000, guid: 41bcc2b2999e3da47baa43306276a907, type: 2}
+  - TargetTerrain: {fileID: 11400000, guid: 31049f881dfa97d4fae59408f86c3de4, type: 2}
     Height: 1

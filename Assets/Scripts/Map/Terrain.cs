@@ -24,6 +24,11 @@ public class Terrain : ScriptableObject, IHaveMovementCost
     private int elevation;
     public int Elevation => elevation;
 
+    [SerializeField] [LabelWidth(100)]
+    private bool isCollidable;
+    public bool IsCollidable => isCollidable;
+    
+
     [Space(20)]
     [SerializeField]
     private TileRuleResolver ruleResolver = new TileRuleResolver();

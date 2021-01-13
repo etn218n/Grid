@@ -7,7 +7,17 @@ public class TerrainTile : BaseTile<TerrainTile>
     public Terrain Terrain => terrain;
     
     public override bool IsOccupied   { get; }
-    public override bool IsCollidable { get; }
+
+    public override bool IsCollidable
+    {
+        get
+        {
+            if (terrain == null)
+                return false;
+
+            return terrain.IsCollidable;
+        }
+    }
 
     public TerrainTile(Grid<TerrainTile> ownerGrid, Vector2Int coordinate) : base(ownerGrid, coordinate)
     {

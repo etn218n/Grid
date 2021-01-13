@@ -7,6 +7,9 @@ public class PlantTile : BaseTile<PlantTile>
     private float fertility;
     private float growSpeed;
     
+    public override bool IsOccupied => plant != null;
+    public override bool IsCollidable => plant != null;
+    
     public PlantTile(Grid<PlantTile> ownerGrid, Vector2Int coordinate) : base(ownerGrid, coordinate)
     {
     }
@@ -29,6 +32,7 @@ public class PlantTile : BaseTile<PlantTile>
     {
         MarkActive();
         AdjustTileDimension(plant.Width, plant.Height);
+        AdjustPlantSize();
         SetUVs(plant.SpriteUVRect);
     }
 
@@ -48,9 +52,6 @@ public class PlantTile : BaseTile<PlantTile>
         plant.Grow(growSpeed);
         AdjustPlantSize();
     }
-
-    public override bool IsOccupied => plant == null;
-    public override bool IsCollidable => plant == null;
 
     public void RemovePlant()
     {

@@ -16,6 +16,7 @@ MonoBehaviour:
   movementCost: 2
   fertility: 0
   elevation: 0
+  isCollidable: 0
   ruleResolver:
     rules:
     - outputSprite: {fileID: 2872679490051735645, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}

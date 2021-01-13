@@ -261,7 +261,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71f79e28b48d2144891ee28c8c7589e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  empty: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
   growChance: 0.2
   plantBlueprints:
   - {fileID: 11400000, guid: 3cf3d67f0af227f4681f109201725fca, type: 2}
@@ -282,7 +281,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a0f0c8b883d8a40868e1f0bdf4f71a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  empty: {fileID: 11400000, guid: a04f4833454967b4ea1f10cc22400c07, type: 2}
 --- !u!1 &1581897494
 GameObject:
   m_ObjectHideFlags: 0
