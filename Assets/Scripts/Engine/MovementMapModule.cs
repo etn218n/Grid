@@ -17,13 +17,7 @@ public class MovementMapModule : GridEngineModule
     private int CalculateMovementCost(Vector2Int coordinate)
     {
         var movementCostA = engine.ForegroundGrid.GetTileAt(coordinate).Map(tile => tile.Terrain.MovementCost);
-        var movementCostB = engine.PlantGrid.GetTileAt(coordinate).Map<short>(tile =>
-        {
-            if (tile.IsCollidable)
-                return 10;
-
-            return 0;
-        });
+        var movementCostB = engine.PlantGrid.GetTileAt(coordinate).Filter(tile => tile.IsCollidable).Map(tile => 10);
 
         var totalCost = movementCostA.ValueOr(0) + movementCostB.ValueOr(0);
 

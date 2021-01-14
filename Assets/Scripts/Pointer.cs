@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Optional;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-using GridSystem;
-using Optional;
 
 public class Pointer : MonoBehaviour
 {
@@ -48,32 +46,6 @@ public class Pointer : MonoBehaviour
         }
     }
 
-    private Queue<Vector3> CalculatePath(Vector3 source, Vector3 destination, float stepSize)
-    {
-        Queue<Vector3> path = new Queue<Vector3>();
-
-        var horizontalSteps = (int)(Mathf.Abs(destination.x - source.x) / stepSize);
-        var verticalSteps   = (int)(Mathf.Abs(destination.y - source.y) / stepSize);
-
-        var up    = (destination.y - source.y) > 0 ? 1 : -1;
-        var right = (destination.x - source.x) > 0 ? 1 : -1;
-
-        float farthestX = 0;
-
-        for (int i = 1; i <= horizontalSteps; i++)
-        {
-            if (i == horizontalSteps)
-                farthestX = source.x + i * stepSize * right;
-            
-            path.Enqueue(new Vector3(source.x + i * stepSize * right, source.y, source.z));
-        }
-
-        for (int i = 1; i <= verticalSteps; i++)
-            path.Enqueue(new Vector3(farthestX, source.y + i * stepSize * up, source.z));
-
-        return path;
-    }
-    
     private Queue<Vector3> CalculatePath(MovementTile source, MovementTile destination, float z, float stepSize)
     {
         Queue<Vector3> path = new Queue<Vector3>();
@@ -81,47 +53,31 @@ public class Pointer : MonoBehaviour
         var horizontalSteps = (int)(Mathf.Abs(destination.Position.x - source.Position.x) / stepSize);
         var verticalSteps   = (int)(Mathf.Abs(destination.Position.y - source.Position.y) / stepSize);
 
-        var up    = (destination.Position.y - source.Position.y) > 0;
-        var right = (destination.Position.x - source.Position.x) > 0;
+        var deltaX = (destination.Position.x - source.Position.x);
+        var deltaY = (destination.Position.y - source.Position.y);
 
-        var neighbor = right ? source.EastNeighbor : source.WestNeighbor;
+        var horizontalDestination = Option.Some(source);
         
-        if (right)
+        if (deltaX > 0)
         {
-            while (neighbor.HasValue)
-            {
-                neighbor = neighbor.Filter(n => n.MovementCost != 10).FlatMap(n => n.EastNeighbor);
-                neighbor.MatchSome(n => path.Enqueue(new Vector3(n.Position.x, n.Position.y, z)));
-            }
-            for (int i = 1; i < horizontalSteps; i++)
-            {
-                
-            }
+            horizontalDestination = source.TraverseEast(horizontalSteps, 
+                                                        tile => path.Enqueue(new Vector3(tile.Position.x, tile.Position.y, z)));
         }
-        else
+        else if (deltaX < 0)
         {
-            for (int i = 1; i < horizontalSteps; i++)
-            {
-                neighbor = neighbor.FlatMap(n => n.WestNeighbor);
-                neighbor.MatchSome(n => path.Enqueue(new Vector3(n.Position.x, n.Position.y, z)));
-            }
+            horizontalDestination = source.TraverseWest(horizontalSteps, 
+                                                        tile => path.Enqueue(new Vector3(tile.Position.x, tile.Position.y, z)));
         }
 
-        if (up)
+        if (deltaY > 0)
         {
-            for (int i = 1; i <= verticalSteps; i++)
-            {
-                neighbor = neighbor.FlatMap(n => n.NorthNeighbor);
-                neighbor.MatchSome(n => path.Enqueue(new Vector3(n.Position.x, n.Position.y, z)));
-            }
+            horizontalDestination.MatchSome(t => t.TraverseNorth(verticalSteps, 
+                                                                 tile => path.Enqueue(new Vector3(tile.Position.x, tile.Position.y, z))));
         }
-        else
+        else if (deltaY < 0)
         {
-            for (int i = 1; i <= verticalSteps; i++)
-            {
-                neighbor = neighbor.FlatMap(n => n.SouthNeighbor);
-                neighbor.MatchSome(n => path.Enqueue(new Vector3(n.Position.x, n.Position.y, z)));
-            }
+            horizontalDestination.MatchSome(t => t.TraverseSouth(verticalSteps, 
+                                                                 tile => path.Enqueue(new Vector3(tile.Position.x, tile.Position.y, z))));
         }
 
         return path;

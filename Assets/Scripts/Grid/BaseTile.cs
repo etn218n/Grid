@@ -116,6 +116,70 @@ namespace GridSystem
         {
             return neighbors.FirstOrDefault(optional => optional.Filter(neighbor => predicate(neighbor)).HasValue) != null;
         }
+
+        public Option<T> TraverseEast(int steps, Action<T> action)
+        {
+            int i = 0;
+
+            var currentTile = EastNeighbor;
+
+            while (currentTile.HasValue && i < steps)
+            {
+                currentTile.MatchSome(tile => action(tile));
+                currentTile = currentTile.FlatMap(tile => tile.EastNeighbor);
+                i++;
+            }
+
+            return currentTile.FlatMap(tile => tile.WestNeighbor);
+        }
+        
+        public Option<T> TraverseWest(int steps, Action<T> action)
+        {
+            int i = 0;
+
+            var currentTile = WestNeighbor;
+
+            while (currentTile.HasValue && i < steps)
+            {
+                currentTile.MatchSome(tile => action(tile));
+                currentTile = currentTile.FlatMap(tile => tile.WestNeighbor);
+                i++;
+            }
+            
+            return currentTile.FlatMap(tile => tile.EastNeighbor);;
+        }
+        
+        public Option<T> TraverseNorth(int steps, Action<T> action)
+        {
+            int i = 0;
+
+            var currentTile = NorthNeighbor;
+
+            while (currentTile.HasValue && i < steps)
+            {
+                currentTile.MatchSome(tile => action(tile));
+                currentTile = currentTile.FlatMap(tile => tile.NorthNeighbor);
+                i++;
+            }
+
+            return currentTile.FlatMap(tile => tile.SouthNeighbor);;
+        }
+        
+        public Option<T> TraverseSouth(int steps, Action<T> action)
+        {
+            int i = 0;
+
+            var currentTile = SouthNeighbor;
+
+            while (currentTile.HasValue && i < steps)
+            {
+                currentTile.MatchSome(tile => action(tile));
+                currentTile = currentTile.FlatMap(tile => tile.SouthNeighbor);
+                i++;
+            }
+            
+            return currentTile.FlatMap(tile => tile.NorthNeighbor);;
+        }
         
         public virtual bool SameTileCategory(T otherTile) => false;
         public virtual void Tick(long ticks) { }

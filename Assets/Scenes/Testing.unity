@@ -415,7 +415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameSpeed: 1
   ticksPerSecond: 60
-  horizontalChunks: 1
+  horizontalChunks: 2
   verticalChunks: 2
   tileSize: 1
   rowsPerChunk: 50
