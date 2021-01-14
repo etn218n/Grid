@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using GridSystem;
+using Grid = GridSystem.Grid;
 
 public class GridEngine : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class GridEngine : MonoBehaviour
     [Header("Modules")] 
     [SerializeField] private List<GridEngineModule> modules = new List<GridEngineModule>();
 
+    private HashSet<Grid> visibleGrids = new HashSet<Grid>();
+    
     private Grid<TerrainTile> basegroundGrid;
     private Grid<TerrainTile> backgroundGrid;
     private Grid<TerrainTile> foregroundGrid;
@@ -55,28 +58,38 @@ public class GridEngine : MonoBehaviour
     private void Awake()
     {
         InstantiateGrids();
+        AddVisibleGrids();
         
         modules.ForEach(module => module.OnStart(this));
     }
 
     private void InstantiateGrids()
     {
-        plantGrid = new Grid<PlantTile>(plantOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize,
+        plantGrid = new Grid<PlantTile>(plantOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, plantMaterial,
                                         (ownerGrid, coordinate) => new PlantTile(ownerGrid, coordinate));
 
-        movementGrid = new Grid<MovementTile>(movementOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
+        movementGrid = new Grid<MovementTile>(movementOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, movementMaterial, 
                                               (ownerGrid, coordinate) => new MovementTile(ownerGrid, coordinate));
         
-        basegroundGrid = new Grid<TerrainTile>(basegroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
+        basegroundGrid = new Grid<TerrainTile>(basegroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, basegroundMaterial,
                                                (ownerGrid, coordinate) => new TerrainTile(ownerGrid, coordinate));
 
-        backgroundGrid = new Grid<TerrainTile>(backgroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
+        backgroundGrid = new Grid<TerrainTile>(backgroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, backgroundMaterial,
                                                (ownerGrid, coordinate) => new TerrainTile(ownerGrid, coordinate));
 
-        foregroundGrid = new Grid<TerrainTile>(foregroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, 
+        foregroundGrid = new Grid<TerrainTile>(foregroundOrigin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, foregroundMaterial,
                                                (ownerGrid, coordinate) => new TerrainTile(ownerGrid, coordinate));
     }
 
+    private void AddVisibleGrids()
+    {
+        visibleGrids.Add(plantGrid);
+        visibleGrids.Add(movementGrid);
+        visibleGrids.Add(basegroundGrid);
+        visibleGrids.Add(backgroundGrid);
+        visibleGrids.Add(foregroundGrid);
+    }
+    
     private void Update()
     {
         elapsedTime += Time.unscaledDeltaTime;
@@ -99,7 +112,6 @@ public class GridEngine : MonoBehaviour
             elapsedTime -= frameTime;
         }
         
-        UpdateGridsMesh();
         DrawGrids();
     }
 
@@ -113,33 +125,45 @@ public class GridEngine : MonoBehaviour
 
         ticksSinceStartUp++;
     }
-
-    private void UpdateGridsMesh()
-    {
-        plantGrid.UpdateMesh();
-        movementGrid.UpdateMesh();
-        basegroundGrid.UpdateMesh();
-        backgroundGrid.UpdateMesh();
-        foregroundGrid.UpdateMesh();
-    }
     
     private void DrawGrids()
     {
-        plantGrid.Draw(plantMaterial);
-        movementGrid.Draw(movementMaterial);
-        basegroundGrid.Draw(basegroundMaterial);
-        backgroundGrid.Draw(backgroundMaterial);
-        foregroundGrid.Draw(foregroundMaterial);
+        foreach (var grid in visibleGrids)
+        {
+            grid.UpdateMesh();
+            grid.Draw();
+        }
     }
 
     private void OnDestroy()
     {
+        modules.ForEach(module => module.OnEnd(this));
+        
         plantGrid.Dispose();
         movementGrid.Dispose();
         basegroundGrid.Dispose();
         backgroundGrid.Dispose();
         foregroundGrid.Dispose();
-        
-        modules.ForEach(module => module.OnEnd(this));
+    }
+
+    public void ShowMovementGrid() => visibleGrids.Add(movementGrid);
+    public void HideMovementGrid() => visibleGrids.Remove(movementGrid);
+    public void ShowForegroundGrid() => visibleGrids.Add(foregroundGrid);
+    public void HideForegroundGrid() => visibleGrids.Remove(foregroundGrid);
+
+    public void ToggleMovementGridVisibility()
+    {
+        if (visibleGrids.Contains(movementGrid))
+            HideMovementGrid();
+        else 
+            ShowMovementGrid();
+    }
+    
+    public void ToggleForegroundGridVisibility()
+    {
+        if (visibleGrids.Contains(foregroundGrid))
+            HideForegroundGrid();
+        else
+            ShowForegroundGrid();
     }
 }

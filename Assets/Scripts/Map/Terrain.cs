@@ -12,7 +12,7 @@ public class Terrain : ScriptableObject, IHaveMovementCost
     public  Sprite MainSprite => mainSprite;
 
     [Space(20)]
-    [SerializeField] [LabelWidth(100)]
+    [SerializeField] [LabelWidth(100)] [Range(0, 10)]
     private short movementCost;
     public  short MovementCost => movementCost;
     
@@ -22,11 +22,11 @@ public class Terrain : ScriptableObject, IHaveMovementCost
 
     [SerializeField] [LabelWidth(100)]
     private int elevation;
-    public int Elevation => elevation;
+    public  int Elevation => elevation;
 
     [SerializeField] [LabelWidth(100)]
     private bool isCollidable;
-    public bool IsCollidable => isCollidable;
+    public  bool IsCollidable => isCollidable;
     
 
     [Space(20)]
@@ -35,7 +35,7 @@ public class Terrain : ScriptableObject, IHaveMovementCost
     public  TileRuleResolver RuleResolver => ruleResolver; 
 
     [NonSerialized]
-    private bool uvCalculated = false;
+    private bool uvCalculated;
 
     private Rect2D spriteRect2D = Rect2D.Zero;
 

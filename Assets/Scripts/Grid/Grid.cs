@@ -21,7 +21,8 @@ namespace GridSystem
         protected float tileSize;
         protected Vector3 origin;
         protected Chunk[,] chunks;
-        
+        protected Material material;
+
         protected readonly List<Chunk> activeChunks  = new List<Chunk>();
         protected readonly List<Chunk> visibleChunks = new List<Chunk>();
         protected readonly Queue<Chunk> modifiedChunks = new Queue<Chunk>();
@@ -41,7 +42,7 @@ namespace GridSystem
         public List<Chunk> VisibleChunks => visibleChunks;
         public Queue<Chunk> ModifiedChunks => modifiedChunks;
 
-        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize)
+        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Material material)
         {
             this.origin   = origin;
             this.tileSize = tileSize;
@@ -53,6 +54,7 @@ namespace GridSystem
             this.verticalChunks   = verticalChunks;
             this.width  = columns * tileSize;
             this.height = rows * tileSize;
+            this.material = material;
 
             InitializeChunks();
             GenerateChunksMesh();
@@ -172,7 +174,7 @@ namespace GridSystem
                 modifiedChunks.Dequeue().UpdateMesh();
         }
 
-        public void Draw(Material material)
+        public void Draw()
         {
             visibleChunks.ForEach(chunk => Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0));
         }
@@ -207,8 +209,8 @@ namespace GridSystem
         protected T[,] tiles;
         public T[,] Tiles => tiles;
 
-        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Func<Grid<T>, Vector2Int, T> instantiationFunc)
-                    : base(origin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize)
+        public Grid(Vector3 origin, int horizontalChunks, int verticalChunks, int rowsPerChunk, int columnsPerChunk, float tileSize, Material material, Func<Grid<T>, Vector2Int, T> instantiationFunc)
+                    : base(origin, horizontalChunks, verticalChunks, rowsPerChunk, columnsPerChunk, tileSize, material)
         {
             InitializeTiles(instantiationFunc);
             UpdateTileNeighbors();

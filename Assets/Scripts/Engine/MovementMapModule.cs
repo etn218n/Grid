@@ -31,6 +31,6 @@ public class MovementMapModule : GridEngineModule
 
     private Option<float> GradientFromMovementCost<T>(Grid<T> grid, Vector2Int coordinate) where T : BaseTile<T>
     {
-        return grid.GetTileAt(coordinate).Filter(tile => tile.IsCollidable).Map(tile => 1.0f);
+        return grid.GetTileAt(coordinate).Filter(tile => tile.IsCollidable).Map(tile => 0.1f);
     }
 }

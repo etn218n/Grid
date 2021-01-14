@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hill
   m_EditorClassIdentifier: 
   mainSprite: {fileID: -5939263942576820194, guid: 5cb0fcac5e356d844b25c606bc33d149, type: 3}
-  movementCost: 32767
+  movementCost: 10
   fertility: 0
   elevation: 0
   isCollidable: 1
