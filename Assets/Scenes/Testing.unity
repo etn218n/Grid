@@ -416,7 +416,7 @@ MonoBehaviour:
   gameSpeed: 1
   ticksPerSecond: 60
   horizontalChunks: 1
-  verticalChunks: 1
+  verticalChunks: 2
   tileSize: 1
   rowsPerChunk: 50
   columnsPerChunk: 50

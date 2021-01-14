@@ -13,8 +13,8 @@ public class Terrain : ScriptableObject, IHaveMovementCost
 
     [Space(20)]
     [SerializeField] [LabelWidth(100)] [Range(0, 10)]
-    private short movementCost;
-    public  short MovementCost => movementCost;
+    private int movementCost;
+    public  int MovementCost => movementCost;
     
     [SerializeField] [LabelWidth(100)] [Range(0, 10)]
     private float fertility;

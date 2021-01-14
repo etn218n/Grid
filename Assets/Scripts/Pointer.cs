@@ -74,7 +74,7 @@ public class Pointer : MonoBehaviour
         return path;
     }
     
-    private Queue<Vector3> CalculatePath<T>(BaseTile<T> source, BaseTile<T> destination, float z, float stepSize) where T : BaseTile<T>
+    private Queue<Vector3> CalculatePath(MovementTile source, MovementTile destination, float z, float stepSize)
     {
         Queue<Vector3> path = new Queue<Vector3>();
 
@@ -88,10 +88,14 @@ public class Pointer : MonoBehaviour
         
         if (right)
         {
+            while (neighbor.HasValue)
+            {
+                neighbor = neighbor.Filter(n => n.MovementCost != 10).FlatMap(n => n.EastNeighbor);
+                neighbor.MatchSome(n => path.Enqueue(new Vector3(n.Position.x, n.Position.y, z)));
+            }
             for (int i = 1; i < horizontalSteps; i++)
             {
-                neighbor = neighbor.FlatMap(n => n.EastNeighbor);
-                neighbor.MatchSome(n => path.Enqueue(new Vector3(n.Position.x, n.Position.y, z)));
+                
             }
         }
         else

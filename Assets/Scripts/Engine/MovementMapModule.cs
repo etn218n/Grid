@@ -9,28 +9,36 @@ public class MovementMapModule : GridEngineModule
     public override void OnStart(GridEngine engine)
     {
         this.engine = engine;
-
-        engine.MovementGrid.ForEachTile(tile => PaintTileBasedOnMovementCost(engine.PlantGrid, tile));
-        engine.MovementGrid.ForEachTile(tile => PaintTileBasedOnMovementCost(engine.ForegroundGrid, tile));
-    }
-
-    private void PaintTileBasedOnMovementCost<T>(Grid<T> grid, MovementTile movementTile) where T : BaseTile<T>
-    {
-        var gradient = GradientFromMovementCost(grid, movementTile.Coordinate);
-
-        gradient.MatchSome(value =>
-        {
-            var uvRect = new Rect2D(new Vector2(value, 0), 
-                                    new Vector2(value, 0), 
-                                    new Vector2(value, 0), 
-                                    new Vector2(value, 0));
         
-            movementTile.SetUVs(uvRect);
-        });
+        engine.MovementGrid.ForEachTile(tile => tile.UpdateCost(CalculateMovementCost(tile.Coordinate)));
+        engine.MovementGrid.ForEachTile(tile => PaintTileBasedOnMovementCost(tile));
     }
 
-    private Option<float> GradientFromMovementCost<T>(Grid<T> grid, Vector2Int coordinate) where T : BaseTile<T>
+    private int CalculateMovementCost(Vector2Int coordinate)
     {
-        return grid.GetTileAt(coordinate).Filter(tile => tile.IsCollidable).Map(tile => 0.1f);
+        var movementCostA = engine.ForegroundGrid.GetTileAt(coordinate).Map(tile => tile.Terrain.MovementCost);
+        var movementCostB = engine.PlantGrid.GetTileAt(coordinate).Map<short>(tile =>
+        {
+            if (tile.IsCollidable)
+                return 10;
+
+            return 0;
+        });
+
+        var totalCost = movementCostA.ValueOr(0) + movementCostB.ValueOr(0);
+
+        return Mathf.Clamp(totalCost, 0, 10);
+    }
+
+    private void PaintTileBasedOnMovementCost(MovementTile movementTile)
+    {
+        var movementCostPercentage = 1.1f - movementTile.MovementCost / 10.0f;
+        
+        var uvRect = new Rect2D(new Vector2(movementCostPercentage, 0),
+                                new Vector2(movementCostPercentage, 0), 
+                                new Vector2(movementCostPercentage, 0), 
+                                new Vector2(movementCostPercentage, 0));
+        
+        movementTile.SetUVs(uvRect);
     }
 }

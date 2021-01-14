@@ -91,17 +91,17 @@ namespace GridSystem
             this.uvCalculated = true;
         }
 
-        public bool Match(RuleEnum ruleMask)
+        public bool Match(RuleEnum otherRuleMask)
         {
-            if ((this.ruleMask & ruleMask) == this.ruleMask)
+            if ((ruleMask & otherRuleMask) == ruleMask)
                 return true;
 
             return false;
         }
 
-        public ref readonly Rect2D Output(RuleEnum ruleMask)
+        public ref readonly Rect2D Output(RuleEnum otherRuleMask)
         {
-            if ((this.ruleMask & ruleMask) != this.ruleMask)
+            if ((ruleMask & otherRuleMask) != ruleMask)
                 return ref Rect2D.Zero;
 
             return ref outputUVRect;
@@ -113,8 +113,6 @@ namespace GridSystem
     {
         public override void ProcessChildMemberAttributes(InspectorProperty parentProperty, MemberInfo member, List<Attribute> attributes)
         {
-            TileRule rule = (TileRule)parentProperty.ValueEntry.WeakSmartValue;
-            
             if (member.Name == "outputSprite")
             {
                 attributes.Add(new HideLabelAttribute());
