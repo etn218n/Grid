@@ -56,7 +56,7 @@ public class Pointer : MonoBehaviour
         {
             characterTile.MatchSome(cTile =>
             {
-                CalculateDijkstraPath(cTile, mTile, character.transform.position.z).MatchSome(path =>
+                CalculateAStarPath(cTile, mTile, character.transform.position.z).MatchSome(path =>
                 {
                     DrawPath(path);
                     character.Move(path);
@@ -158,6 +158,38 @@ public class Pointer : MonoBehaviour
         
         return ConstructPath(cameFrom, source, destination, z);
     }
+    
+    private Option<Path> CalculateAStarPath(MovementTile source, MovementTile destination, float z)
+    {
+        var frontier  = new SimplePriorityQueue<MovementTile>();
+        var cameFrom  = new Dictionary<MovementTile, MovementTile>();
+        var costSoFar = new Dictionary<MovementTile, int>();
+        
+        costSoFar.Add(source, 0);
+        frontier.Enqueue(source, 0);
+        
+        while (frontier.Any())
+        {
+            var current = frontier.Dequeue();
+            
+            if (current == destination)
+                break;
+            
+            current.ForEachCardinalNeighbor(next =>
+            {
+                var newCost = costSoFar[current] + next.MovementCost;
+
+                if ((!cameFrom.ContainsKey(next) || newCost < costSoFar[next]) && next.MovementCost != 10)
+                {
+                    costSoFar[next] = newCost;
+                    frontier.Enqueue(next, newCost + HeuristicDistance(next.Position, destination.Position));
+                    cameFrom[next] = current;
+                }
+            });
+        }
+        
+        return ConstructPath(cameFrom, source, destination, z);
+    }
 
     private Option<Path> ConstructPath(Dictionary<MovementTile, MovementTile> cameFrom, MovementTile source, MovementTile destination, float z)
     {
@@ -177,5 +209,10 @@ public class Pointer : MonoBehaviour
         path.Reverse();
         
         return Option.Some(path);
+    }
+
+    public float HeuristicDistance(Vector2 a, Vector2 b)
+    {
+        return Mathf.Abs(a.x + b.x) + Mathf.Abs(a.y + b.y);
     }
 }
