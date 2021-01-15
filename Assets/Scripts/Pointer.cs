@@ -1,20 +1,27 @@
 ﻿using Optional;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 public class Pointer : MonoBehaviour
 {
     [SerializeField] private GridEngine engine;
 
+    private LineRenderer lineRenderer;
+
     public List<Character> selectedCharacters = new List<Character>();
-    
+
+    private void Awake()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+    }
+
     private void Start()
     {
-        var o = engine.MovementGrid.GetTileAt(new Vector2Int(0, 0)).Map(t => t.Position);
+        var initialTile = engine.MovementGrid.GetTileAt(new Vector2Int(0, 0)).Map(t => t.Position);
         
-        o.MatchSome(point =>
+        initialTile.MatchSome(point =>
         {
             var zPostion = selectedCharacters[0].transform.position.z;
             selectedCharacters[0].transform.position = new Vector3(point.x, point.y, zPostion);
@@ -28,24 +35,41 @@ public class Pointer : MonoBehaviour
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
             
-            Vector3 mouseScreenPosition = Input.mousePosition;
-            mouseScreenPosition.z = 10;
-            
-            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
+            SetPathToCursorPosition();
+        }
+    }
 
-            engine.MovementGrid.GetTileAt(mouseWorldPosition).MatchSome(destination =>
+    public void SetPathToCursorPosition()
+    {
+        Vector3 mouseScreenPosition = Input.mousePosition;
+        mouseScreenPosition.z = 10;
+            
+        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
+
+        var character = selectedCharacters[0];
+        
+        var mouseTile = engine.MovementGrid.GetTileAt(mouseWorldPosition);
+        var characterTile = engine.MovementGrid.GetTileAt(character.transform.position);
+        
+        mouseTile.MatchSome(mTile =>
+        {
+            characterTile.MatchSome(cTile =>
             {
-                selectedCharacters.ForEach(character =>
+                CalculateBreadthFirstPath(cTile, mTile, character.transform.position.z).MatchSome(path =>
                 {
-                    engine.MovementGrid.GetTileAt(character.transform.position).MatchSome(source =>
-                    {
-                        //var path = CalculateManhattanPath(source, destination, character.transform.position.z, engine.MovementGrid.TileSize);
-                        var path = CalculateBreadthFirstPath(source, destination, character.transform.position.z);
-                        character.Move(path);
-                    });
+                    DrawPath(path);
+                    character.Move(path);
                 });
             });
-        }
+        });
+    }
+
+    private void DrawPath(Path path)
+    {
+        int i = 0;
+        lineRenderer.positionCount = path.Count;
+        
+        path.ForEachPoint(p => lineRenderer.SetPosition(i++, p));
     }
 
     private Queue<Vector3> CalculateManhattanPath(MovementTile source, MovementTile destination, float z, float stepSize)
@@ -85,7 +109,7 @@ public class Pointer : MonoBehaviour
         return path;
     }
 
-    private Queue<Vector3> CalculateBreadthFirstPath(MovementTile source, MovementTile destination, float z)
+    private Option<Path> CalculateBreadthFirstPath(MovementTile source, MovementTile destination, float z)
     {
         var frontier = new Queue<MovementTile>();
         var cameFrom = new Dictionary<MovementTile, MovementTile>();
@@ -101,7 +125,7 @@ public class Pointer : MonoBehaviour
             
             current.ForEachCardinalNeighbor(next =>
             {
-                if (!cameFrom.ContainsKey(next))
+                if (!cameFrom.ContainsKey(next) && next.MovementCost != 10)
                 {
                     frontier.Enqueue(next);
                     cameFrom.Add(next, current);
@@ -109,16 +133,26 @@ public class Pointer : MonoBehaviour
             });
         }
 
-        var path = new Queue<Vector3>();
+        return ConstructPath(cameFrom, source, destination, z);
+    }
+
+    private Option<Path> ConstructPath(Dictionary<MovementTile, MovementTile> cameFrom, MovementTile source, MovementTile destination, float z)
+    {
+        if (!cameFrom.ContainsKey(destination))
+            return Option.None<Path>();
+
+        var path = new Path();
         
         var currentTile = destination;
         
         while (currentTile != source)
         {
-            path.Enqueue(new Vector3(currentTile.Position.x, currentTile.Position.y, z));
+            path.AddPoint(currentTile.Position.x, currentTile.Position.y, z);
             currentTile = cameFrom[currentTile];
         }
         
-        return new Queue<Vector3>(path.Reverse());
+        path.Reverse();
+        
+        return Option.Some(path);
     }
 }

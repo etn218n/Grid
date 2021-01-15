@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 public class Character : MonoBehaviour
 {
@@ -17,7 +15,7 @@ public class Character : MonoBehaviour
         StartCoroutine(MoveCoroutine(destination));
     }
     
-    public void Move(Queue<Vector3> path)
+    public void Move(Path path)
     {
         if (isMoving)
             return;
@@ -43,13 +41,13 @@ public class Character : MonoBehaviour
         isMoving = false;
     }
     
-    private IEnumerator MoveCoroutine(Queue<Vector3> path)
+    private IEnumerator MoveCoroutine(Path path)
     {
         isMoving = true;
         
-        while (path.Any())
+        while (!path.ReachedEndPoint())
         {
-            var nextPoint = path.Dequeue();
+            var nextPoint = path.Next();
             
             transform.up = nextPoint - transform.position;
 
