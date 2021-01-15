@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Linq;
 using System.Collections.Generic;
+using PriorityQueue;
 
 public class Pointer : MonoBehaviour
 {
@@ -55,7 +56,7 @@ public class Pointer : MonoBehaviour
         {
             characterTile.MatchSome(cTile =>
             {
-                CalculateBreadthFirstPath(cTile, mTile, character.transform.position.z).MatchSome(path =>
+                CalculateDijkstraPath(cTile, mTile, character.transform.position.z).MatchSome(path =>
                 {
                     DrawPath(path);
                     character.Move(path);
@@ -72,9 +73,9 @@ public class Pointer : MonoBehaviour
         path.ForEachPoint(p => lineRenderer.SetPosition(i++, p));
     }
 
-    private Queue<Vector3> CalculateManhattanPath(MovementTile source, MovementTile destination, float z, float stepSize)
+    private Option<Path> CalculateManhattanPath(MovementTile source, MovementTile destination, float z, float stepSize)
     {
-        var path = new Queue<Vector3>();
+        var path = new Path();
 
         var horizontalSteps = (int)(Mathf.Abs(destination.Position.x - source.Position.x) / stepSize);
         var verticalSteps   = (int)(Mathf.Abs(destination.Position.y - source.Position.y) / stepSize);
@@ -85,28 +86,18 @@ public class Pointer : MonoBehaviour
         var horizontalDestination = Option.Some(source);
         
         if (deltaX > 0)
-        {
-            horizontalDestination = source.TraverseEast(horizontalSteps, 
-                                                        tile => path.Enqueue(new Vector3(tile.Position.x, tile.Position.y, z)));
-        }
+            horizontalDestination = source.TraverseEast(horizontalSteps, tile => path.AddPoint(tile.Position.x, tile.Position.y, z));
         else if (deltaX < 0)
-        {
-            horizontalDestination = source.TraverseWest(horizontalSteps, 
-                                                        tile => path.Enqueue(new Vector3(tile.Position.x, tile.Position.y, z)));
-        }
+            horizontalDestination = source.TraverseWest(horizontalSteps, tile => path.AddPoint(tile.Position.x, tile.Position.y, z));
 
         if (deltaY > 0)
-        {
             horizontalDestination.MatchSome(t => t.TraverseNorth(verticalSteps, 
-                                                                 tile => path.Enqueue(new Vector3(tile.Position.x, tile.Position.y, z))));
-        }
+                                                                 tile => path.AddPoint(tile.Position.x, tile.Position.y, z)));
         else if (deltaY < 0)
-        {
             horizontalDestination.MatchSome(t => t.TraverseSouth(verticalSteps, 
-                                                                 tile => path.Enqueue(new Vector3(tile.Position.x, tile.Position.y, z))));
-        }
+                                                                 tile => path.AddPoint(tile.Position.x, tile.Position.y, z)));
 
-        return path;
+        return path.SomeWhen(p => p.Count != 0);
     }
 
     private Option<Path> CalculateBreadthFirstPath(MovementTile source, MovementTile destination, float z)
@@ -133,6 +124,38 @@ public class Pointer : MonoBehaviour
             });
         }
 
+        return ConstructPath(cameFrom, source, destination, z);
+    }
+
+    private Option<Path> CalculateDijkstraPath(MovementTile source, MovementTile destination, float z)
+    {
+        var frontier  = new SimplePriorityQueue<MovementTile>();
+        var cameFrom  = new Dictionary<MovementTile, MovementTile>();
+        var costSoFar = new Dictionary<MovementTile, int>();
+        
+        costSoFar.Add(source, 0);
+        frontier.Enqueue(source, 0);
+        
+        while (frontier.Any())
+        {
+            var current = frontier.Dequeue();
+            
+            if (current == destination)
+                break;
+            
+            current.ForEachCardinalNeighbor(next =>
+            {
+                var newCost = costSoFar[current] + next.MovementCost;
+
+                if ((!cameFrom.ContainsKey(next) || newCost < costSoFar[next]) && next.MovementCost != 10)
+                {
+                    costSoFar[next] = newCost;
+                    frontier.Enqueue(next, newCost);
+                    cameFrom[next] = current;
+                }
+            });
+        }
+        
         return ConstructPath(cameFrom, source, destination, z);
     }
 
