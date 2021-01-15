@@ -111,6 +111,14 @@ namespace GridSystem
             foreach (var neighbor in neighbors)
                 neighbor.MatchSome(n => action(n));
         }
+
+        public void ForEachCardinalNeighbor(Action<T> action)
+        {
+            NorthNeighbor.MatchSome(n => action(n));
+            EastNeighbor.MatchSome(n => action(n));
+            SouthNeighbor.MatchSome(n => action(n));
+            WestNeighbor.MatchSome(n => action(n));
+        }
         
         public bool AnyNeighbor(Predicate<T> predicate)
         {

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Pointer : MonoBehaviour
 {
@@ -38,7 +39,8 @@ public class Pointer : MonoBehaviour
                 {
                     engine.MovementGrid.GetTileAt(character.transform.position).MatchSome(source =>
                     {
-                        var path = CalculatePath(source, destination, character.transform.position.z, engine.MovementGrid.TileSize);
+                        //var path = CalculateManhattanPath(source, destination, character.transform.position.z, engine.MovementGrid.TileSize);
+                        var path = CalculateBreadthFirstPath(source, destination, character.transform.position.z);
                         character.Move(path);
                     });
                 });
@@ -46,9 +48,9 @@ public class Pointer : MonoBehaviour
         }
     }
 
-    private Queue<Vector3> CalculatePath(MovementTile source, MovementTile destination, float z, float stepSize)
+    private Queue<Vector3> CalculateManhattanPath(MovementTile source, MovementTile destination, float z, float stepSize)
     {
-        Queue<Vector3> path = new Queue<Vector3>();
+        var path = new Queue<Vector3>();
 
         var horizontalSteps = (int)(Mathf.Abs(destination.Position.x - source.Position.x) / stepSize);
         var verticalSteps   = (int)(Mathf.Abs(destination.Position.y - source.Position.y) / stepSize);
@@ -81,5 +83,42 @@ public class Pointer : MonoBehaviour
         }
 
         return path;
+    }
+
+    private Queue<Vector3> CalculateBreadthFirstPath(MovementTile source, MovementTile destination, float z)
+    {
+        var frontier = new Queue<MovementTile>();
+        var cameFrom = new Dictionary<MovementTile, MovementTile>();
+        
+        frontier.Enqueue(source);
+
+        while (frontier.Any())
+        {
+            var current = frontier.Dequeue();
+            
+            if (current == destination)
+                break;
+            
+            current.ForEachCardinalNeighbor(next =>
+            {
+                if (!cameFrom.ContainsKey(next))
+                {
+                    frontier.Enqueue(next);
+                    cameFrom.Add(next, current);
+                }
+            });
+        }
+
+        var path = new Queue<Vector3>();
+        
+        var currentTile = destination;
+        
+        while (currentTile != source)
+        {
+            path.Enqueue(new Vector3(currentTile.Position.x, currentTile.Position.y, z));
+            currentTile = cameFrom[currentTile];
+        }
+        
+        return new Queue<Vector3>(path.Reverse());
     }
 }
