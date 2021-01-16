@@ -120,6 +120,14 @@ namespace GridSystem
             WestNeighbor.MatchSome(n => action(n));
         }
         
+        public void ForEachIntercardinalNeighbor(Action<T> action)
+        {
+            NorthEastNeighbor.MatchSome(n => action(n));
+            SouthEastNeighbor.MatchSome(n => action(n));
+            SouthWestNeighbor.MatchSome(n => action(n));
+            NorthWestNeighbor.MatchSome(n => action(n));
+        }
+        
         public bool AnyNeighbor(Predicate<T> predicate)
         {
             return neighbors.FirstOrDefault(optional => optional.Filter(neighbor => predicate(neighbor)).HasValue) != null;

@@ -5,6 +5,7 @@ public class MovementTile : BaseTile<MovementTile>, IHaveMovementCost
 {
     private int movementCost;
     public  int MovementCost => movementCost;
+    public bool IsWalkable => movementCost < Movement.MaxCost;
     
     public MovementTile(Grid<MovementTile> ownerGrid, Vector2Int coordinate) : base(ownerGrid, coordinate)
     {

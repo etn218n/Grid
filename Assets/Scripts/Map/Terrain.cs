@@ -16,6 +16,8 @@ public class Terrain : ScriptableObject, IHaveMovementCost
     private int movementCost;
     public  int MovementCost => movementCost;
     
+    public bool IsWalkable => movementCost < Movement.MaxCost;
+    
     [SerializeField] [LabelWidth(100)] [Range(0, 10)]
     private float fertility;
     public  float Fertility => fertility;

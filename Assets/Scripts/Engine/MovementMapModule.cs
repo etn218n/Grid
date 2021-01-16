@@ -20,12 +20,12 @@ public class MovementMapModule : GridEngineModule
 
         var totalCost = movementCostA.ValueOr(0) + movementCostB.ValueOr(0);
 
-        return Mathf.Clamp(totalCost, 0, 10);
+        return Mathf.Clamp(totalCost, Movement.MinCost, Movement.MaxCost);
     }
 
     private void PaintTileBasedOnMovementCost(MovementTile movementTile)
     {
-        var movementCostPercentage = 1.1f - movementTile.MovementCost / 10.0f;
+        var movementCostPercentage = 1.1f - (float)movementTile.MovementCost / Movement.MaxCost;
         
         var uvRect = new Rect2D(new Vector2(movementCostPercentage, 0),
                                 new Vector2(movementCostPercentage, 0), 
