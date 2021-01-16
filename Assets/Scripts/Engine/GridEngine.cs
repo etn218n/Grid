@@ -37,6 +37,7 @@ public class GridEngine : MonoBehaviour
     [SerializeField] private List<GridEngineModule> modules = new List<GridEngineModule>();
 
     private HashSet<Grid> visibleGrids = new HashSet<Grid>();
+    private HashSet<Grid> activeGrids  = new HashSet<Grid>();
     
     private Grid<TerrainTile> basegroundGrid;
     private Grid<TerrainTile> backgroundGrid;
@@ -59,6 +60,7 @@ public class GridEngine : MonoBehaviour
     {
         InstantiateGrids();
         AddVisibleGrids();
+        AddActiveGrids();
         
         modules.ForEach(module => module.OnStart(this));
     }
@@ -90,6 +92,15 @@ public class GridEngine : MonoBehaviour
         visibleGrids.Add(foregroundGrid);
     }
     
+    private void AddActiveGrids()
+    {
+        activeGrids.Add(plantGrid);
+        activeGrids.Add(movementGrid);
+        activeGrids.Add(basegroundGrid);
+        activeGrids.Add(backgroundGrid);
+        activeGrids.Add(foregroundGrid);
+    }
+    
     private void Update()
     {
         elapsedTime += Time.unscaledDeltaTime;
@@ -117,11 +128,8 @@ public class GridEngine : MonoBehaviour
 
     private void Tick()
     {
-        plantGrid.Tick(ticksSinceStartUp);
-        movementGrid.Tick(ticksSinceStartUp);
-        basegroundGrid.Tick(ticksSinceStartUp);
-        backgroundGrid.Tick(ticksSinceStartUp);
-        foregroundGrid.Tick(ticksSinceStartUp);
+        foreach (var grid in activeGrids)
+            grid.Tick(ticksSinceStartUp);
 
         ticksSinceStartUp++;
     }
@@ -144,6 +152,17 @@ public class GridEngine : MonoBehaviour
         basegroundGrid.Dispose();
         backgroundGrid.Dispose();
         foregroundGrid.Dispose();
+    }
+
+    public void MarkPlantGridActive() => activeGrids.Add(plantGrid);
+    public void MarkPlantGridInactive() => activeGrids.Remove(plantGrid);
+
+    public void TogglePlantGridActive()
+    {
+        if (activeGrids.Contains(plantGrid))
+            MarkPlantGridInactive();
+        else
+            MarkPlantGridActive();
     }
 
     public void ShowMovementGrid() => visibleGrids.Add(movementGrid);

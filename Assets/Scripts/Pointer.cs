@@ -1,10 +1,8 @@
 ﻿using Optional;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Linq;
 using System.Collections.Generic;
 using GridSystem;
-using PriorityQueue;
 
 public class Pointer : MonoBehaviour
 {
@@ -21,24 +19,42 @@ public class Pointer : MonoBehaviour
 
     private void Start()
     {
-        var initialTile = engine.MovementGrid.GetTileAt(new Vector2Int(0, 0)).Map(t => t.Position);
+        var initialPosition = engine.MovementGrid.GetTileAt(Vector2Int.zero).Map(t => t.Position);
         
-        initialTile.MatchSome(point =>
+        initialPosition.MatchSome(point =>
         {
-            var zPostion = selectedCharacters[0].transform.position.z;
-            selectedCharacters[0].transform.position = new Vector3(point.x, point.y, zPostion);
+            selectedCharacters.ForEach(character =>
+            {
+                var zPostion = character.transform.position.z;
+                character.transform.position = new Vector3(point.x, point.y, zPostion);
+            });
         });
+
+        selectedCharacters.ForEach(character => TryMoveRandomly(character, engine.MovementGrid));
     }
 
+    private void TryMoveRandomly<T>(Character character, Grid<T> grid) where T : BaseTile<T>, IHaveMovementCost
+    {
+        var (source, destination) = RandomWaypointFor(grid, character);
+            
+        source.MatchSome(s => destination.MatchSome(d => character.Move(s, d)));
+    }
+    
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1))
         {
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
             
             SetPathToCursorPosition();
         }
+        
+        selectedCharacters.ForEach(character =>
+        {
+            if (!character.Mover.IsMoving)
+                TryMoveRandomly(character, engine.MovementGrid);
+        });
     }
 
     public void SetPathToCursorPosition()
@@ -60,6 +76,21 @@ public class Pointer : MonoBehaviour
                 character.Move(cTile, mTile);
             });
         });
+    }
+
+    public (Option<T>, Option<T>) RandomWaypointFor<T>(Grid<T> grid, Character character) where T : BaseTile<T>, IHaveMovementCost
+    {
+        var source = grid.GetTileAt(character.transform.position);
+        var destination = Option.None<T>();
+
+        while (!destination.HasValue)
+        {
+            Vector2Int randomCoordinate = new Vector2Int(Random.Range(0, 50), Random.Range(0, 50));
+
+            destination = grid.GetTileAt(randomCoordinate).Filter(tile => tile.IsWalkable);
+        }
+
+        return (source, destination);
     }
 
     private void DrawPath(Path path)

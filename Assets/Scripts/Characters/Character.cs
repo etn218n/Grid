@@ -1,11 +1,13 @@
-﻿using System;
-using GridSystem;
+﻿using GridSystem;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
     private Mover mover;
     private PathFinder pathFinder;
+
+    public Mover Mover => mover;
+    public PathFinder PathFinder => pathFinder;
 
     private void Awake()
     {

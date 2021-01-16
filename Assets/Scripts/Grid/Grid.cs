@@ -58,8 +58,8 @@ namespace GridSystem
 
             InitializeChunks();
             GenerateChunksMesh();
-            MarkAllChunksActive();
-            MarkAllChunksVisible();
+            MarkActive();
+            MarkVisible();
         }
         
         private void InitializeChunks()
@@ -96,16 +96,12 @@ namespace GridSystem
             handles.Dispose();
         }
 
-        public void MarkAllChunksActive()
-        {
-            ForEachChunk(chunk => chunk.MarkActive());
-        }
-        
-        public void MarkAllChunksVisible()
-        {
-            ForEachChunk(chunk => chunk.MarkVisible());
-        }
-        
+        public void MarkActive() => ForEachChunk(chunk => chunk.MarkActive());
+        public void MarkInactive() => ForEachChunk(chunk => chunk.MarkInactive());
+
+        public void MarkVisible() => ForEachChunk(chunk => chunk.MarkVisible());
+        public void MarkInvisible() => ForEachChunk(chunk => chunk.MarkInvisible());
+
         public void SetUVs(in Rect2D uvRect)
         {
             for (int i = 0; i < verticalChunks; i++) 
