@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Mover : MonoBehaviour
+public class Mover : MonoBehaviour, IMover
 {
     public float MoveSpeed;
 
@@ -31,7 +31,7 @@ public class Mover : MonoBehaviour
 
             while (transform.position != nextPoint)
             {
-                transform.position = Vector3.MoveTowards(transform.position, nextPoint, MoveSpeed * Time.deltaTime);
+                transform.position = MoveTowards(nextPoint, MoveSpeed);
 
                 yield return new WaitForEndOfFrame();
             }
@@ -40,5 +40,10 @@ public class Mover : MonoBehaviour
         OnDone?.Invoke();
 
         isMoving = false;
+
+        Vector3 MoveTowards(Vector3 nextPoint, float moveSpeed)
+        {
+            return Vector3.MoveTowards(transform.position, nextPoint, moveSpeed * Time.deltaTime);
+        }
     }
 }

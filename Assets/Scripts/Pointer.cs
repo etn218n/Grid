@@ -1,22 +1,17 @@
-﻿using Optional;
+﻿using System;
+using Optional;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using GridSystem;
+using Random = UnityEngine.Random;
 
 public class Pointer : MonoBehaviour
 {
     [SerializeField] private GridEngine engine;
 
-    private LineRenderer lineRenderer;
-
     public List<Character> selectedCharacters = new List<Character>();
-
-    private void Awake()
-    {
-        lineRenderer = GetComponent<LineRenderer>();
-    }
-
+    
     private void Start()
     {
         var initialPosition = engine.MovementGrid.GetTileAt(Vector2Int.zero).Map(t => t.Position);
@@ -29,8 +24,6 @@ public class Pointer : MonoBehaviour
                 character.transform.position = new Vector3(point.x, point.y, zPostion);
             });
         });
-
-        selectedCharacters.ForEach(character => TryMoveRandomly(character, engine.MovementGrid));
     }
 
     private void TryMoveRandomly<T>(Character character, Grid<T> grid) where T : BaseTile<T>, IHaveMovementCost
@@ -50,11 +43,11 @@ public class Pointer : MonoBehaviour
             SetPathToCursorPosition();
         }
         
-        selectedCharacters.ForEach(character =>
-        {
-            if (!character.Mover.IsMoving)
-                TryMoveRandomly(character, engine.MovementGrid);
-        });
+        // selectedCharacters.ForEach(character =>
+        // {
+        //     if (!character.Mover.IsMoving)
+        //         TryMoveRandomly(character, engine.MovementGrid);
+        // });
     }
 
     public void SetPathToCursorPosition()
@@ -64,18 +57,26 @@ public class Pointer : MonoBehaviour
             
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
 
-        var character = selectedCharacters[0];
-        
-        var mouseTile = engine.MovementGrid.GetTileAt(mouseWorldPosition);
-        var characterTile = engine.MovementGrid.GetTileAt(character.transform.position);
-        
-        mouseTile.MatchSome(mTile =>
-        {
-            characterTile.MatchSome(cTile =>
-            { 
-                character.Move(cTile, mTile);
-            });
-        });
+        if (CanMoveTo(mouseWorldPosition, engine.MovementGrid))
+            selectedCharacters.ForEach(character => Move(character, mouseWorldPosition));
+    }
+
+    public bool CanMoveTo(Vector3 destination, Grid<MovementTile> grid)
+    {
+        return grid.GetTileAt(destination).Filter(tile => tile.IsWalkable).HasValue;
+    }
+
+    public void Move(Character character, Vector3 destination)
+    {
+        var destinationTile = engine.MovementGrid.GetTileAt(destination);
+        var characterTile   = engine.MovementGrid.GetTileAt(character.transform.position);
+
+        LiftAction<MovementTile, MovementTile>((src, dest) => character.Move(src, dest))(characterTile, destinationTile);
+    }
+
+    public Action<Option<A>, Option<B>> LiftAction<A, B>(Action<A, B> action)
+    {
+        return (optionA, optionB) => optionA.MatchSome(a => optionB.MatchSome(b => action(a, b)));
     }
 
     public (Option<T>, Option<T>) RandomWaypointFor<T>(Grid<T> grid, Character character) where T : BaseTile<T>, IHaveMovementCost
@@ -91,13 +92,5 @@ public class Pointer : MonoBehaviour
         }
 
         return (source, destination);
-    }
-
-    private void DrawPath(Path path)
-    {
-        int i = 0;
-        lineRenderer.positionCount = path.Count;
-        
-        path.ForEachPoint(p => lineRenderer.SetPosition(i++, p));
     }
 }
