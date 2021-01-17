@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MayBe;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine;
-using MayBe;
 
 namespace GridSystem
 {
@@ -166,18 +166,20 @@ namespace GridSystem
 
         public void UpdateMesh()
         {
-            while (modifiedChunks.Any())
+            while (modifiedChunks.Count != 0)
                 modifiedChunks.Dequeue().UpdateMesh();
         }
 
         public void Draw()
         {
-            visibleChunks.ForEach(chunk => Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0));
+            foreach (var chunk in visibleChunks)
+                Graphics.DrawMesh(chunk.Mesh, origin, Quaternion.identity, material, 0);
         }
 
         public void Tick(long ticks)
         {
-            activeChunks.ForEach(chunk => chunk.Tick(ticks));
+            foreach (var chunk in activeChunks)
+                chunk.Tick(ticks);
         }
 
         public void Dispose()

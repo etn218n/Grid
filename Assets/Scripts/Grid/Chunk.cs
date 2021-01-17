@@ -61,7 +61,8 @@ namespace GridSystem
 
         public void Tick(long ticks)
         {
-            activeTickables.ForEach(t => t.Tick(ticks));
+            foreach (var tickable in activeTickables)
+                tickable.Tick(ticks);
         }
 
         public void MarkActive()
