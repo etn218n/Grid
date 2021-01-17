@@ -493,8 +493,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameSpeed: 1
   ticksPerSecond: 60
-  horizontalChunks: 2
-  verticalChunks: 2
+  horizontalChunks: 3
+  verticalChunks: 3
   tileSize: 1
   rowsPerChunk: 50
   columnsPerChunk: 50
@@ -1350,6 +1350,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoomScale: 1
+  minZoomDistance: 1
+  maxZoomDistance: 100
 --- !u!114 &1581897501
 MonoBehaviour:
   m_ObjectHideFlags: 0

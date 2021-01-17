@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class TerrainMover : MonoBehaviour, IMover
 {
-    [SerializeField] private GridEngine gridEngine;
+    [SerializeField] 
+    private GridEngine gridEngine;
     
-    public float DefaultMoveSpeed;
+    public float MoveSpeed = 10;
     
     private bool isMoving;
     public  bool IsMoving => isMoving;
@@ -33,14 +34,13 @@ public class TerrainMover : MonoBehaviour, IMover
             
             transform.up = nextPoint - transform.position;
 
-            float movementSpeed = gridEngine.MovementGrid.GetTileAt(nextPoint)
-                .Map(tile => tile.MovementCost)
-                .Map(MovementSpeed)
-                .ValueOr(DefaultMoveSpeed);
-
+            float calculatedSpeed = gridEngine.MovementGrid.GetTileAt(nextPoint).Map(tile => tile.MovementCost)
+                                                                                .Map(CalculateSpeedPenalty)
+                                                                                .ValueOr(MoveSpeed);
+            
             while (transform.position != nextPoint)
             {
-                transform.position = MoveTowards(nextPoint, movementSpeed);
+                transform.position = Vector3.MoveTowards(transform.position, nextPoint, calculatedSpeed * Time.deltaTime);
 
                 yield return new WaitForEndOfFrame();
             }
@@ -49,17 +49,9 @@ public class TerrainMover : MonoBehaviour, IMover
         OnDone?.Invoke();
 
         isMoving = false;
-
-        Vector3 MoveTowards(Vector3 nextPoint, float moveSpeed)
-        {
-            return Vector3.MoveTowards(transform.position, nextPoint, moveSpeed * Time.deltaTime);
-        }
     }
-
-    /**
-     * Higher cost, lower speed
-     */
-    private float MovementSpeed(int movementCost)
+    
+    private float CalculateSpeedPenalty(int movementCost)
     {
         return Movement.MaxCost - Mathf.Clamp(movementCost * movementCost, min: 0, max: Movement.MaxCost - 1);
     }
