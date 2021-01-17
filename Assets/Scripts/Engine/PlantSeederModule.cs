@@ -1,4 +1,4 @@
-﻿using Optional;
+﻿using MayBe;
 using UnityEngine;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
@@ -17,7 +17,7 @@ public class PlantSeederModule : GridEngineModule
         engine.PlantGrid.ForEachTile(TryGrowTree);
     }
     
-    private Option<Terrain> RaycastTerrain(Vector2Int coordinate)
+    private Maybe<Terrain> RaycastTerrain(Vector2Int coordinate)
     {
         return engine.ForegroundGrid.GetTileAt(coordinate).Map(tile => tile.Terrain);
     }

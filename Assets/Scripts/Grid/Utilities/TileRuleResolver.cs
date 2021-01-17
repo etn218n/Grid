@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Optional;
-using Optional.Collections;
+using MayBe;
+using MayBe.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -62,7 +62,7 @@ namespace GridSystem
             return ruleMask;
         }
 
-        public Option<TileRule> MatchedRule<T>(T tile) where T : BaseTile<T>
+        public Maybe<TileRule> MatchedRule<T>(T tile) where T : BaseTile<T>
         {
             var ruleMask = TileNeighborsToMask(tile);
             

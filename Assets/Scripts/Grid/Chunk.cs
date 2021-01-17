@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Optional;
+using MayBe;
 using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine;
@@ -169,20 +169,20 @@ namespace GridSystem
             OnColorModified();
         }
         
-        public Option<Rect3D> GetTileVertexRectAt(Vector2Int tileLocalCoordinate)
+        public Maybe<Rect3D> GetTileVertexRectAt(Vector2Int tileLocalCoordinate)
         {
             if (tileLocalCoordinate.x < 0 || tileLocalCoordinate.x > columns)
-                return Option.None<Rect3D>();
+                return Maybe.None<Rect3D>();
             
             if (tileLocalCoordinate.y < 0 || tileLocalCoordinate.y > rows)
-                return Option.None<Rect3D>();
+                return Maybe.None<Rect3D>();
             
             int index = (tileLocalCoordinate.y * columns * 4) + (tileLocalCoordinate.x * 4);
 
-            return Option.Some(new Rect3D(vertices[index + 0], 
-                                          vertices[index + 1], 
-                                          vertices[index + 2], 
-                                          vertices[index + 3]));
+            return Maybe.Some(new Rect3D(vertices[index + 0], 
+                                         vertices[index + 1], 
+                                         vertices[index + 2], 
+                                         vertices[index + 3]));
         }
         
         private void OnUVsModified()

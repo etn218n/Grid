@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Optional.Collections
+namespace MayBe.Collections
 {
-    public static class OptionCollectionExtensions
+    public static class MaybeCollectionExtensions
     {
 
         /// <summary>
@@ -15,7 +15,7 @@ namespace Optional.Collections
         /// </summary>
         /// <param name="source">The sequence of optionals.</param>
         /// <returns>A flattened sequence of values.</returns>
-        public static IEnumerable<T> Values<T>(this IEnumerable<Option<T>> source)
+        public static IEnumerable<T> Values<T>(this IEnumerable<Maybe<T>> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -34,7 +34,7 @@ namespace Optional.Collections
         /// </summary>
         /// <param name="source">The sequence of optionals.</param>
         /// <returns>A flattened sequence of values.</returns>
-        public static IEnumerable<T> Values<T, TException>(this IEnumerable<Option<T, TException>> source)
+        public static IEnumerable<T> Values<T, TException>(this IEnumerable<Maybe<T, TException>> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -53,7 +53,7 @@ namespace Optional.Collections
         /// </summary>
         /// <param name="source">The sequence of optionals.</param>
         /// <returns>A flattened sequence of exceptional values.</returns>
-        public static IEnumerable<TException> Exceptions<T, TException>(this IEnumerable<Option<T, TException>> source)
+        public static IEnumerable<TException> Exceptions<T, TException>(this IEnumerable<Maybe<T, TException>> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -74,7 +74,7 @@ namespace Optional.Collections
         /// <param name="source">The dictionary or enumerable in which to locate the key.</param>
         /// <param name="key">The key to locate.</param>
         /// <returns>An Option&lt;TValue&gt; instance containing the associated value if located.</returns>
-        public static Option<TValue> GetValueOrNone<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source, TKey key)
+        public static Maybe<TValue> GetValueOrNone<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source, TKey key)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -99,7 +99,7 @@ namespace Optional.Collections
         /// </summary>
         /// <param name="source">The sequence to return the first element from.</param>
         /// <returns>An Option&lt;T&gt; instance containing the first element if present.</returns>
-        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source)
+        public static Maybe<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -130,7 +130,7 @@ namespace Optional.Collections
                 }
             }
 
-            return Option.None<TSource>();
+            return Maybe.None<TSource>();
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Optional.Collections
         /// <param name="source">The sequence to return the first element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <returns>An Option&lt;T&gt; instance containing the first element if present.</returns>
-        public static Option<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        public static Maybe<TSource> FirstOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -153,7 +153,7 @@ namespace Optional.Collections
                 }
             }
 
-            return Option.None<TSource>();
+            return Maybe.None<TSource>();
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Optional.Collections
         /// </summary>
         /// <param name="source">The sequence to return the last element from.</param>
         /// <returns>An Option&lt;T&gt; instance containing the last element if present.</returns>
-        public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source)
+        public static Maybe<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -201,7 +201,7 @@ namespace Optional.Collections
                 }
             }
 
-            return Option.None<TSource>();
+            return Maybe.None<TSource>();
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Optional.Collections
         /// <param name="source">The sequence to return the last element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <returns>An Option&lt;T&gt; instance containing the last element if present.</returns>
-        public static Option<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        public static Maybe<TSource> LastOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -264,7 +264,7 @@ namespace Optional.Collections
                 }
             }
 
-            return Option.None<TSource>();
+            return Maybe.None<TSource>();
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace Optional.Collections
         /// </summary>
         /// <param name="source">The sequence to return the element from.</param>
         /// <returns>An Option&lt;T&gt; instance containing the element if present.</returns>
-        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source)
+        public static Maybe<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -281,7 +281,7 @@ namespace Optional.Collections
             {
                 switch (list.Count)
                 {
-                    case 0: return Option.None<TSource>();
+                    case 0: return Maybe.None<TSource>();
                     case 1: return list[0].Some();
                 }
             }
@@ -290,7 +290,7 @@ namespace Optional.Collections
             {
                 switch (readOnlyList.Count)
                 {
-                    case 0: return Option.None<TSource>();
+                    case 0: return Maybe.None<TSource>();
                     case 1: return readOnlyList[0].Some();
                 }
             }
@@ -301,7 +301,7 @@ namespace Optional.Collections
                 {
                     if (!enumerator.MoveNext())
                     {
-                        return Option.None<TSource>();
+                        return Maybe.None<TSource>();
                     }
 
                     var result = enumerator.Current;
@@ -312,7 +312,7 @@ namespace Optional.Collections
                 }
             }
 
-            return Option.None<TSource>();
+            return Maybe.None<TSource>();
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace Optional.Collections
         /// <param name="source">The sequence to return the element from.</param>
         /// <param name="predicate">The predicate to filter by.</param>
         /// <returns>An Option&lt;T&gt; instance containing the element if present.</returns>
-        public static Option<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        public static Maybe<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -338,7 +338,7 @@ namespace Optional.Collections
                         {
                             if (predicate(enumerator.Current))
                             {
-                                return Option.None<TSource>();
+                                return Maybe.None<TSource>();
                             }
                         }
 
@@ -347,7 +347,7 @@ namespace Optional.Collections
                 }
             }
 
-            return Option.None<TSource>();
+            return Maybe.None<TSource>();
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace Optional.Collections
         /// <param name="source">The sequence to return the element from.</param>
         /// <param name="index">The index in the sequence.</param>
         /// <returns>An Option&lt;T&gt; instance containing the element if found.</returns>
-        public static Option<TSource> ElementAtOrNone<TSource>(this IEnumerable<TSource> source, int index)
+        public static Maybe<TSource> ElementAtOrNone<TSource>(this IEnumerable<TSource> source, int index)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
@@ -395,7 +395,7 @@ namespace Optional.Collections
                 }
             }
 
-            return Option.None<TSource>();
+            return Maybe.None<TSource>();
         }
     }
 }

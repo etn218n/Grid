@@ -1,18 +1,18 @@
 ﻿using System;
 
-namespace Optional.Unsafe
+namespace MayBe.Unsafe
 {
     /// <summary>
     /// Indicates a failed retrieval of a value from an empty optional.
     /// </summary>
-    public class OptionValueMissingException : Exception
+    public class MaybeValueMissingException : Exception
     {
-        internal OptionValueMissingException()
+        internal MaybeValueMissingException()
             : base()
         {
         }
 
-        internal OptionValueMissingException(string message)
+        internal MaybeValueMissingException(string message)
             : base(message)
         {
         }

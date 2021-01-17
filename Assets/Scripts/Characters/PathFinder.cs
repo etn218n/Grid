@@ -1,4 +1,4 @@
-﻿using Optional;
+﻿using MayBe;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,9 +32,9 @@ public class PathFinder : MonoBehaviour
         lineRenderer.numCapVertices = 10;
     }
 
-    public Option<Path> CalculatePath<T>(BaseTile<T> source, BaseTile<T> destination, float z) where T : BaseTile<T>, IHaveMovementCost
+    public Maybe<Path> CalculatePath<T>(BaseTile<T> source, BaseTile<T> destination, float z) where T : BaseTile<T>, IHaveMovementCost
     {
-        var path = Option.None<Path>();
+        var path = Maybe.None<Path>();
         
         switch (algorithm)
         {
@@ -49,7 +49,7 @@ public class PathFinder : MonoBehaviour
         return path;
     }
 
-    public Option<Path> CalculateBreadthFirstPath<T>(BaseTile<T> source, BaseTile<T> destination, float z) where T : BaseTile<T>, IHaveMovementCost
+    public Maybe<Path> CalculateBreadthFirstPath<T>(BaseTile<T> source, BaseTile<T> destination, float z) where T : BaseTile<T>, IHaveMovementCost
     {
         var frontier = new Queue<BaseTile<T>>();
         var cameFrom = new Dictionary<BaseTile<T>, BaseTile<T>>();
@@ -76,7 +76,7 @@ public class PathFinder : MonoBehaviour
         return ConstructPath(cameFrom, source, destination, z);
     }
 
-    public Option<Path> CalculateDijkstraPath<T>(BaseTile<T> source, BaseTile<T> destination, float z) where T : BaseTile<T>, IHaveMovementCost
+    public Maybe<Path> CalculateDijkstraPath<T>(BaseTile<T> source, BaseTile<T> destination, float z) where T : BaseTile<T>, IHaveMovementCost
     {
         var frontier  = new SimplePriorityQueue<BaseTile<T>>();
         var cameFrom  = new Dictionary<BaseTile<T>, BaseTile<T>>();
@@ -108,7 +108,7 @@ public class PathFinder : MonoBehaviour
         return ConstructPath(cameFrom, source, destination, z);
     }
     
-    public Option<Path> CalculateAStarPath<T>(BaseTile<T> source, BaseTile<T> destination, float z) where T : BaseTile<T>, IHaveMovementCost
+    public Maybe<Path> CalculateAStarPath<T>(BaseTile<T> source, BaseTile<T> destination, float z) where T : BaseTile<T>, IHaveMovementCost
     {
         var frontier  = new SimplePriorityQueue<BaseTile<T>>();
         var cameFrom  = new Dictionary<BaseTile<T>, BaseTile<T>>();
@@ -140,11 +140,11 @@ public class PathFinder : MonoBehaviour
         return ConstructPath(cameFrom, source, destination, z);
     }
 
-    private Option<Path> ConstructPath<T>(Dictionary<BaseTile<T>, BaseTile<T>> cameFrom, BaseTile<T> source, BaseTile<T> destination, float z) 
+    private Maybe<Path> ConstructPath<T>(Dictionary<BaseTile<T>, BaseTile<T>> cameFrom, BaseTile<T> source, BaseTile<T> destination, float z) 
         where T : BaseTile<T>, IHaveMovementCost
     {
         if (!cameFrom.ContainsKey(destination))
-            return Option.None<Path>();
+            return Maybe.None<Path>();
 
         var path = new Path();
         
@@ -158,7 +158,7 @@ public class PathFinder : MonoBehaviour
         
         path.Reverse();
         
-        return Option.Some(path);
+        return Maybe.Some(path);
     }
 
     public float HeuristicDistance(Vector2 a, Vector2 b)

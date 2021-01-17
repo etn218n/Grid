@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Optional
+namespace MayBe
 {
     /// <summary>
     /// Represents an optional value.
@@ -10,7 +10,7 @@ namespace Optional
 #if !NETSTANDARD10
     [Serializable]
 #endif
-    public struct Option<T> : IEquatable<Option<T>>, IComparable<Option<T>>
+    public struct Maybe<T> : IEquatable<Maybe<T>>, IComparable<Maybe<T>>
     {
         private readonly bool hasValue;
         private readonly T value;
@@ -22,7 +22,7 @@ namespace Optional
 
         internal T Value => value;
 
-        internal Option(T value, bool hasValue)
+        internal Maybe(T value, bool hasValue)
         {
             this.value = value;
             this.hasValue = hasValue;
@@ -33,7 +33,7 @@ namespace Optional
         /// </summary>
         /// <param name="other">The optional to compare with the current one.</param>
         /// <returns>A boolean indicating whether or not the optionals are equal.</returns>
-        public bool Equals(Option<T> other)
+        public bool Equals(Maybe<T> other)
         {
             if (!hasValue && !other.hasValue)
             {
@@ -52,7 +52,7 @@ namespace Optional
         /// </summary>
         /// <param name="obj">The optional to compare with the current one.</param>
         /// <returns>A boolean indicating whether or not the optionals are equal.</returns>
-        public override bool Equals(object obj) => obj is Option<T> ? Equals((Option<T>)obj) : false;
+        public override bool Equals(object obj) => obj is Maybe<T> ? Equals((Maybe<T>)obj) : false;
 
         /// <summary>
         /// Determines whether two optionals are equal.
@@ -60,7 +60,7 @@ namespace Optional
         /// <param name="left">The first optional to compare.</param>
         /// <param name="right">The second optional to compare.</param>
         /// <returns>A boolean indicating whether or not the optionals are equal.</returns>
-        public static bool operator ==(Option<T> left, Option<T> right) => left.Equals(right);
+        public static bool operator ==(Maybe<T> left, Maybe<T> right) => left.Equals(right);
 
         /// <summary>
         /// Determines whether two optionals are unequal.
@@ -68,7 +68,7 @@ namespace Optional
         /// <param name="left">The first optional to compare.</param>
         /// <param name="right">The second optional to compare.</param>
         /// <returns>A boolean indicating whether or not the optionals are unequal.</returns>
-        public static bool operator !=(Option<T> left, Option<T> right) => !left.Equals(right);
+        public static bool operator !=(Maybe<T> left, Maybe<T> right) => !left.Equals(right);
 
         /// <summary>
         /// Generates a hash code for the current optional.
@@ -95,7 +95,7 @@ namespace Optional
         /// </summary>
         /// <param name="other">The optional to compare with the current one.</param>
         /// <returns>An integer indicating the relative order of the optionals being compared.</returns>
-        public int CompareTo(Option<T> other)
+        public int CompareTo(Maybe<T> other)
         {
             if (hasValue && !other.hasValue) return 1;
             if (!hasValue && other.hasValue) return -1;
@@ -108,7 +108,7 @@ namespace Optional
         /// <param name="left">The first optional to compare.</param>
         /// <param name="right">The second optional to compare.</param>
         /// <returns>A boolean indicating whether or not the left optional is less than the right optional.</returns>
-        public static bool operator <(Option<T> left, Option<T> right) => left.CompareTo(right) < 0;
+        public static bool operator <(Maybe<T> left, Maybe<T> right) => left.CompareTo(right) < 0;
 
         /// <summary>
         /// Determines if an optional is less than or equal to another optional.
@@ -116,7 +116,7 @@ namespace Optional
         /// <param name="left">The first optional to compare.</param>
         /// <param name="right">The second optional to compare.</param>
         /// <returns>A boolean indicating whether or not the left optional is less than or equal the right optional.</returns>
-        public static bool operator <=(Option<T> left, Option<T> right) => left.CompareTo(right) <= 0;
+        public static bool operator <=(Maybe<T> left, Maybe<T> right) => left.CompareTo(right) <= 0;
 
         /// <summary>
         /// Determines if an optional is greater than another optional.
@@ -124,7 +124,7 @@ namespace Optional
         /// <param name="left">The first optional to compare.</param>
         /// <param name="right">The second optional to compare.</param>
         /// <returns>A boolean indicating whether or not the left optional is greater than the right optional.</returns>
-        public static bool operator >(Option<T> left, Option<T> right) => left.CompareTo(right) > 0;
+        public static bool operator >(Maybe<T> left, Maybe<T> right) => left.CompareTo(right) > 0;
 
         /// <summary>
         /// Determines if an optional is greater than or equal to another optional.
@@ -132,7 +132,7 @@ namespace Optional
         /// <param name="left">The first optional to compare.</param>
         /// <param name="right">The second optional to compare.</param>
         /// <returns>A boolean indicating whether or not the left optional is greater than or equal the right optional.</returns>
-        public static bool operator >=(Option<T> left, Option<T> right) => left.CompareTo(right) >= 0;
+        public static bool operator >=(Maybe<T> left, Maybe<T> right) => left.CompareTo(right) >= 0;
 
         /// <summary>
         /// Returns a string that represents the current optional.
@@ -232,32 +232,32 @@ namespace Optional
         /// </summary>
         /// <param name="alternative">The alternative value.</param>
         /// <returns>A new optional, containing either the existing or alternative value.</returns>
-        public Option<T> Or(T alternative) => hasValue ? this : Option.Some(alternative);
+        public Maybe<T> Or(T alternative) => hasValue ? this : Maybe.Some(alternative);
 
         /// <summary>
         /// Uses an alternative value, if no existing value is present.
         /// </summary>
         /// <param name="alternativeFactory">A factory function to create an alternative value.</param>
         /// <returns>A new optional, containing either the existing or alternative value.</returns>
-        public Option<T> Or(Func<T> alternativeFactory)
+        public Maybe<T> Or(Func<T> alternativeFactory)
         {
             if (alternativeFactory == null) throw new ArgumentNullException(nameof(alternativeFactory));
-            return hasValue ? this : Option.Some(alternativeFactory());
+            return hasValue ? this : Maybe.Some(alternativeFactory());
         }
 
         /// <summary>
         /// Uses an alternative optional, if no existing value is present.
         /// </summary>
-        /// <param name="alternativeOption">The alternative optional.</param>
+        /// <param name="alternativeMaybe">The alternative optional.</param>
         /// <returns>The alternative optional, if no value is present, otherwise itself.</returns>
-        public Option<T> Else(Option<T> alternativeOption) => hasValue ? this : alternativeOption;
+        public Maybe<T> Else(Maybe<T> alternativeMaybe) => hasValue ? this : alternativeMaybe;
 
         /// <summary>
         /// Uses an alternative optional, if no existing value is present.
         /// </summary>
         /// <param name="alternativeOptionFactory">A factory function to create an alternative optional.</param>
         /// <returns>The alternative optional, if no value is present, otherwise itself.</returns>
-        public Option<T> Else(Func<Option<T>> alternativeOptionFactory)
+        public Maybe<T> Else(Func<Maybe<T>> alternativeOptionFactory)
         {
             if (alternativeOptionFactory == null) throw new ArgumentNullException(nameof(alternativeOptionFactory));
             return hasValue ? this : alternativeOptionFactory();
@@ -268,11 +268,11 @@ namespace Optional
         /// </summary>
         /// <param name="exception">The exceptional value to attach.</param>
         /// <returns>An optional with an exceptional value.</returns>
-        public Option<T, TException> WithException<TException>(TException exception)
+        public Maybe<T, TException> WithException<TException>(TException exception)
         {
             return Match(
-                some: value => Option.Some<T, TException>(value),
-                none: () => Option.None<T, TException>(exception)
+                some: value => Maybe.Some<T, TException>(value),
+                none: () => Maybe.None<T, TException>(exception)
             );
         }
 
@@ -281,13 +281,13 @@ namespace Optional
         /// </summary>
         /// <param name="exceptionFactory">A factory function to create an exceptional value to attach.</param>
         /// <returns>An optional with an exceptional value.</returns>
-        public Option<T, TException> WithException<TException>(Func<TException> exceptionFactory)
+        public Maybe<T, TException> WithException<TException>(Func<TException> exceptionFactory)
         {
             if (exceptionFactory == null) throw new ArgumentNullException(nameof(exceptionFactory));
 
             return Match(
-                some: value => Option.Some<T, TException>(value),
-                none: () => Option.None<T, TException>(exceptionFactory())
+                some: value => Maybe.Some<T, TException>(value),
+                none: () => Maybe.None<T, TException>(exceptionFactory())
             );
         }
 
@@ -358,13 +358,13 @@ namespace Optional
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
         /// <returns>The transformed optional.</returns>
-        public Option<TResult> Map<TResult>(Func<T, TResult> mapping)
+        public Maybe<TResult> Map<TResult>(Func<T, TResult> mapping)
         {
             if (mapping == null) throw new ArgumentNullException(nameof(mapping));
 
             return Match(
-                some: value => Option.Some(mapping(value)),
-                none: () => Option.None<TResult>()
+                some: value => Maybe.Some(mapping(value)),
+                none: () => Maybe.None<TResult>()
             );
         }
 
@@ -375,13 +375,13 @@ namespace Optional
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
         /// <returns>The transformed optional.</returns>
-        public Option<TResult> FlatMap<TResult>(Func<T, Option<TResult>> mapping)
+        public Maybe<TResult> FlatMap<TResult>(Func<T, Maybe<TResult>> mapping)
         {
             if (mapping == null) throw new ArgumentNullException(nameof(mapping));
 
             return Match(
                 some: mapping,
-                none: () => Option.None<TResult>()
+                none: () => Maybe.None<TResult>()
             );
         }
 
@@ -393,7 +393,7 @@ namespace Optional
         /// </summary>
         /// <param name="mapping">The transformation function.</param>
         /// <returns>The transformed optional.</returns>
-        public Option<TResult> FlatMap<TResult, TException>(Func<T, Option<TResult, TException>> mapping)
+        public Maybe<TResult> FlatMap<TResult, TException>(Func<T, Maybe<TResult, TException>> mapping)
         {
             if (mapping == null) throw new ArgumentNullException(nameof(mapping));
             return FlatMap(value => mapping(value).WithoutException());
@@ -405,7 +405,7 @@ namespace Optional
         /// </summary>
         /// <param name="condition">The condition.</param>
         /// <returns>The filtered optional.</returns>
-        public Option<T> Filter(bool condition) => hasValue && !condition ? Option.None<T>() : this;
+        public Maybe<T> Filter(bool condition) => hasValue && !condition ? Maybe.None<T>() : this;
 
         /// <summary>
         /// Empties an optional if a specified predicate
@@ -413,16 +413,16 @@ namespace Optional
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <returns>The filtered optional.</returns>
-        public Option<T> Filter(Func<T, bool> predicate)
+        public Maybe<T> Filter(Func<T, bool> predicate)
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
-            return hasValue && !predicate(value) ? Option.None<T>() : this;
+            return hasValue && !predicate(value) ? Maybe.None<T>() : this;
         }
 
         /// <summary>
         /// Empties an optional if the value is null.
         /// </summary>
         /// <returns>The filtered optional.</returns>
-        public Option<T> NotNull() => hasValue && value == null ? Option.None<T>() : this;
+        public Maybe<T> NotNull() => hasValue && value == null ? Maybe.None<T>() : this;
     }
 }

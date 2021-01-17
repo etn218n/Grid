@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine;
-using Optional;
+using MayBe;
 
 namespace GridSystem
 {
@@ -131,7 +131,7 @@ namespace GridSystem
             chunks[columnIndex, rowIndex].SetTileVerticesAt(tileLocalCoordinate, in vertexRect);
         }
 
-        public Option<Rect3D> GetTileVertexRectAt(Vector2Int tileCoordinate)
+        public Maybe<Rect3D> GetTileVertexRectAt(Vector2Int tileCoordinate)
         {
             int rowIndex    = tileCoordinate.y / rowsPerChunk;
             int columnIndex = tileCoordinate.x / columnsPerChunk;
@@ -142,18 +142,18 @@ namespace GridSystem
             return chunks[columnIndex, rowIndex].GetTileVertexRectAt(tileLocalCoordinate);
         }
 
-        public Option<Chunk> GetChunkAt(Vector3 worldPosition)
+        public Maybe<Chunk> GetChunkAt(Vector3 worldPosition)
         {
             return GetChunkAt(worldPosition.x, worldPosition.y);
         }
         
-        public Option<Chunk> GetChunkAt(float worldPositionX, float worldPositionY)
+        public Maybe<Chunk> GetChunkAt(float worldPositionX, float worldPositionY)
         {
             if (worldPositionX < origin.x || worldPositionX > width)
-                return Option.None<Chunk>();
+                return Maybe.None<Chunk>();
 
             if (worldPositionY < origin.y || worldPositionY > height)
-                return Option.None<Chunk>();
+                return Maybe.None<Chunk>();
 
             float fractX = Mathf.Abs(worldPositionX - origin.x) / tileSize;
             float fractY = Mathf.Abs(worldPositionY - origin.y) / tileSize;
@@ -161,7 +161,7 @@ namespace GridSystem
             int i = fractX == 0 ? 0 : Mathf.CeilToInt(fractX) - 1;
             int j = fractY == 0 ? 0 : Mathf.CeilToInt(fractY) - 1;
 
-            return Option.Some(chunks[i / columnsPerChunk, j / rowsPerChunk]);
+            return Maybe.Some(chunks[i / columnsPerChunk, j / rowsPerChunk]);
         }
 
         public void UpdateMesh()
@@ -243,18 +243,18 @@ namespace GridSystem
             }
         }
 
-        public Option<T> GetTileAt(Vector3 worldPosition)
+        public Maybe<T> GetTileAt(Vector3 worldPosition)
         {
             return GetTileAt(worldPosition.x, worldPosition.y);
         }
         
-        public Option<T> GetTileAt(float worldPositionX, float worldPositionY)
+        public Maybe<T> GetTileAt(float worldPositionX, float worldPositionY)
         {
             if (worldPositionX < origin.x || worldPositionX > width)
-                return Option.None<T>();
+                return Maybe.None<T>();
 
             if (worldPositionY < origin.y || worldPositionY > height)
-                return Option.None<T>();
+                return Maybe.None<T>();
 
             float fractX = Mathf.Abs(worldPositionX - origin.x) / tileSize;
             float fractY = Mathf.Abs(worldPositionY - origin.y) / tileSize;
@@ -262,23 +262,23 @@ namespace GridSystem
             int i = fractX == 0 ? 0 : Mathf.CeilToInt(fractX) - 1;
             int j = fractY == 0 ? 0 : Mathf.CeilToInt(fractY) - 1;
 
-            return Option.Some(tiles[i, j]);
+            return Maybe.Some(tiles[i, j]);
         }
         
-        public Option<T> GetTileAt(Vector2Int coordinate)
+        public Maybe<T> GetTileAt(Vector2Int coordinate)
         {
             return GetTileAt(coordinate.x, coordinate.y);
         }
         
-        public Option<T> GetTileAt(int coordinateX, int coordinateY)
+        public Maybe<T> GetTileAt(int coordinateX, int coordinateY)
         {
             if (coordinateX < 0 || coordinateX >= columns)
-                return Option.None<T>();
+                return Maybe.None<T>();
             
             if (coordinateY < 0 || coordinateY >= rows)
-                return Option.None<T>();
+                return Maybe.None<T>();
 
-            return Option.Some(tiles[coordinateX, coordinateY]);
+            return Maybe.Some(tiles[coordinateX, coordinateY]);
         }
 
         public void ForEachTile(Action<T> action)

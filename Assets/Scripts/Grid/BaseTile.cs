@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Optional;
+using MayBe;
 using UnityEngine;
 
 namespace GridSystem
 {
     public abstract class BaseTile<T> : ITickable where T : BaseTile<T>
     {
-        protected List<Option<T>> neighbors = new List<Option<T>>(8);
+        protected List<Maybe<T>> neighbors = new List<Maybe<T>>(8);
 
         protected readonly Chunk ownerChunk;
         protected readonly Grid<T> ownerGrid;
@@ -18,14 +18,14 @@ namespace GridSystem
         
         private bool isActiveTickable; // cached state for optimization
 
-        public Option<T> EastNeighbor  => neighbors[0];
-        public Option<T> WestNeighbor  => neighbors[1];
-        public Option<T> SouthNeighbor => neighbors[2];
-        public Option<T> NorthNeighbor => neighbors[3];
-        public Option<T> SouthEastNeighbor => neighbors[4];
-        public Option<T> SouthWestNeighbor => neighbors[5];
-        public Option<T> NorthEastNeighbor => neighbors[6];
-        public Option<T> NorthWestNeighbor => neighbors[7];
+        public Maybe<T> EastNeighbor  => neighbors[0];
+        public Maybe<T> WestNeighbor  => neighbors[1];
+        public Maybe<T> SouthNeighbor => neighbors[2];
+        public Maybe<T> NorthNeighbor => neighbors[3];
+        public Maybe<T> SouthEastNeighbor => neighbors[4];
+        public Maybe<T> SouthWestNeighbor => neighbors[5];
+        public Maybe<T> NorthEastNeighbor => neighbors[6];
+        public Maybe<T> NorthWestNeighbor => neighbors[7];
 
         public Vector3 Position => position;
         public Vector2Int Coordinate => coordinate;
@@ -84,7 +84,7 @@ namespace GridSystem
         public bool IsEdge   => IsLeftEdge || IsRightEdge || IsTopEdge || IsBottomEdge;
         public bool IsCorner => IsBottomLeftCorner || IsBottomRightCorner || IsTopLeftCorner || IsTopRightCorner;
 
-        public Option<Rect3D> GetVertexRect() => ownerChunk.GetTileVertexRectAt(localCoordinate);
+        public Maybe<Rect3D> GetVertexRect() => ownerChunk.GetTileVertexRectAt(localCoordinate);
         
         public void SetUVs(in Rect2D uvRect) => ownerChunk.SetTileUVsAt(localCoordinate, in uvRect);
         public void SetColor(Color color) => ownerChunk.SetTileColorAt(localCoordinate, color);
@@ -133,7 +133,7 @@ namespace GridSystem
             return neighbors.FirstOrDefault(optional => optional.Filter(neighbor => predicate(neighbor)).HasValue) != null;
         }
 
-        public Option<T> TraverseEast(int steps, Action<T> action)
+        public Maybe<T> TraverseEast(int steps, Action<T> action)
         {
             int i = 0;
 
@@ -149,7 +149,7 @@ namespace GridSystem
             return currentTile.FlatMap(tile => tile.WestNeighbor);
         }
         
-        public Option<T> TraverseWest(int steps, Action<T> action)
+        public Maybe<T> TraverseWest(int steps, Action<T> action)
         {
             int i = 0;
 
@@ -165,7 +165,7 @@ namespace GridSystem
             return currentTile.FlatMap(tile => tile.EastNeighbor);;
         }
         
-        public Option<T> TraverseNorth(int steps, Action<T> action)
+        public Maybe<T> TraverseNorth(int steps, Action<T> action)
         {
             int i = 0;
 
@@ -181,7 +181,7 @@ namespace GridSystem
             return currentTile.FlatMap(tile => tile.SouthNeighbor);;
         }
         
-        public Option<T> TraverseSouth(int steps, Action<T> action)
+        public Maybe<T> TraverseSouth(int steps, Action<T> action)
         {
             int i = 0;
 

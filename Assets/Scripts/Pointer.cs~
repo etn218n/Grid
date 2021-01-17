@@ -74,12 +74,12 @@ public class Pointer : MonoBehaviour
         LiftAction<MovementTile, MovementTile>((src, dest) => character.Move(src, dest))(characterTile, destinationTile);
     }
 
-    public Action<Maybe<A>, Maybe<B>> LiftAction<A, B>(Action<A, B> action)
+    public Action<Option<A>, Option<B>> LiftAction<A, B>(Action<A, B> action)
     {
         return (optionA, optionB) => optionA.MatchSome(a => optionB.MatchSome(b => action(a, b)));
     }
 
-    public (Maybe<T>, Maybe<T>) RandomWaypointFor<T>(Grid<T> grid, Character character) where T : BaseTile<T>, IHaveMovementCost
+    public (Option<T>, Option<T>) RandomWaypointFor<T>(Grid<T> grid, Character character) where T : BaseTile<T>, IHaveMovementCost
     {
         var source = grid.GetTileAt(character.transform.position);
         var destination = Maybe.None<T>();
