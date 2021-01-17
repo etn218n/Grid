@@ -1,19 +1,18 @@
 ﻿using GridSystem;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : SerializedMonoBehaviour
+public class CameraController : MonoBehaviour
 {
     [SerializeField] 
     private Camera mainCamera;
 
-    [OdinSerialize] 
-    private List<ICameraAction> cameraActionsOnUpdate = new List<ICameraAction>();
+    [SerializeField]
+    private List<CameraAction> cameraActions = new List<CameraAction>();
     
     private void Update()
     {
-        cameraActionsOnUpdate.ForEach(a => a.PerformOnCamera(mainCamera));
+        foreach (var action in cameraActions)
+            action.Perform(mainCamera);
     }
 }

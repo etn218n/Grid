@@ -1,13 +1,13 @@
-﻿using System;
-using GridSystem;
+﻿using GridSystem;
 using UnityEngine;
 
-[Serializable]
-public class CameraZoomer : ICameraAction
+public class CameraZoomer : CameraAction
 {
     [SerializeField] private float zoomScale = 1;
+    [SerializeField] private float minZoomDistance = 1;
+    [SerializeField] private float maxZoomDistance = 100;
 
-    public void PerformOnCamera(Camera camera)
+    public override void Perform(Camera camera)
     {
         float cameraOrthographicSize = camera.orthographicSize;
         
@@ -16,6 +16,6 @@ public class CameraZoomer : ICameraAction
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
             cameraOrthographicSize += zoomScale;
 
-        camera.orthographicSize = Mathf.Clamp(cameraOrthographicSize, 1, 100);
+        camera.orthographicSize = Mathf.Clamp(cameraOrthographicSize, minZoomDistance, maxZoomDistance);
     }
 }

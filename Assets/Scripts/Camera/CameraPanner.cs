@@ -1,15 +1,11 @@
-﻿using System;
-using GridSystem;
-using Sirenix.OdinInspector;
+﻿using GridSystem;
 using UnityEngine;
 
-[Serializable]
-public class CameraPanner : ICameraAction
+public class CameraPanner : CameraAction
 {
-    [SerializeField] [ReadOnly]
     private GrabPoint grabPoint = new GrabPoint();
 
-    public void PerformOnCamera(Camera camera)
+    public override void Perform(Camera camera)
     {
         if (Input.GetMouseButtonDown(2))
         {
@@ -24,30 +20,26 @@ public class CameraPanner : ICameraAction
         {
             Vector3 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
 
-            Vector3 moveDirection = grabPoint.GrabPosition - mousePosition;
+            Vector3 moveDirection = grabPoint.Position - mousePosition;
 
             camera.transform.Translate(moveDirection);
         }
     }
 
-    [Serializable]
     private class GrabPoint
     {
-        private bool isGrabbed;
-        private Vector3 grabPosition;
-
-        public bool IsGrabbed => isGrabbed;
-        public Vector3 GrabPosition => grabPosition;
+        public bool IsGrabbed { get; private set; }
+        public Vector3 Position { get; private set; }
 
         public void Grab(Vector3 grabPoint)
         {
-            isGrabbed = true;
-            grabPosition = grabPoint;
+            IsGrabbed = true;
+            Position  = grabPoint;
         }
 
         public void Ungrab()
         {
-            isGrabbed = false;
+            IsGrabbed = false;
         }
     }
 }
