@@ -69,46 +69,44 @@ public class PlantTile : BaseTile<PlantTile>
 
     private void AdjustPlantSize()
     {
-        GetVertexRect().MatchSome(vertexRect =>
-        {
-            Vector3 bottomLeft  = vertexRect.BottomLeft;
-            Vector3 topLeft     = vertexRect.TopLeft;
-            Vector3 bottomRight = vertexRect.BottomRight;
-            Vector3 topRight    = vertexRect.TopRight;
+        var vertexRect = GetVertexRect();
+            
+        Vector3 bottomLeft  = vertexRect.BottomLeft;
+        Vector3 topLeft     = vertexRect.TopLeft;
+        Vector3 bottomRight = vertexRect.BottomRight;
+        Vector3 topRight    = vertexRect.TopRight;
         
-            float tileHeight = (plant.Height * ownerGrid.TileSize) * plant.Maturity;
+        float tileHeight = (plant.Height * ownerGrid.TileSize) * plant.Maturity;
         
-            topLeft.y  = bottomLeft.y + tileHeight;
-            topRight.y = bottomLeft.y + tileHeight;
+        topLeft.y  = bottomLeft.y + tileHeight;
+        topRight.y = bottomLeft.y + tileHeight;
 
-            SetVertices(new Rect3D(bottomLeft, topLeft, bottomRight, topRight));
-        });
+        SetVertices(new Rect3D(bottomLeft, topLeft, bottomRight, topRight));
     }
 
     private void AdjustTileDimension(int width, int height)
     {
-        GetVertexRect().MatchSome(vertexRect =>
-        {
-            Vector3 bottomLeft  = vertexRect.BottomLeft;
-            Vector3 topLeft     = vertexRect.TopLeft;
-            Vector3 bottomRight = vertexRect.BottomRight;
-            Vector3 topRight    = vertexRect.TopRight;
-
-            float tileWidth  = width  * ownerGrid.TileSize;
-            float tileHeight = height * ownerGrid.TileSize;
-
-            topRight.x    = bottomLeft.x + tileWidth;
-            bottomRight.x = bottomLeft.x + tileWidth;
-            topLeft.y     = bottomLeft.y + tileHeight;
-            topRight.y    = bottomLeft.y + tileHeight;
+        var vertexRect = GetVertexRect();
         
-            float zValue  = (bottomLeft.y) * 0.0001f;
-            topLeft.z     = zValue;
-            topRight.z    = zValue;
-            bottomLeft.z  = zValue;
-            bottomRight.z = zValue;
+        Vector3 bottomLeft  = vertexRect.BottomLeft;
+        Vector3 topLeft     = vertexRect.TopLeft;
+        Vector3 bottomRight = vertexRect.BottomRight;
+        Vector3 topRight    = vertexRect.TopRight;
 
-            SetVertices(new Rect3D(bottomLeft, topLeft, bottomRight, topRight));
-        });
+        float tileWidth  = width  * ownerGrid.TileSize;
+        float tileHeight = height * ownerGrid.TileSize;
+
+        topRight.x    = bottomLeft.x + tileWidth;
+        bottomRight.x = bottomLeft.x + tileWidth;
+        topLeft.y     = bottomLeft.y + tileHeight;
+        topRight.y    = bottomLeft.y + tileHeight;
+        
+        float zValue  = (bottomLeft.y) * 0.0001f;
+        topLeft.z     = zValue;
+        topRight.z    = zValue;
+        bottomLeft.z  = zValue;
+        bottomRight.z = zValue;
+
+        SetVertices(new Rect3D(bottomLeft, topLeft, bottomRight, topRight));
     }
 }
