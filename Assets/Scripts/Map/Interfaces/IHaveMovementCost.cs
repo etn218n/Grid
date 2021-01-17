@@ -2,6 +2,10 @@
 {
     int MovementCost { get; }
     bool IsWalkable { get; }
+
+    void Block();
+    void Unblock();
+    void UpdateCost(int newCost);
 }
 
 public static class Movement

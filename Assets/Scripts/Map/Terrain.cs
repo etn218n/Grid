@@ -4,7 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 [CreateAssetMenu(fileName = "Terrain.asset", menuName = "Map/Terrain")]
-public class Terrain : ScriptableObject, IHaveMovementCost
+public class Terrain : ScriptableObject
 {
     [Space(10)]
     [SerializeField] [PreviewField(ObjectFieldAlignment.Left)] [LabelWidth(70)]
@@ -15,9 +15,7 @@ public class Terrain : ScriptableObject, IHaveMovementCost
     [SerializeField] [LabelWidth(100)] [Range(0, 10)]
     private int movementCost;
     public  int MovementCost => movementCost;
-    
-    public bool IsWalkable => movementCost < Movement.MaxCost;
-    
+
     [SerializeField] [LabelWidth(100)] [Range(0, 10)]
     private float fertility;
     public  float Fertility => fertility;
@@ -30,7 +28,6 @@ public class Terrain : ScriptableObject, IHaveMovementCost
     private bool isCollidable;
     public  bool IsCollidable => isCollidable;
     
-
     [Space(20)]
     [SerializeField]
     private TileRuleResolver ruleResolver = new TileRuleResolver();

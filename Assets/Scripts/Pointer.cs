@@ -14,16 +14,21 @@ public class Pointer : MonoBehaviour
     
     private void Start()
     {
-        var initialPosition = engine.MovementGrid.GetTileAt(Vector2Int.zero).Map(t => t.Position);
-        
-        initialPosition.MatchSome(point =>
+        foreach (var character in selectedCharacters)
         {
-            selectedCharacters.ForEach(character =>
+            var validPosition = Maybe.None<Vector3>();
+
+            while (!validPosition.HasValue)
             {
-                var zPostion = character.transform.position.z;
-                character.transform.position = new Vector3(point.x, point.y, zPostion);
-            });
-        });
+                var randomCoordinate = new Vector2Int(Random.Range(0, 20), Random.Range(0, 20));
+                
+                validPosition = engine.MovementGrid.GetTileAt(randomCoordinate)
+                                                     .Filter(tile => tile.IsWalkable)
+                                                     .Map(t => t.Position);
+            }
+            
+            validPosition.MatchSome(point => character.transform.position = new Vector3(point.x, point.y, character.transform.position.z));
+        }
     }
 
     private void TryMoveRandomly<T>(Character character, Grid<T> grid) where T : BaseTile<T>, IHaveMovementCost
@@ -86,7 +91,7 @@ public class Pointer : MonoBehaviour
 
         while (!destination.HasValue)
         {
-            Vector2Int randomCoordinate = new Vector2Int(Random.Range(0, 50), Random.Range(0, 50));
+            var randomCoordinate = new Vector2Int(Random.Range(0, 50), Random.Range(0, 50));
 
             destination = grid.GetTileAt(randomCoordinate).Filter(tile => tile.IsWalkable);
         }

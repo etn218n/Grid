@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using MayBe;
 using UnityEngine;
 
 public class TerrainMover : MonoBehaviour, IMover
@@ -27,16 +28,21 @@ public class TerrainMover : MonoBehaviour, IMover
     private IEnumerator MoveCoroutine()
     {
         isMoving = true;
+
+        var previousTile = Maybe.None<MovementTile>();
         
         while (!path.ReachedEndPoint())
         {
             var nextPoint = path.Next();
             
             transform.up = nextPoint - transform.position;
+            
+            var nextTile = gridEngine.MovementGrid.GetTileAt(nextPoint);
+            
 
-            float calculatedSpeed = gridEngine.MovementGrid.GetTileAt(nextPoint).Map(tile => tile.MovementCost)
-                                                                                .Map(CalculateSpeedPenalty)
-                                                                                .ValueOr(MoveSpeed);
+            var calculatedSpeed = nextTile.Map(tile => tile.MovementCost)
+                                          .Map(CalculateSpeedPenalty)
+                                          .ValueOr(MoveSpeed);
             
             while (transform.position != nextPoint)
             {
@@ -44,6 +50,10 @@ public class TerrainMover : MonoBehaviour, IMover
 
                 yield return new WaitForEndOfFrame();
             }
+            
+            nextTile.MatchSome(tile => tile.Block());
+            previousTile.MatchSome(tile => tile.Unblock());
+            previousTile = nextTile;
         }
         
         OnDone?.Invoke();
